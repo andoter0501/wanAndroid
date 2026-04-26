@@ -1,0 +1,162 @@
+import { ArticleCard } from '../../common/ui/components/ArticleCard'
+import { FavoriteService } from '../../common/favorite/FavoriteService'
+import { PagedListView } from '../../common/ui/components/PagedListView'
+import { PageHeader } from '../../common/ui/components/PageHeader'
+import { StateView } from '../../common/ui/components/StateView'
+import { SearchViewModel } from './SearchViewModel'
+
+@Component
+export struct SearchPage {
+  onBack?: () => void
+  onOpenLink?: (url: string) => void
+  @State vm: SearchViewModel = new SearchViewModel()
+  @State favoriteVersion: number = 0
+  private readonly favoriteListener = (): void => {
+    this.favoriteVersion++
+  }
+
+  aboutToAppear(): void {
+    FavoriteService.shared().subscribe(this.favoriteListener)
+    this.initPage()
+  }
+
+  aboutToDisappear(): void {
+    FavoriteService.shared().unsubscribe(this.favoriteListener)
+  }
+
+  private async initPage(): Promise<void> {
+    await this.vm.init()
+    this.vm = this.vm
+  }
+
+  private async doSearch(): Promise<void> {
+    await this.vm.search(this.vm.keyword)
+    this.vm = this.vm
+  }
+
+  private async onLoadMore(): Promise<void> {
+    await this.vm.loadMore()
+    this.vm = this.vm
+  }
+
+  build() {
+    Column() {
+      PageHeader({
+        title: '搜索',
+        showBack: true,
+        onBack: () => {
+          if (this.onBack) {
+            this.onBack()
+          }
+        }
+      })
+
+      Row({ space: 8 }) {
+        TextInput({ placeholder: '输入关键词', text: this.vm.keyword })
+          .layoutWeight(1)
+          .onChange((value: string) => {
+            this.vm.keyword = value
+            this.vm = this.vm
+          })
+        Button('搜索')
+          .onClick(() => this.doSearch())
+      }
+      .padding(12)
+
+      this.hotKeySection()
+      this.historySection()
+
+      PagedListView({
+        status: this.vm.resultState.status,
+        message: this.vm.resultState.message,
+        retryAction: () => this.doSearch(),
+        isLoadingMore: this.vm.isLoadingMore,
+        loadMoreAction: () => this.onLoadMore()
+      }) {
+        ForEach(this.vm.resultState.data || [], (item) => {
+          ListItem() {
+            ArticleCard({
+              article: {
+                id: item.id,
+                title: item.title,
+                author: item.author,
+                shareUser: item.shareUser,
+                niceDate: item.niceDate
+              },
+              collected: FavoriteService.shared().isCollected(item.id),
+              showCollectAction: true,
+              onClick: () => {
+                if (this.onOpenLink) {
+                  this.onOpenLink(item.link)
+                }
+              },
+              onToggleCollect: async () => {
+                await FavoriteService.shared().toggle(item.id)
+                this.favoriteVersion++
+              }
+            })
+          }
+        }, (item) => item.id.toString())
+      }
+    }
+    .width('100%')
+    .height('100%')
+    .backgroundColor('#F5F6F8')
+  }
+
+  @Builder
+  private hotKeySection() {
+    StateView({
+      status: this.vm.hotKeysState.status,
+      message: this.vm.hotKeysState.message,
+      retryAction: () => this.initPage()
+    }) {
+      Column() {
+        Text('热词')
+          .fontSize(13)
+          .fontWeight(FontWeight.Medium)
+          .width('100%')
+          .padding({ left: 12, right: 12, top: 4, bottom: 6 })
+        Scroll({ scrollable: ScrollDirection.Horizontal }) {
+          Row({ space: 8 }) {
+            ForEach(this.vm.hotKeysState.data || [], (item) => {
+              Button(item.name)
+                .type(ButtonType.Capsule)
+                .onClick(async () => {
+                  this.vm.keyword = item.name
+                  await this.doSearch()
+                })
+            }, (item) => item.id.toString())
+          }
+          .padding({ left: 12, right: 12, bottom: 8 })
+        }
+      }
+    }
+  }
+
+  @Builder
+  private historySection() {
+    if (this.vm.history.length > 0) {
+      Column() {
+        Text('历史搜索')
+          .fontSize(13)
+          .fontWeight(FontWeight.Medium)
+          .width('100%')
+          .padding({ left: 12, right: 12, top: 4, bottom: 6 })
+        Scroll({ scrollable: ScrollDirection.Horizontal }) {
+          Row({ space: 8 }) {
+            ForEach(this.vm.history, (item) => {
+              Button(item)
+                .type(ButtonType.Capsule)
+                .onClick(async () => {
+                  this.vm.keyword = item
+                  await this.doSearch()
+                })
+            }, (item: string) => item)
+          }
+          .padding({ left: 12, right: 12, bottom: 8 })
+        }
+      }
+    }
+  }
+}
