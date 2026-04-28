@@ -4,6 +4,7 @@ import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { AuthViewModel } from '../auth/AuthViewModel'
 import { CollectViewModel } from '../collect/CollectViewModel'
+import { CollectItem } from '../collect/CollectRepository'
 import { MessageViewModel } from '../message/MessageViewModel'
 import { MessageItem } from '../message/MessageRepository'
 
@@ -133,33 +134,33 @@ export struct MinePage {
 
   @Builder
   private userPanel() {
-    const session = this.authVm.authState.data!
-    Column({ space: 8 }) {
-      Text(session.nickname)
-        .fontSize(20)
-        .fontWeight(FontWeight.Bold)
-      Text(`用户名：${session.username}`)
-        .fontSize(13)
-        .fontColor('#666666')
-      if (this.authVm.userInfoState.status === LoadStatus.Success && this.authVm.userInfoState.data) {
-        const info = this.authVm.userInfoState.data.coinInfo
-        Text(`积分：${info.coinCount}  等级：${info.level}  排名：${info.rank}`)
+    if (this.authVm.authState.data) {
+      Column({ space: 8 }) {
+        Text(this.authVm.authState.data.nickname)
+          .fontSize(20)
+          .fontWeight(FontWeight.Bold)
+        Text(`用户名：${this.authVm.authState.data.username}`)
+          .fontSize(13)
+          .fontColor('#666666')
+        if (this.authVm.userInfoState.status === LoadStatus.Success && this.authVm.userInfoState.data) {
+          Text(`积分：${this.authVm.userInfoState.data.coinInfo.coinCount}  等级：${this.authVm.userInfoState.data.coinInfo.level}  排名：${this.authVm.userInfoState.data.coinInfo.rank}`)
+            .fontSize(13)
+            .fontColor('#333333')
+        }
+        Text(`未读消息：${this.messageVm.unreadCount}`)
           .fontSize(13)
           .fontColor('#333333')
-      }
-      Text(`未读消息：${this.messageVm.unreadCount}`)
-        .fontSize(13)
-        .fontColor('#333333')
 
-      Button('退出登录')
-        .type(ButtonType.Capsule)
-        .onClick(() => this.logout())
+        Button('退出登录')
+          .type(ButtonType.Capsule)
+          .onClick(() => this.logout())
+      }
+      .width('100%')
+      .padding(16)
+      .margin({ left: 12, right: 12, top: 8, bottom: 8 })
+      .backgroundColor(Color.White)
+      .borderRadius(10)
     }
-    .width('100%')
-    .padding(16)
-    .margin({ left: 12, right: 12, top: 8, bottom: 8 })
-    .backgroundColor(Color.White)
-    .borderRadius(10)
   }
 
   @Builder
@@ -196,10 +197,11 @@ export struct MinePage {
         await this.collectVm.loadFirstPage()
         this.collectVm = this.collectVm
       },
+      showLoadMore: this.collectVm.canLoadMore(),
       isLoadingMore: this.collectVm.isLoadingMore,
       loadMoreAction: () => this.loadMoreCollect()
     }) {
-      ForEach(this.collectVm.state.data || [], (item) => {
+      ForEach(this.collectVm.state.data || [], (item: CollectItem) => {
         ListItem() {
           Column() {
             ArticleCard({
@@ -209,7 +211,7 @@ export struct MinePage {
                 author: item.author,
                 niceDate: item.niceDate
               },
-              onClick: () => {
+              clickAction: () => {
                 if (this.onOpenLink) {
                   this.onOpenLink(item.link)
                 }
@@ -224,7 +226,7 @@ export struct MinePage {
               })
           }
         }
-      }, (item) => item.id.toString())
+        }, (item: CollectItem) => item.id.toString())
     }
   }
 
@@ -243,6 +245,7 @@ export struct MinePage {
         await this.messageVm.init()
         this.messageVm = this.messageVm
       },
+      showLoadMore: unread ? this.messageVm.canLoadMoreUnread() : this.messageVm.canLoadMoreRead(),
       isLoadingMore: unread ? this.messageVm.isLoadingMoreUnread : this.messageVm.isLoadingMoreRead,
       loadMoreAction: async () => {
         if (unread) {
@@ -253,7 +256,7 @@ export struct MinePage {
         this.messageVm = this.messageVm
       }
     }) {
-      ForEach(state.data || [], (item) => {
+      ForEach(state.data || [], (item: MessageItem) => {
         ListItem() {
           Column() {
             Text(item.title)
@@ -283,7 +286,7 @@ export struct MinePage {
           .backgroundColor(Color.White)
           .borderRadius(8)
         }
-      }, (item) => item.id.toString())
+        }, (item: MessageItem) => item.id.toString())
     }
   }
 

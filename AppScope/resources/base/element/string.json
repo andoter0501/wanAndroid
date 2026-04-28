@@ -1,0 +1,20 @@
+{
+  "string": [
+    {
+      "name": "app_name",
+      "value": "wanAndroid"
+    },
+    {
+      "name": "reason_network",
+      "value": "请求配置信息"
+    },
+    {
+      "name": "reason_network_info",
+      "value": "允许应用检测网络状态"
+    },
+    {
+      "name": "reason_network_wifi",
+      "value": "允许应用获取 WIFI 状态"
+    }
+  ]
+}

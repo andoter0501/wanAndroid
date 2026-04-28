@@ -73,4 +73,8 @@ export class WendaViewModel {
   toggleCommentSort(): void {
     this.commentSortDesc = !this.commentSortDesc
   }
+
+  canLoadMore(): boolean {
+    return this.hasMore
+  }
 }

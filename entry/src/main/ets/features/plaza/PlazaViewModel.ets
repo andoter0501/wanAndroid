@@ -90,6 +90,14 @@ export class PlazaViewModel {
     }
   }
 
+  canLoadMorePlaza(): boolean {
+    return this.plazaHasMore
+  }
+
+  canLoadMoreMyShare(): boolean {
+    return this.myShareHasMore
+  }
+
   async submitShare(): Promise<void> {
     const title = this.shareTitleInput.trim()
     const link = this.shareLinkInput.trim()

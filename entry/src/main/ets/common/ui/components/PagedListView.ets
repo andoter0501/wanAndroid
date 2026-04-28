@@ -14,26 +14,29 @@ export struct PagedListView {
   @BuilderParam content: () => void
 
   build() {
-    StateView({
-      status: this.status,
-      message: this.message,
-      retryAction: this.retryAction
-    }) {
-      List({ space: 8 }) {
-        this.content()
-        if (this.status === LoadStatus.Success && this.showLoadMore) {
-          ListItem() {
-            Button(this.isLoadingMore ? AppText.LOADING : this.loadMoreText)
-              .width('100%')
-              .onClick(() => {
-                if (this.loadMoreAction) {
-                  this.loadMoreAction()
-                }
-              })
+    Column() {
+      StateView({
+        status: this.status,
+        message: this.message,
+        retryAction: this.retryAction
+      }) {
+        List({ space: 8 }) {
+          this.content()
+          if (this.status === LoadStatus.Success && this.showLoadMore) {
+            ListItem() {
+              Button(this.isLoadingMore ? AppText.LOADING : this.loadMoreText)
+                .width('100%')
+                .enabled(!this.isLoadingMore)
+                .onClick(() => {
+                  if (this.loadMoreAction) {
+                    this.loadMoreAction()
+                  }
+                })
+            }
           }
         }
+        .padding({ left: 12, right: 12, bottom: 12 })
       }
-      .padding({ left: 12, right: 12, bottom: 12 })
     }
     .layoutWeight(1)
   }

@@ -2,6 +2,7 @@ import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { StateView } from '../../common/ui/components/StateView'
 import { DiscoverViewModel } from './DiscoverViewModel'
+import { NaviGroup, ProjectCategory, ProjectItem, TreeNode } from './DiscoverRepository'
 
 enum DiscoverTab {
   TREE = 0,
@@ -47,7 +48,7 @@ export struct DiscoverPage {
           retryAction: () => this.vm.loadTree()
         }) {
           List({ space: 8 }) {
-            ForEach(this.vm.treeState.data || [], (item) => {
+            ForEach(this.vm.treeState.data || [], (item: TreeNode) => {
               ListItem() {
                 Column() {
                   Text(item.name)
@@ -63,7 +64,7 @@ export struct DiscoverPage {
                 .backgroundColor(Color.White)
                 .borderRadius(8)
               }
-            }, (item) => item.id.toString())
+            }, (item: TreeNode) => item.id.toString())
           }
           .padding({ left: 12, right: 12, bottom: 12 })
         }
@@ -74,7 +75,7 @@ export struct DiscoverPage {
           retryAction: () => this.vm.loadNavi()
         }) {
           List({ space: 8 }) {
-            ForEach(this.vm.naviState.data || [], (item) => {
+            ForEach(this.vm.naviState.data || [], (item: NaviGroup) => {
               ListItem() {
                 Column() {
                   Text(item.name)
@@ -90,24 +91,25 @@ export struct DiscoverPage {
                 .backgroundColor(Color.White)
                 .borderRadius(8)
               }
-            }, (item) => item.cid.toString())
+            }, (item: NaviGroup) => item.cid.toString())
           }
           .padding({ left: 12, right: 12, bottom: 12 })
         }
       } else {
         Column() {
-          Scroll({ scrollable: ScrollDirection.Horizontal }) {
+          Scroll() {
             Row({ space: 8 }) {
-              ForEach(this.vm.projectCategories, (item) => {
+              ForEach(this.vm.projectCategories, (item: ProjectCategory) => {
                 Button(item.name)
                   .type(item.id === this.vm.selectedProjectCid ? ButtonType.Capsule : ButtonType.Normal)
                   .onClick(async () => {
                     await this.vm.switchProjectCategory(item.id)
                     this.vm = this.vm
                   })
-              }, (item) => item.id.toString())
+              }, (item: ProjectCategory) => item.id.toString())
             }
           }
+          .scrollable(ScrollDirection.Horizontal)
           .width('100%')
           .padding({ left: 12, right: 12, bottom: 10 })
 
@@ -115,11 +117,12 @@ export struct DiscoverPage {
             status: this.vm.projectState.status,
             message: this.vm.projectState.message,
             retryAction: () => this.vm.switchProjectCategory(this.vm.selectedProjectCid),
+            showLoadMore: this.vm.canLoadMoreProject(),
             isLoadingMore: this.vm.isLoadingMoreProject,
             loadMoreText: '加载更多项目',
             loadMoreAction: () => this.loadMoreProject()
           }) {
-            ForEach(this.vm.projectState.data || [], (item) => {
+            ForEach(this.vm.projectState.data || [], (item: ProjectItem) => {
               ListItem() {
                 Column() {
                   Text(item.title)
@@ -139,7 +142,7 @@ export struct DiscoverPage {
                 .backgroundColor(Color.White)
                 .borderRadius(8)
               }
-            }, (item) => item.id.toString())
+            }, (item: ProjectItem) => item.id.toString())
           }
         }
       }

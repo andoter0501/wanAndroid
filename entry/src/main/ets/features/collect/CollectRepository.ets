@@ -18,7 +18,11 @@ export interface CollectPage {
 }
 
 export class CollectRepository {
-  constructor(private readonly apiClient: ApiClient = new ApiClient()) {}
+  private readonly apiClient: ApiClient
+
+  constructor(apiClient: ApiClient = new ApiClient()) {
+    this.apiClient = apiClient
+  }
 
   loadCollectList(page: number): Promise<CollectPage> {
     return this.apiClient.request<CollectPage>({
@@ -42,12 +46,11 @@ export class CollectRepository {
   }
 
   uncollectFromMine(id: number, originId: number): Promise<string> {
+    const body = `originId=${encodeURIComponent(String(originId))}`
     return this.apiClient.request<string>({
       method: RequestMethod.POST,
       path: WanAndroidApi.uncollectInMine(id),
-      body: {
-        originId
-      }
+      body
     })
   }
 }

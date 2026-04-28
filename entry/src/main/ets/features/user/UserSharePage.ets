@@ -3,6 +3,7 @@ import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { UserShareViewModel } from './UserShareViewModel'
+import { UserShareArticle } from './UserShareRepository'
 
 @Component
 export struct UserSharePage {
@@ -54,13 +55,14 @@ export struct UserSharePage {
           await this.vm.loadFirstPage(this.userId)
           this.vm = this.vm
         },
+        showLoadMore: this.vm.canLoadMore(),
         isLoadingMore: this.vm.isLoadingMore,
         loadMoreAction: async () => {
           await this.vm.loadMore(this.userId)
           this.vm = this.vm
         }
       }) {
-        ForEach(this.vm.state.data || [], (item) => {
+        ForEach(this.vm.state.data || [], (item: UserShareArticle) => {
           ListItem() {
             ArticleCard({
               article: {
@@ -72,18 +74,18 @@ export struct UserSharePage {
               },
               collected: FavoriteService.shared().isCollected(item.id),
               showCollectAction: true,
-              onClick: () => {
+              clickAction: () => {
                 if (this.onOpenLink) {
                   this.onOpenLink(item.link)
                 }
               },
-              onToggleCollect: async () => {
+              toggleCollectAction: async () => {
                 await FavoriteService.shared().toggle(item.id)
                 this.favoriteVersion++
               }
             })
           }
-        }, (item) => item.id.toString())
+        }, (item: UserShareArticle) => item.id.toString())
       }
     }
     .width('100%')
@@ -93,22 +95,23 @@ export struct UserSharePage {
 
   @Builder
   private userInfoCard() {
-    const info = this.vm.coinInfo!
-    Column({ space: 6 }) {
-      Text(info.username || this.username)
-        .fontSize(16)
-        .fontWeight(FontWeight.Medium)
-      Text(`用户ID：${info.userId}`)
-        .fontSize(12)
-        .fontColor('#666666')
-      Text(`积分：${info.coinCount}  排名：${info.rank}`)
-        .fontSize(12)
-        .fontColor('#333333')
+    if (this.vm.coinInfo) {
+      Column({ space: 6 }) {
+        Text(this.vm.coinInfo.username || this.username)
+          .fontSize(16)
+          .fontWeight(FontWeight.Medium)
+        Text(`用户ID：${this.vm.coinInfo.userId}`)
+          .fontSize(12)
+          .fontColor('#666666')
+        Text(`积分：${this.vm.coinInfo.coinCount}  排名：${this.vm.coinInfo.rank}`)
+          .fontSize(12)
+          .fontColor('#333333')
+      }
+      .width('100%')
+      .padding(12)
+      .margin({ left: 12, right: 12, bottom: 8 })
+      .backgroundColor(Color.White)
+      .borderRadius(10)
     }
-    .width('100%')
-    .padding(12)
-    .margin({ left: 12, right: 12, bottom: 8 })
-    .backgroundColor(Color.White)
-    .borderRadius(10)
   }
 }

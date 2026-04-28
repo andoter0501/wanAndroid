@@ -12,11 +12,13 @@ export interface TreeNode {
 export interface NaviGroup {
   cid: number
   name: string
-  articles: {
-    id: number
-    title: string
-    link: string
-  }[]
+  articles: NaviArticle[]
+}
+
+export interface NaviArticle {
+  id: number
+  title: string
+  link: string
 }
 
 export interface ProjectCategory {
@@ -40,7 +42,11 @@ export interface ProjectPage {
 }
 
 export class DiscoverRepository {
-  constructor(private readonly apiClient: ApiClient = new ApiClient()) {}
+  private readonly apiClient: ApiClient
+
+  constructor(apiClient: ApiClient = new ApiClient()) {
+    this.apiClient = apiClient
+  }
 
   loadTree(): Promise<TreeNode[]> {
     return this.apiClient.request<TreeNode[]>({

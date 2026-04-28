@@ -3,6 +3,7 @@ import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { HomeViewModel } from './HomeViewModel'
+import { HomeArticleItem } from './HomeRepository'
 
 @Component
 export struct HomePage {
@@ -54,6 +55,7 @@ export struct HomePage {
         status: this.vm.state.status,
         message: this.vm.state.message,
         retryAction: () => this.onRetry(),
+        showLoadMore: this.vm.canLoadMore(),
         isLoadingMore: this.vm.isLoadingMore,
         loadMoreAction: () => this.onLoadMore()
       }) {
@@ -87,7 +89,7 @@ export struct HomePage {
           }
         }
 
-        ForEach(this.vm.state.data || [], (item) => {
+        ForEach(this.vm.state.data || [], (item: HomeArticleItem) => {
           ListItem() {
             ArticleCard({
               article: {
@@ -99,18 +101,18 @@ export struct HomePage {
               },
               collected: FavoriteService.shared().isCollected(item.id),
               showCollectAction: true,
-              onClick: () => {
+              clickAction: () => {
                 if (this.onOpenLink) {
                   this.onOpenLink(item.link)
                 }
               },
-              onToggleCollect: async () => {
+              toggleCollectAction: async () => {
                 await FavoriteService.shared().toggle(item.id)
                 this.favoriteVersion++
               }
             })
           }
-        }, (item) => item.id.toString())
+        }, (item: HomeArticleItem) => item.id.toString())
       }
     }
     .width('100%')

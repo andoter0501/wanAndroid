@@ -20,11 +20,13 @@ export interface UserCoinInfo {
 
 interface UserShareData {
   coinInfo: UserCoinInfo
-  shareArticles: {
-    datas: UserShareArticle[]
-    curPage: number
-    pageCount: number
-  }
+  shareArticles: UserShareArticlePage
+}
+
+interface UserShareArticlePage {
+  datas: UserShareArticle[]
+  curPage: number
+  pageCount: number
 }
 
 export interface UserSharePage {
@@ -35,7 +37,11 @@ export interface UserSharePage {
 }
 
 export class UserShareRepository {
-  constructor(private readonly apiClient: ApiClient = new ApiClient()) {}
+  private readonly apiClient: ApiClient
+
+  constructor(apiClient: ApiClient = new ApiClient()) {
+    this.apiClient = apiClient
+  }
 
   async loadUserShare(userId: number, page: number): Promise<UserSharePage> {
     const data = await this.apiClient.request<UserShareData>({

@@ -4,6 +4,7 @@ import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { SessionStore } from '../../common/storage/SessionStore'
 import { PlazaViewModel } from './PlazaViewModel'
+import { PlazaArticle } from './PlazaRepository'
 
 enum PlazaTab {
   PLAZA = 0,
@@ -83,13 +84,14 @@ export struct PlazaPage {
         await this.vm.loadPlazaFirstPage()
         this.vm = this.vm
       },
+      showLoadMore: this.vm.canLoadMorePlaza(),
       isLoadingMore: this.vm.isLoadingMorePlaza,
       loadMoreAction: async () => {
         await this.vm.loadMorePlaza()
         this.vm = this.vm
       }
     }) {
-      ForEach(this.vm.plazaState.data || [], (item) => {
+      ForEach(this.vm.plazaState.data || [], (item: PlazaArticle) => {
         ListItem() {
           Column() {
           ArticleCard({
@@ -102,12 +104,12 @@ export struct PlazaPage {
             },
             collected: FavoriteService.shared().isCollected(item.id),
             showCollectAction: true,
-            onClick: () => {
+            clickAction: () => {
               if (this.onOpenLink) {
                 this.onOpenLink(item.link)
               }
             },
-            onToggleCollect: async () => {
+            toggleCollectAction: async () => {
               await FavoriteService.shared().toggle(item.id)
               this.favoriteVersion++
             }
@@ -125,7 +127,7 @@ export struct PlazaPage {
             }
           }
         }
-      }, (item) => item.id.toString())
+        }, (item: PlazaArticle) => item.id.toString())
     }
   }
 
@@ -176,13 +178,14 @@ export struct PlazaPage {
             await this.vm.loadMyShareFirstPage()
             this.vm = this.vm
           },
+          showLoadMore: this.vm.canLoadMoreMyShare(),
           isLoadingMore: this.vm.isLoadingMoreMyShare,
           loadMoreAction: async () => {
             await this.vm.loadMoreMyShare()
             this.vm = this.vm
           }
         }) {
-          ForEach(this.vm.myShareState.data || [], (item) => {
+          ForEach(this.vm.myShareState.data || [], (item: PlazaArticle) => {
             ListItem() {
               Column() {
                 ArticleCard({
@@ -195,12 +198,12 @@ export struct PlazaPage {
                   },
                   collected: FavoriteService.shared().isCollected(item.id),
                   showCollectAction: true,
-                  onClick: () => {
+                  clickAction: () => {
                     if (this.onOpenLink) {
                       this.onOpenLink(item.link)
                     }
                   },
-                  onToggleCollect: async () => {
+                  toggleCollectAction: async () => {
                     await FavoriteService.shared().toggle(item.id)
                     this.favoriteVersion++
                   }
@@ -214,7 +217,7 @@ export struct PlazaPage {
                   })
               }
             }
-          }, (item) => item.id.toString())
+          }, (item: PlazaArticle) => item.id.toString())
         }
       }
       .layoutWeight(1)

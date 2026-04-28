@@ -109,4 +109,8 @@ export class DiscoverViewModel {
     }
   }
 
+  canLoadMoreProject(): boolean {
+    return this.hasMoreProject
+  }
+
 }

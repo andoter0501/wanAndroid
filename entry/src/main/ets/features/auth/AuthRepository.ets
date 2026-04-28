@@ -3,20 +3,24 @@ import { RequestMethod } from '../../common/network/ApiModels'
 import { WanAndroidApi } from '../../common/network/WanAndroidApi'
 
 export interface UserInfoData {
-  coinInfo: {
-    coinCount: number
-    level: number
-    rank: string
-    userId: number
-    username: string
-    nickname: string
-  }
-  userInfo: {
-    id: number
-    username: string
-    nickname: string
-    email?: string
-  }
+  coinInfo: UserCoinInfo
+  userInfo: UserInfoProfile
+}
+
+export interface UserCoinInfo {
+  coinCount: number
+  level: number
+  rank: string
+  userId: number
+  username: string
+  nickname: string
+}
+
+export interface UserInfoProfile {
+  id: number
+  username: string
+  nickname: string
+  email?: string
 }
 
 export interface LoginData {
@@ -27,28 +31,27 @@ export interface LoginData {
 }
 
 export class AuthRepository {
-  constructor(private readonly apiClient: ApiClient = new ApiClient()) {}
+  private readonly apiClient: ApiClient
+
+  constructor(apiClient: ApiClient = new ApiClient()) {
+    this.apiClient = apiClient
+  }
 
   login(username: string, password: string): Promise<LoginData> {
+    const body = `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
     return this.apiClient.request<LoginData>({
       method: RequestMethod.POST,
       path: WanAndroidApi.login(),
-      body: {
-        username,
-        password
-      }
+      body
     })
   }
 
   register(username: string, password: string, repassword: string): Promise<LoginData> {
+    const body = `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&repassword=${encodeURIComponent(repassword)}`
     return this.apiClient.request<LoginData>({
       method: RequestMethod.POST,
       path: WanAndroidApi.register(),
-      body: {
-        username,
-        password,
-        repassword
-      }
+      body
     })
   }
 

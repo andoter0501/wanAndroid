@@ -9,7 +9,11 @@ export interface HotKeyItem {
 }
 
 export class SearchRepository {
-  constructor(private readonly apiClient: ApiClient = new ApiClient()) {}
+  private readonly apiClient: ApiClient
+
+  constructor(apiClient: ApiClient = new ApiClient()) {
+    this.apiClient = apiClient
+  }
 
   loadHotKeys(): Promise<HotKeyItem[]> {
     return this.apiClient.request<HotKeyItem[]>({
@@ -19,12 +23,11 @@ export class SearchRepository {
   }
 
   searchArticles(page: number, keyword: string): Promise<HomeArticlePage> {
+    const body = `k=${encodeURIComponent(keyword)}`
     return this.apiClient.request<HomeArticlePage>({
       method: RequestMethod.POST,
       path: WanAndroidApi.search(page),
-      body: {
-        k: keyword
-      }
+      body
     })
   }
 }

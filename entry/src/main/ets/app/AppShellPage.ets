@@ -17,9 +17,8 @@ enum MainTab {
   MINE = 4
 }
 
-@Entry
 @Component
-struct AppShellPage {
+export struct AppShellPage {
   @State currentTab: MainTab = MainTab.HOME
   @State showSearch: boolean = false
   @State showWeb: boolean = false

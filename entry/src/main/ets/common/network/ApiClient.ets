@@ -1,4 +1,6 @@
 import { ApiException, ApiResponse, RequestMethod, SessionExpiredException } from './ApiModels'
+import { NetworkError, toNetworkError } from './ErrorMessage'
+import http from '@ohos.net.http'
 import { WanAndroidApi } from './WanAndroidApi'
 import { SessionStore } from '../storage/SessionStore'
 import { SessionEventBus } from '../session/SessionEventBus'
@@ -7,8 +9,7 @@ export interface RequestOptions {
   method: RequestMethod
   path: string
   query?: Record<string, string | number>
-  body?: Record<string, string | number>
-  headers?: Record<string, string>
+  body?: string
   retryCount?: number
 }
 
@@ -22,41 +23,43 @@ export class ApiClient {
   async request<T>(options: RequestOptions): Promise<T> {
     const totalRetry = options.retryCount ?? (options.method === RequestMethod.GET ? 1 : 0)
     let attempt = 0
-    let lastError: unknown = null
+    let lastError: NetworkError | null = null
 
     while (attempt <= totalRetry) {
       try {
         return await this.requestOnce<T>(options)
       } catch (error) {
-        lastError = error
-        if (!this.shouldRetry(error, options.method, attempt, totalRetry)) {
-          throw error
+        const typedError = toNetworkError(error)
+        lastError = typedError
+        if (!this.shouldRetry(typedError, options.method, attempt, totalRetry)) {
+          throw new Error(typedError.message)
         }
         await this.sleep(250 * (attempt + 1))
         attempt++
       }
     }
 
-    throw lastError
+    throw new Error(lastError?.message || '请求失败')
   }
 
   private async requestOnce<T>(options: RequestOptions): Promise<T> {
     const url: string = this.buildUrl(options.path, options.query)
-    const response: Response = await fetch(url, {
+    const request = http.createHttp()
+    const body = this.buildBody(options.body, options.method)
+    const response = await request.request(url, {
       method: options.method,
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        ...options.headers
-      },
-      body: this.buildBody(options.body, options.method)
+      extraData: body,
+      expectDataType: http.HttpDataType.STRING,
+      connectTimeout: 10000,
+      readTimeout: 10000
     })
+    request.destroy()
 
-    if (!response.ok) {
-      throw new ApiException(response.status, `网络请求失败: ${response.status}`)
+    if (response.responseCode < 200 || response.responseCode >= 300) {
+      throw new ApiException(response.responseCode, `网络请求失败: ${response.responseCode}`)
     }
 
-    const json = await response.json() as ApiResponse<T>
+    const json = JSON.parse((response.result as string) || '{}') as ApiResponse<T>
     if (json.errorCode === 0) {
       return json.data
     }
@@ -79,17 +82,15 @@ export class ApiClient {
     return `${fullPath}${fullPath.includes('?') ? '&' : '?'}${queryStr}`
   }
 
-  private buildBody(body: Record<string, string | number> | undefined, method: RequestMethod): string | undefined {
+  private buildBody(body: string | undefined, method: RequestMethod): string | undefined {
     if (method !== RequestMethod.POST || !body) {
       return undefined
     }
-    return Object.keys(body)
-      .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(String(body[key]))}`)
-      .join('&')
+    return body
   }
 
   private shouldRetry(
-    error: unknown,
+    error: NetworkError,
     method: RequestMethod,
     attempt: number,
     totalRetry: number
@@ -112,7 +113,6 @@ export class ApiClient {
     }
     return false
   }
-
   private async sleep(ms: number): Promise<void> {
     await new Promise<void>((resolve) => {
       setTimeout(() => resolve(), ms)

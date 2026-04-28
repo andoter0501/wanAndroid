@@ -80,4 +80,8 @@ export class HomeViewModel {
     }
   }
 
+  canLoadMore(): boolean {
+    return this.hasMore
+  }
+
 }

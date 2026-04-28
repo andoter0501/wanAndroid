@@ -27,7 +27,11 @@ export interface WendaComment {
 }
 
 export class WendaRepository {
-  constructor(private readonly apiClient: ApiClient = new ApiClient()) {}
+  private readonly apiClient: ApiClient
+
+  constructor(apiClient: ApiClient = new ApiClient()) {
+    this.apiClient = apiClient
+  }
 
   loadWenda(page: number): Promise<WendaPageData> {
     return this.apiClient.request<WendaPageData>({

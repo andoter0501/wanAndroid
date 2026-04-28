@@ -70,4 +70,8 @@ export class CollectViewModel {
     }
   }
 
+  canLoadMore(): boolean {
+    return this.hasMore
+  }
+
 }

@@ -59,11 +59,13 @@ export class AuthViewModel {
       this.userInfoState = UiState.success(data)
       const session = SessionStore.shared().getSession()
       if (session) {
-        SessionStore.shared().save({
-          ...session,
+        const nextSession: UserSession = {
+          username: session.username,
+          userId: session.userId,
           nickname: data.userInfo.nickname || session.nickname,
           coinCount: data.coinInfo.coinCount
-        })
+        }
+        SessionStore.shared().save(nextSession)
         this.authState = UiState.success(SessionStore.shared().getSession() as UserSession)
       }
     } catch (error) {

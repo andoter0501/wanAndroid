@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "app_name",
+      "value": "wanAndroid"
+    },
+    {
+      "name": "module_desc",
+      "value": "wanAndroid entry module"
+    },
+    {
+      "name": "entry_ability_desc",
+      "value": "wanAndroid entry ability"
+    }
+  ]
+}

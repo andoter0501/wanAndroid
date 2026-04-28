@@ -4,6 +4,7 @@ import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { StateView } from '../../common/ui/components/StateView'
 import { WendaViewModel } from './WendaViewModel'
+import { WendaComment, WendaItem } from './WendaRepository'
 
 @Component
 export struct WendaPage {
@@ -57,13 +58,14 @@ export struct WendaPage {
         await this.vm.loadWendaFirstPage()
         this.vm = this.vm
       },
+      showLoadMore: this.vm.canLoadMore(),
       isLoadingMore: this.vm.isLoadingMore,
       loadMoreAction: async () => {
         await this.vm.loadMore()
         this.vm = this.vm
       }
     }) {
-      ForEach(this.vm.wendaState.data || [], (item) => {
+      ForEach(this.vm.wendaState.data || [], (item: WendaItem) => {
         ListItem() {
           Column() {
             ArticleCard({
@@ -76,12 +78,12 @@ export struct WendaPage {
               },
               collected: FavoriteService.shared().isCollected(item.id),
               showCollectAction: true,
-              onClick: () => {
+              clickAction: () => {
                 if (this.onOpenLink) {
                   this.onOpenLink(item.link)
                 }
               },
-              onToggleCollect: async () => {
+              toggleCollectAction: async () => {
                 await FavoriteService.shared().toggle(item.id)
                 this.favoriteVersion++
               }
@@ -108,7 +110,7 @@ export struct WendaPage {
             }
           }
         }
-      }, (item) => item.id.toString())
+      }, (item: WendaItem) => item.id.toString())
     }
   }
 
@@ -158,57 +160,59 @@ export struct WendaPage {
       .width('100%')
       .padding({ left: 12, right: 12, bottom: 8 })
 
-      StateView({
-        status: this.vm.commentState.status,
-        message: this.vm.commentState.message
-      }) {
-        List({ space: 8 }) {
-          ForEach(this.vm.getSortedComments(), (item) => {
-            ListItem() {
-              Column() {
-                Row() {
-                  Text(item.userName)
-                    .fontSize(13)
-                    .fontWeight(FontWeight.Medium)
-                  Blank()
-                  Text(`赞 ${item.zan}`)
+      Column() {
+        StateView({
+          status: this.vm.commentState.status,
+          message: this.vm.commentState.message
+        }) {
+          List({ space: 8 }) {
+            ForEach(this.vm.getSortedComments(), (item: WendaComment) => {
+              ListItem() {
+                Column() {
+                  Row() {
+                    Text(item.userName)
+                      .fontSize(13)
+                      .fontWeight(FontWeight.Medium)
+                    Blank()
+                    Text(`赞 ${item.zan}`)
+                      .fontSize(12)
+                      .fontColor('#666666')
+                  }
+                  .width('100%')
+
+                  Text(item.content)
+                    .fontSize(14)
+                    .margin({ top: 6 })
+
+                  Text(item.niceDate)
                     .fontSize(12)
-                    .fontColor('#666666')
+                    .fontColor('#999999')
+                    .margin({ top: 8 })
+
+                  Row({ space: 8 }) {
+                    Button('点赞（待开放）')
+                      .type(ButtonType.Capsule)
+                      .onClick(() => {
+                        this.showCommentActionTip('点赞', item.id)
+                      })
+
+                    Button('回复（待开放）')
+                      .type(ButtonType.Capsule)
+                      .onClick(() => {
+                        this.showCommentActionTip('回复', item.id)
+                      })
+                  }
+                  .margin({ top: 8 })
                 }
                 .width('100%')
-
-                Text(item.content)
-                  .fontSize(14)
-                  .margin({ top: 6 })
-
-                Text(item.niceDate)
-                  .fontSize(12)
-                  .fontColor('#999999')
-                  .margin({ top: 8 })
-
-                Row({ space: 8 }) {
-                  Button('点赞（待开放）')
-                    .type(ButtonType.Capsule)
-                    .onClick(() => {
-                      this.showCommentActionTip('点赞', item.id)
-                    })
-
-                  Button('回复（待开放）')
-                    .type(ButtonType.Capsule)
-                    .onClick(() => {
-                      this.showCommentActionTip('回复', item.id)
-                    })
-                }
-                .margin({ top: 8 })
+                .padding(12)
+                .backgroundColor(Color.White)
+                .borderRadius(8)
               }
-              .width('100%')
-              .padding(12)
-              .backgroundColor(Color.White)
-              .borderRadius(8)
-            }
-          }, (item) => item.id.toString())
+            }, (item: WendaComment) => item.id.toString())
+          }
+          .padding({ left: 12, right: 12, bottom: 12 })
         }
-        .padding({ left: 12, right: 12, bottom: 12 })
       }
       .layoutWeight(1)
     }

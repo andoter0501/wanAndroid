@@ -19,7 +19,11 @@ export interface PlazaPageData {
 }
 
 export class PlazaRepository {
-  constructor(private readonly apiClient: ApiClient = new ApiClient()) {}
+  private readonly apiClient: ApiClient
+
+  constructor(apiClient: ApiClient = new ApiClient()) {
+    this.apiClient = apiClient
+  }
 
   loadPlaza(page: number): Promise<PlazaPageData> {
     return this.apiClient.request<PlazaPageData>({
@@ -36,10 +40,11 @@ export class PlazaRepository {
   }
 
   shareArticle(title: string, link: string): Promise<string> {
+    const body = `title=${encodeURIComponent(title)}&link=${encodeURIComponent(link)}`
     return this.apiClient.request<string>({
       method: RequestMethod.POST,
       path: WanAndroidApi.shareArticle(),
-      body: { title, link }
+      body
     })
   }
 

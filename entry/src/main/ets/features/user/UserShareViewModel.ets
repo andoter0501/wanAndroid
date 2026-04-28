@@ -47,4 +47,8 @@ export class UserShareViewModel {
       this.isLoadingMore = false
     }
   }
+
+  canLoadMore(): boolean {
+    return this.hasMore
+  }
 }

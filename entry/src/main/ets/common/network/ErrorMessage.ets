@@ -1,6 +1,26 @@
 import { ApiException, SessionExpiredException } from './ApiModels'
 
-export function parseErrorMessage(error: unknown, fallback: string = '请求失败，请稍后重试'): string {
+export type NetworkError = ApiException | SessionExpiredException | Error
+
+export function toNetworkError(error: Object): NetworkError {
+  if (error instanceof SessionExpiredException) {
+    return error
+  }
+  if (error instanceof ApiException) {
+    return error
+  }
+  if (error instanceof Error) {
+    return error
+  }
+  return new Error('请求失败')
+}
+
+export function parseErrorMessage(error: Object, fallback: string = '请求失败，请稍后重试'): string {
+  const typedError = toNetworkError(error)
+  return parseTypedErrorMessage(typedError, fallback)
+}
+
+function parseTypedErrorMessage(error: NetworkError, fallback: string): string {
   if (error instanceof SessionExpiredException) {
     return '登录已失效，请重新登录'
   }

@@ -72,6 +72,10 @@ export class SearchViewModel {
     }
   }
 
+  canLoadMore(): boolean {
+    return this.hasMore
+  }
+
   private pushHistory(keyword: string): void {
     const next = this.history.filter((item) => item !== keyword)
     next.unshift(keyword)

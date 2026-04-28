@@ -95,4 +95,12 @@ export class MessageViewModel {
     }
   }
 
+  canLoadMoreUnread(): boolean {
+    return this.unreadHasMore
+  }
+
+  canLoadMoreRead(): boolean {
+    return this.readHasMore
+  }
+
 }

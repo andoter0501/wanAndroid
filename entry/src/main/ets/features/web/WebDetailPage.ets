@@ -1,5 +1,6 @@
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { UrlSecurityGuard } from '../../common/web/UrlSecurityGuard'
+import { webview } from '@kit.ArkWeb'
 
 @Component
 export struct WebDetailPage {
@@ -9,7 +10,7 @@ export struct WebDetailPage {
   @State tip: string = ''
   @State block: boolean = false
   @State safeUrl: string = ''
-  private controller: WebviewController = new WebviewController()
+  private controller: webview.WebviewController = new webview.WebviewController()
 
   aboutToAppear(): void {
     const result = UrlSecurityGuard.check(this.url)

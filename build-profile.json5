@@ -1,0 +1,50 @@
+{
+  "app": {
+    "products": [
+      {
+        "name": "default",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS",
+        "signingConfig": "default",
+        "targetSdkVersion": "6.0.2(22)"
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug"
+      },
+      {
+        "name": "release"
+      }
+    ],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/a123/.ohos/config/default_wanAndroid_zTR_x_i6tn1bESHIm9dMqVmEg_zhywSytazW60mygjs=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BD0A645A209401DA38C488E7BBAE60C8A245C4F87BAAA6FDB5686F069424C56BA2B011A1FED66E1",
+          "profile": "/Users/a123/.ohos/config/default_wanAndroid_zTR_x_i6tn1bESHIm9dMqVmEg_zhywSytazW60mygjs=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/a123/.ohos/config/default_wanAndroid_zTR_x_i6tn1bESHIm9dMqVmEg_zhywSytazW60mygjs=.p12",
+          "storePassword": "0000001BEA93C9C0C42BDE4C8CFEA44F3EFAE42FC1EE193A5FB001CC2E79D455AE124D183C235E26F9A1D9"
+        }
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -36,7 +36,11 @@ export interface HomeArticlePage {
 }
 
 export class HomeRepository {
-  constructor(private readonly apiClient: ApiClient = new ApiClient()) {}
+  private readonly apiClient: ApiClient
+
+  constructor(apiClient: ApiClient = new ApiClient()) {
+    this.apiClient = apiClient
+  }
 
   loadBanners(): Promise<BannerItem[]> {
     return this.apiClient.request<BannerItem[]>({

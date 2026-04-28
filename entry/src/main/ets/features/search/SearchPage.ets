@@ -4,6 +4,8 @@ import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { StateView } from '../../common/ui/components/StateView'
 import { SearchViewModel } from './SearchViewModel'
+import { HomeArticleItem } from '../home/HomeRepository'
+import { HotKeyItem } from './SearchRepository'
 
 @Component
 export struct SearchPage {
@@ -70,10 +72,11 @@ export struct SearchPage {
         status: this.vm.resultState.status,
         message: this.vm.resultState.message,
         retryAction: () => this.doSearch(),
+        showLoadMore: this.vm.canLoadMore(),
         isLoadingMore: this.vm.isLoadingMore,
         loadMoreAction: () => this.onLoadMore()
       }) {
-        ForEach(this.vm.resultState.data || [], (item) => {
+        ForEach(this.vm.resultState.data || [], (item: HomeArticleItem) => {
           ListItem() {
             ArticleCard({
               article: {
@@ -85,18 +88,18 @@ export struct SearchPage {
               },
               collected: FavoriteService.shared().isCollected(item.id),
               showCollectAction: true,
-              onClick: () => {
+              clickAction: () => {
                 if (this.onOpenLink) {
                   this.onOpenLink(item.link)
                 }
               },
-              onToggleCollect: async () => {
+              toggleCollectAction: async () => {
                 await FavoriteService.shared().toggle(item.id)
                 this.favoriteVersion++
               }
             })
           }
-        }, (item) => item.id.toString())
+        }, (item: HomeArticleItem) => item.id.toString())
       }
     }
     .width('100%')
@@ -117,19 +120,20 @@ export struct SearchPage {
           .fontWeight(FontWeight.Medium)
           .width('100%')
           .padding({ left: 12, right: 12, top: 4, bottom: 6 })
-        Scroll({ scrollable: ScrollDirection.Horizontal }) {
+        Scroll() {
           Row({ space: 8 }) {
-            ForEach(this.vm.hotKeysState.data || [], (item) => {
+            ForEach(this.vm.hotKeysState.data || [], (item: HotKeyItem) => {
               Button(item.name)
                 .type(ButtonType.Capsule)
                 .onClick(async () => {
                   this.vm.keyword = item.name
                   await this.doSearch()
                 })
-            }, (item) => item.id.toString())
+            }, (item: HotKeyItem) => item.id.toString())
           }
           .padding({ left: 12, right: 12, bottom: 8 })
         }
+        .scrollable(ScrollDirection.Horizontal)
       }
     }
   }
@@ -143,9 +147,9 @@ export struct SearchPage {
           .fontWeight(FontWeight.Medium)
           .width('100%')
           .padding({ left: 12, right: 12, top: 4, bottom: 6 })
-        Scroll({ scrollable: ScrollDirection.Horizontal }) {
+        Scroll() {
           Row({ space: 8 }) {
-            ForEach(this.vm.history, (item) => {
+            ForEach(this.vm.history, (item: string) => {
               Button(item)
                 .type(ButtonType.Capsule)
                 .onClick(async () => {
@@ -156,6 +160,7 @@ export struct SearchPage {
           }
           .padding({ left: 12, right: 12, bottom: 8 })
         }
+        .scrollable(ScrollDirection.Horizontal)
       }
     }
   }

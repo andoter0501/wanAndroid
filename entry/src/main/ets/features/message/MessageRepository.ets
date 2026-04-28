@@ -17,7 +17,11 @@ export interface MessagePageData {
 }
 
 export class MessageRepository {
-  constructor(private readonly apiClient: ApiClient = new ApiClient()) {}
+  private readonly apiClient: ApiClient
+
+  constructor(apiClient: ApiClient = new ApiClient()) {
+    this.apiClient = apiClient
+  }
 
   loadUnreadCount(): Promise<number> {
     return this.apiClient.request<number>({

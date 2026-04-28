@@ -11,8 +11,8 @@ export struct ArticleCard {
   @Prop article: ArticleCardData
   @Prop collected: boolean = false
   @Prop showCollectAction: boolean = false
-  onClick?: () => void
-  onToggleCollect?: () => void
+  clickAction?: () => void
+  toggleCollectAction?: () => void
 
   build() {
     Column() {
@@ -39,9 +39,9 @@ export struct ArticleCard {
           Blank()
           Button(this.collected ? '取消收藏' : '收藏')
             .type(ButtonType.Capsule)
-            .onClick(() => {
-              if (this.onToggleCollect) {
-                this.onToggleCollect()
+              .onClick(() => {
+              if (this.toggleCollectAction) {
+                this.toggleCollectAction()
               }
             })
         }
@@ -54,8 +54,8 @@ export struct ArticleCard {
     .backgroundColor(Color.White)
     .borderRadius(10)
     .onClick(() => {
-      if (this.onClick) {
-        this.onClick()
+      if (this.clickAction) {
+        this.clickAction()
       }
     })
   }
