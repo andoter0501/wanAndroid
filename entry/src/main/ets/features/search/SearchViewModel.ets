@@ -76,6 +76,11 @@ export class SearchViewModel {
     return this.hasMore
   }
 
+  clearHistory(): void {
+    this.history = []
+    LocalCacheStore.shared().setStringList(SearchViewModel.HISTORY_KEY, [])
+  }
+
   private pushHistory(keyword: string): void {
     const next = this.history.filter((item) => item !== keyword)
     next.unshift(keyword)

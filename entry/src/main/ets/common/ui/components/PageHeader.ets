@@ -10,22 +10,26 @@ export struct PageHeader {
 
   build() {
     Column() {
-      Row({ space: 10 }) {
+      Row() {
         if (this.showBack) {
-          Button('返回')
-            .type(ButtonType.Capsule)
-            .fontSize(12)
-            .backgroundColor('#FFFFFF22')
+          Text('‹')
+            .fontSize(24)
             .fontColor('#FFFFFF')
             .onClick(() => {
               if (this.onBack) {
                 this.onBack()
               }
             })
+        } else {
+          Text(' ')
+            .fontSize(24)
+            .fontColor('#FFFFFF')
         }
 
+        Blank()
+
         Text(this.title)
-          .fontSize(23)
+          .fontSize(18)
           .fontWeight(FontWeight.Bold)
           .fontColor('#FFFFFF')
           .maxLines(1)
@@ -34,22 +38,30 @@ export struct PageHeader {
         Blank()
 
         if (this.rightText.length > 0) {
-          Button(this.rightText)
-            .type(ButtonType.Capsule)
-            .fontSize(12)
-            .backgroundColor('#FFFFFF22')
+          Text(this.rightText)
+            .fontSize(14)
             .fontColor('#FFFFFF')
             .onClick(() => {
               if (this.onRightClick) {
                 this.onRightClick()
               }
             })
+        } else {
+          Text(' ')
+            .fontSize(14)
+            .fontColor('#FFFFFF')
         }
       }
       .width('100%')
-      .padding({ left: 16, right: 16, top: 12, bottom: 14 })
+      .height(56)
+      .padding({ left: 16, right: 16 })
+      .backgroundColor(UiTheme.BRAND_PRIMARY)
+
+      Row() {}
+      .width('100%')
+      .height(10)
+      .backgroundColor('#EEF1F5')
     }
     .width('100%')
-    .backgroundColor(UiTheme.BRAND_PRIMARY)
   }
 }

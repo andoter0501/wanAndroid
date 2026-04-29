@@ -1,4 +1,6 @@
 import { HomePage } from '../features/home/HomePage'
+import { LoginPage } from '../features/auth/LoginPage'
+import { CollectPage } from '../features/collect/CollectPage'
 import { MinePage } from '../features/mine/MinePage'
 import { PlazaPage } from '../features/plaza/PlazaPage'
 import { KnowPage } from '../features/know/KnowPage'
@@ -8,6 +10,7 @@ import { UserSharePage } from '../features/user/UserSharePage'
 import { WebDetailPage } from '../features/web/WebDetailPage'
 import { UrlSecurityGuard } from '../common/web/UrlSecurityGuard'
 import { SessionEventBus, SessionEventType } from '../common/session/SessionEventBus'
+import { SessionStore } from '../common/storage/SessionStore'
 import { UiTheme } from '../common/ui/UiTheme'
 
 enum MainTab {
@@ -24,6 +27,8 @@ export struct AppShellPage {
   @State showSearch: boolean = false
   @State showWeb: boolean = false
   @State showUserShare: boolean = false
+  @State showLogin: boolean = false
+  @State showCollect: boolean = false
   @State currentUrl: string = ''
   @State currentUserId: number = 0
   @State currentUsername: string = ''
@@ -33,6 +38,8 @@ export struct AppShellPage {
       this.showSearch = false
       this.showWeb = false
       this.showUserShare = false
+      this.showLogin = false
+      this.showCollect = false
       this.currentTab = MainTab.MINE
       this.warning = message || '登录已失效，请重新登录'
     }
@@ -82,6 +89,34 @@ export struct AppShellPage {
               })
             }
           })
+        } else if (this.showLogin) {
+          LoginPage({
+            onBack: () => {
+              animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                this.showLogin = false
+              })
+            },
+            onSuccess: () => {
+              this.warning = ''
+              this.currentTab = MainTab.MINE
+              animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                this.showLogin = false
+                this.warning = ''
+                this.currentTab = MainTab.MINE
+              })
+            }
+          })
+        } else if (this.showCollect) {
+          CollectPage({
+            onBack: () => {
+              animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                this.showCollect = false
+              })
+            },
+            onOpenLink: (url: string) => {
+              this.openLink(url)
+            }
+          })
         } else {
           if (this.currentTab === MainTab.HOME) {
             HomePage({
@@ -92,6 +127,21 @@ export struct AppShellPage {
               },
               onOpenLink: (url: string) => {
                 this.openLink(url)
+              },
+              onQuickNavigate: (target: string) => {
+                if (target === 'plaza') {
+                  this.switchTab(MainTab.PLAZA)
+                } else if (target === 'know') {
+                  this.switchTab(MainTab.KNOW)
+                } else if (target === 'project') {
+                  this.switchTab(MainTab.PROJECT)
+                }
+              },
+              onRequireLogin: () => {
+                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                  this.warning = ''
+                  this.showLogin = true
+                })
               }
             })
           } else if (this.currentTab === MainTab.KNOW) {
@@ -115,6 +165,17 @@ export struct AppShellPage {
             MinePage({
               onOpenLink: (url: string) => {
                 this.openLink(url)
+              },
+              onOpenCollect: () => {
+                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                  this.showCollect = true
+                })
+              },
+              onRequireLogin: () => {
+                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                  this.warning = ''
+                  this.showLogin = true
+                })
               }
             })
           }
@@ -123,7 +184,7 @@ export struct AppShellPage {
       .layoutWeight(1)
       .width('100%')
 
-      if (this.warning.length > 0 && !this.showSearch && !this.showWeb && !this.showUserShare) {
+      if (this.shouldShowWarning() && !this.showSearch && !this.showWeb && !this.showUserShare && !this.showLogin && !this.showCollect) {
         Text(this.warning)
           .width('100%')
           .fontSize(12)
@@ -132,7 +193,7 @@ export struct AppShellPage {
           .backgroundColor(UiTheme.BG_WARNING)
       }
 
-      if (!this.showSearch && !this.showWeb && !this.showUserShare) {
+      if (!this.showSearch && !this.showWeb && !this.showUserShare && !this.showLogin && !this.showCollect) {
         Row() {
           this.tabItem('首页', MainTab.HOME)
           this.tabItem('体系', MainTab.KNOW)
@@ -141,8 +202,9 @@ export struct AppShellPage {
           this.tabItem('我的', MainTab.MINE)
         }
         .width('100%')
-        .height(56)
+        .height(58)
         .justifyContent(FlexAlign.SpaceAround)
+        .border({ width: { top: 1 }, color: '#E5E6EB' })
         .backgroundColor(UiTheme.BG_CARD)
       }
     }
@@ -156,7 +218,7 @@ export struct AppShellPage {
       this.warning = result.reason
       return
     }
-    this.warning = result.reason
+    this.warning = ''
     this.currentUrl = url
     animateTo({ duration: 180, curve: Curve.EaseInOut }, () => {
       this.showWeb = true
@@ -178,22 +240,32 @@ export struct AppShellPage {
   private switchTab(tab: MainTab): void {
     animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
       this.currentTab = tab
+      this.warning = ''
     })
+  }
+
+  private shouldShowWarning(): boolean {
+    if (this.warning.length === 0) {
+      return false
+    }
+    const session = SessionStore.shared().getSession()
+    if (session && this.warning.includes('登录')) {
+      return false
+    }
+    return true
   }
 
   @Builder
   private tabItem(label: string, tab: MainTab) {
-    Column({ space: 2 }) {
+    Column({ space: 3 }) {
       Text(this.tabIcon(tab))
-        .fontSize(18)
+        .fontSize(16)
         .fontColor(this.currentTab === tab ? UiTheme.BRAND_PRIMARY : UiTheme.TEXT_SECONDARY)
       Text(label)
         .fontSize(11)
         .fontColor(this.currentTab === tab ? UiTheme.BRAND_PRIMARY : UiTheme.TEXT_SECONDARY)
     }
     .padding({ top: 4, bottom: 4, left: 6, right: 6 })
-    .borderRadius(10)
-    .backgroundColor(this.currentTab === tab ? UiTheme.BRAND_SOFT : UiTheme.BG_CARD)
     .onClick(() => {
       this.switchTab(tab)
     })

@@ -3,6 +3,7 @@ import { NetworkError, toNetworkError } from './ErrorMessage'
 import http from '@ohos.net.http'
 import { WanAndroidApi } from './WanAndroidApi'
 import { SessionStore } from '../storage/SessionStore'
+import { LocalCacheStore } from '../storage/LocalCacheStore'
 import { SessionEventBus } from '../session/SessionEventBus'
 import { ExploreLogger } from '../log/ExploreLogger'
 
@@ -22,6 +23,7 @@ export interface RequestOptions {
  */
 export class ApiClient {
   private static readonly MAX_LOG_LEN: number = 1200
+  private static readonly COOKIE_KEY: string = 'wan_cookie'
 
   async request<T>(options: RequestOptions): Promise<T> {
     const totalRetry = options.retryCount ?? (options.method === RequestMethod.GET ? 1 : 0)
@@ -70,6 +72,7 @@ export class ApiClient {
         }
         throw lastError
       }
+      this.persistCookies(response.header as Record<string, string | string[]>)
       request.destroy()
       const resultText = typeof response.result === 'string' ? response.result : JSON.stringify(response.result)
       this.logDebug(`RES ${options.method} ${url} code=${response.responseCode} result=${this.clipLog(resultText || '')}`)
@@ -83,6 +86,7 @@ export class ApiClient {
         return json.data
       }
       if (json.errorCode === -1001) {
+        LocalCacheStore.shared().setString(ApiClient.COOKIE_KEY, '')
         SessionStore.shared().clear()
         SessionEventBus.emitExpired(json.errorMsg || '登录状态失效')
         throw new SessionExpiredException(json.errorMsg || '登录状态失效')
@@ -111,12 +115,91 @@ export class ApiClient {
     return body
   }
 
-  private buildHeaders(url: string): Record<string, string> {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+  private buildHeaders(url: string, method: RequestMethod, body: string | undefined): Record<string, string> {
+    const headers: Record<string, string> = {}
+    if (method === RequestMethod.POST && body && body.length > 0) {
+      headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    } else {
+      headers['Content-Type'] = 'application/json'
+    }
     if (url.startsWith(WanAndroidApi.IP_BASE_URL)) {
       headers['Host'] = WanAndroidApi.CANONICAL_HOST
     }
+    const cookie = LocalCacheStore.shared().getString(ApiClient.COOKIE_KEY)
+    if (cookie.length > 0) {
+      headers['Cookie'] = cookie
+    }
     return headers
+  }
+
+  private persistCookies(headers: Record<string, string | string[]>): void {
+    const setCookie = this.findHeader(headers, 'set-cookie')
+    if (!setCookie || setCookie.length === 0) {
+      return
+    }
+
+    const cookieMap = this.parseCookieString(LocalCacheStore.shared().getString(ApiClient.COOKIE_KEY))
+    setCookie.forEach((raw) => {
+      const parts = raw.split(';')
+      if (parts.length === 0) {
+        return
+      }
+      const pair = parts[0].trim()
+      const index = pair.indexOf('=')
+      if (index <= 0) {
+        return
+      }
+      const name = pair.slice(0, index)
+      const value = pair.slice(index + 1)
+      const lower = raw.toLowerCase()
+      if (lower.includes('max-age=0') || lower.includes('expires=thu, 01 jan 1970')) {
+        cookieMap.delete(name)
+      } else {
+        cookieMap.set(name, value)
+      }
+    })
+
+    const nextCookie = Array.from(cookieMap.entries())
+      .map((entry) => `${entry[0]}=${entry[1]}`)
+      .join('; ')
+    LocalCacheStore.shared().setString(ApiClient.COOKIE_KEY, nextCookie)
+  }
+
+  private findHeader(headers: Record<string, string | string[]>, name: string): string[] {
+    const keys = Object.keys(headers)
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i]
+      if (key.toLowerCase() === name) {
+        const value = headers[key]
+        if (Array.isArray(value)) {
+          return value
+        }
+        return this.splitSetCookie(value)
+      }
+    }
+    return []
+  }
+
+  private splitSetCookie(value: string): string[] {
+    if (value.length === 0) {
+      return []
+    }
+    return value.split(/,(?=\\s*[^;,\\s]+=)/).map((item) => item.trim()).filter((item) => item.length > 0)
+  }
+
+  private parseCookieString(cookie: string): Map<string, string> {
+    const map = new Map<string, string>()
+    if (cookie.length === 0) {
+      return map
+    }
+    cookie.split(';').forEach((part) => {
+      const pair = part.trim()
+      const index = pair.indexOf('=')
+      if (index > 0) {
+        map.set(pair.slice(0, index), pair.slice(index + 1))
+      }
+    })
+    return map
   }
 
   private async sendRequest(
@@ -128,7 +211,7 @@ export class ApiClient {
     return await new Promise<http.HttpResponse>((resolve, reject) => {
       request.request(url, {
         method: this.toHttpMethod(method),
-        header: this.buildHeaders(url),
+        header: this.buildHeaders(url, method, body),
         extraData: body,
         connectTimeout: 60000,
         readTimeout: 60000

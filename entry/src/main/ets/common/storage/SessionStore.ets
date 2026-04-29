@@ -13,6 +13,7 @@ export interface UserSession {
  */
 export class SessionStore {
   private static readonly CACHE_KEY = 'user_session'
+  private static readonly COOKIE_KEY = 'wan_cookie'
   private static instance?: SessionStore
   private currentSession: UserSession | null = null
 
@@ -32,6 +33,7 @@ export class SessionStore {
   clear(): void {
     this.currentSession = null
     LocalCacheStore.shared().setString(SessionStore.CACHE_KEY, '')
+    LocalCacheStore.shared().setString(SessionStore.COOKIE_KEY, '')
   }
 
   isLogin(): boolean {
