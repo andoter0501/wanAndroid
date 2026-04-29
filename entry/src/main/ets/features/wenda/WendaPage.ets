@@ -2,6 +2,7 @@ import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
+import { UiTheme } from '../../common/ui/UiTheme'
 import { StateView } from '../../common/ui/components/StateView'
 import { WendaViewModel } from './WendaViewModel'
 import { WendaComment, WendaItem } from './WendaRepository'
@@ -46,7 +47,7 @@ export struct WendaPage {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F5F6F8')
+    .backgroundColor(UiTheme.BG_PAGE)
   }
 
   @Builder
@@ -121,9 +122,9 @@ export struct WendaPage {
         Text(this.commentActionTip)
           .width('100%')
           .fontSize(12)
-          .fontColor('#C97A00')
+          .fontColor(UiTheme.TEXT_WARNING)
           .padding({ left: 12, right: 12, top: 6, bottom: 6 })
-          .backgroundColor('#FFF6E5')
+          .backgroundColor(UiTheme.BG_WARNING)
       }
 
       Row() {
@@ -176,7 +177,7 @@ export struct WendaPage {
                     Blank()
                     Text(`赞 ${item.zan}`)
                       .fontSize(12)
-                      .fontColor('#666666')
+                      .fontColor(UiTheme.TEXT_SECONDARY)
                   }
                   .width('100%')
 
@@ -186,7 +187,7 @@ export struct WendaPage {
 
                   Text(item.niceDate)
                     .fontSize(12)
-                    .fontColor('#999999')
+                    .fontColor(UiTheme.TEXT_TERTIARY)
                     .margin({ top: 8 })
 
                   Row({ space: 8 }) {
@@ -206,7 +207,7 @@ export struct WendaPage {
                 }
                 .width('100%')
                 .padding(12)
-                .backgroundColor(Color.White)
+                .backgroundColor(UiTheme.BG_CARD)
                 .borderRadius(8)
               }
             }, (item: WendaComment) => item.id.toString())

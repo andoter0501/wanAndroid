@@ -2,6 +2,7 @@ import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
+import { UiTheme } from '../../common/ui/UiTheme'
 import { StateView } from '../../common/ui/components/StateView'
 import { SearchViewModel } from './SearchViewModel'
 import { HomeArticleItem } from '../home/HomeRepository'
@@ -104,7 +105,7 @@ export struct SearchPage {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F5F6F8')
+    .backgroundColor(UiTheme.BG_PAGE)
   }
 
   @Builder

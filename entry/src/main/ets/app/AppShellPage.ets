@@ -8,6 +8,7 @@ import { WendaPage } from '../features/wenda/WendaPage'
 import { WebDetailPage } from '../features/web/WebDetailPage'
 import { UrlSecurityGuard } from '../common/web/UrlSecurityGuard'
 import { SessionEventBus, SessionEventType } from '../common/session/SessionEventBus'
+import { UiTheme } from '../common/ui/UiTheme'
 
 enum MainTab {
   HOME = 0,
@@ -125,9 +126,9 @@ export struct AppShellPage {
         Text(this.warning)
           .width('100%')
           .fontSize(12)
-          .fontColor('#C97A00')
+          .fontColor(UiTheme.TEXT_WARNING)
           .padding({ left: 12, right: 12, top: 6, bottom: 6 })
-          .backgroundColor('#FFF6E5')
+          .backgroundColor(UiTheme.BG_WARNING)
       }
 
       if (!this.showSearch && !this.showWeb && !this.showUserShare) {
@@ -141,7 +142,7 @@ export struct AppShellPage {
         .width('100%')
         .height(56)
         .justifyContent(FlexAlign.SpaceAround)
-        .backgroundColor(Color.White)
+        .backgroundColor(UiTheme.BG_CARD)
       }
     }
     .width('100%')
@@ -181,12 +182,36 @@ export struct AppShellPage {
 
   @Builder
   private tabItem(label: string, tab: MainTab) {
-    Text(label)
-      .fontSize(13)
-      .fontColor(this.currentTab === tab ? '#0A59F7' : '#666666')
-      .onClick(() => {
-        this.switchTab(tab)
-      })
+    Column({ space: 2 }) {
+      Text(this.tabIcon(tab))
+        .fontSize(18)
+        .fontColor(this.currentTab === tab ? UiTheme.BRAND_PRIMARY : UiTheme.TEXT_SECONDARY)
+      Text(label)
+        .fontSize(11)
+        .fontColor(this.currentTab === tab ? UiTheme.BRAND_PRIMARY : UiTheme.TEXT_SECONDARY)
+    }
+    .padding({ top: 4, bottom: 4, left: 6, right: 6 })
+    .borderRadius(10)
+    .backgroundColor(this.currentTab === tab ? UiTheme.BRAND_SOFT : UiTheme.BG_CARD)
+    .onClick(() => {
+      this.switchTab(tab)
+    })
+  }
+
+  private tabIcon(tab: MainTab): string {
+    if (tab === MainTab.HOME) {
+      return '⌂'
+    }
+    if (tab === MainTab.DISCOVER) {
+      return '▦'
+    }
+    if (tab === MainTab.PLAZA) {
+      return '▤'
+    }
+    if (tab === MainTab.WENDA) {
+      return '◍'
+    }
+    return '◉'
   }
 
 }

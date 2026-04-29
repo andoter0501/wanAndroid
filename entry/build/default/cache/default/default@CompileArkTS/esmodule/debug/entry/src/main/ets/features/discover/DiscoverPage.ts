@@ -7,6 +7,7 @@ interface DiscoverPage_Params {
 }
 import { PagedListView } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PagedListView";
 import { PageHeader } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PageHeader";
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 import { StateView } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/StateView";
 import { DiscoverViewModel } from "@bundle:com.wanandroid.harmony/entry/ets/features/discover/DiscoverViewModel";
 import type { NaviGroup, ProjectCategory, ProjectItem, TreeNode } from './DiscoverRepository';
@@ -76,12 +77,12 @@ export class DiscoverPage extends ViewPU {
             Column.create();
             Column.width('100%');
             Column.height('100%');
-            Column.backgroundColor('#F5F6F8');
+            Column.backgroundColor(UiTheme.BG_PAGE);
         }, Column);
         {
             this.observeComponentCreation2((elmtId, isInitialRender) => {
                 if (isInitialRender) {
-                    let componentCall = new PageHeader(this, { title: '发现' }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/discover/DiscoverPage.ets", line: 34, col: 7 });
+                    let componentCall = new PageHeader(this, { title: '发现' }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/discover/DiscoverPage.ets", line: 35, col: 7 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -144,7 +145,7 @@ export class DiscoverPage extends ViewPU {
                                                             Column.create();
                                                             Column.width('100%');
                                                             Column.padding(12);
-                                                            Column.backgroundColor(Color.White);
+                                                            Column.backgroundColor(UiTheme.BG_CARD);
                                                             Column.borderRadius(8);
                                                         }, Column);
                                                         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -157,7 +158,7 @@ export class DiscoverPage extends ViewPU {
                                                             Text.create(`子分类: ${(item.children || []).length}`);
                                                             Text.fontSize(12);
                                                             Text.margin({ top: 4 });
-                                                            Text.fontColor('#666666');
+                                                            Text.fontColor(UiTheme.TEXT_SECONDARY);
                                                         }, Text);
                                                         Text.pop();
                                                         Column.pop();
@@ -172,7 +173,7 @@ export class DiscoverPage extends ViewPU {
                                         ForEach.pop();
                                         List.pop();
                                     }
-                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/discover/DiscoverPage.ets", line: 45, col: 9 });
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/discover/DiscoverPage.ets", line: 46, col: 9 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
@@ -206,7 +207,7 @@ export class DiscoverPage extends ViewPU {
                                                                 Column.create();
                                                                 Column.width('100%');
                                                                 Column.padding(12);
-                                                                Column.backgroundColor(Color.White);
+                                                                Column.backgroundColor(UiTheme.BG_CARD);
                                                                 Column.borderRadius(8);
                                                             }, Column);
                                                             this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -219,7 +220,7 @@ export class DiscoverPage extends ViewPU {
                                                                 Text.create(`子分类: ${(item.children || []).length}`);
                                                                 Text.fontSize(12);
                                                                 Text.margin({ top: 4 });
-                                                                Text.fontColor('#666666');
+                                                                Text.fontColor(UiTheme.TEXT_SECONDARY);
                                                             }, Text);
                                                             Text.pop();
                                                             Column.pop();
@@ -284,7 +285,7 @@ export class DiscoverPage extends ViewPU {
                                                             Column.create();
                                                             Column.width('100%');
                                                             Column.padding(12);
-                                                            Column.backgroundColor(Color.White);
+                                                            Column.backgroundColor(UiTheme.BG_CARD);
                                                             Column.borderRadius(8);
                                                         }, Column);
                                                         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -297,7 +298,7 @@ export class DiscoverPage extends ViewPU {
                                                             Text.create(`链接: ${item.articles.length}`);
                                                             Text.fontSize(12);
                                                             Text.margin({ top: 4 });
-                                                            Text.fontColor('#666666');
+                                                            Text.fontColor(UiTheme.TEXT_SECONDARY);
                                                         }, Text);
                                                         Text.pop();
                                                         Column.pop();
@@ -312,7 +313,7 @@ export class DiscoverPage extends ViewPU {
                                         ForEach.pop();
                                         List.pop();
                                     }
-                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/discover/DiscoverPage.ets", line: 72, col: 9 });
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/discover/DiscoverPage.ets", line: 73, col: 9 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
@@ -346,7 +347,7 @@ export class DiscoverPage extends ViewPU {
                                                                 Column.create();
                                                                 Column.width('100%');
                                                                 Column.padding(12);
-                                                                Column.backgroundColor(Color.White);
+                                                                Column.backgroundColor(UiTheme.BG_CARD);
                                                                 Column.borderRadius(8);
                                                             }, Column);
                                                             this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -359,7 +360,7 @@ export class DiscoverPage extends ViewPU {
                                                                 Text.create(`链接: ${item.articles.length}`);
                                                                 Text.fontSize(12);
                                                                 Text.margin({ top: 4 });
-                                                                Text.fontColor('#666666');
+                                                                Text.fontColor(UiTheme.TEXT_SECONDARY);
                                                             }, Text);
                                                             Text.pop();
                                                             Column.pop();
@@ -409,6 +410,9 @@ export class DiscoverPage extends ViewPU {
                             this.observeComponentCreation2((elmtId, isInitialRender) => {
                                 Button.createWithLabel(item.name);
                                 Button.type(item.id === this.vm.selectedProjectCid ? ButtonType.Capsule : ButtonType.Normal);
+                                Button.fontSize(13);
+                                Button.backgroundColor(item.id === this.vm.selectedProjectCid ? UiTheme.BRAND_PRIMARY : UiTheme.BG_CARD);
+                                Button.fontColor(item.id === this.vm.selectedProjectCid ? '#FFFFFF' : UiTheme.TEXT_SECONDARY);
                                 Button.onClick(async () => {
                                     await this.vm.switchProjectCategory(item.id);
                                     this.vm = this.vm;
@@ -455,7 +459,7 @@ export class DiscoverPage extends ViewPU {
                                                             Column.create();
                                                             Column.width('100%');
                                                             Column.padding(12);
-                                                            Column.backgroundColor(Color.White);
+                                                            Column.backgroundColor(UiTheme.BG_CARD);
                                                             Column.borderRadius(8);
                                                         }, Column);
                                                         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -470,7 +474,7 @@ export class DiscoverPage extends ViewPU {
                                                             Text.create(item.desc || '');
                                                             Text.fontSize(12);
                                                             Text.margin({ top: 5 });
-                                                            Text.fontColor('#666666');
+                                                            Text.fontColor(UiTheme.TEXT_SECONDARY);
                                                             Text.maxLines(2);
                                                             Text.textOverflow({ overflow: TextOverflow.Ellipsis });
                                                         }, Text);
@@ -486,7 +490,7 @@ export class DiscoverPage extends ViewPU {
                                         }, ForEach);
                                         ForEach.pop();
                                     }
-                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/discover/DiscoverPage.ets", line: 116, col: 11 });
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/discover/DiscoverPage.ets", line: 120, col: 11 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
@@ -520,7 +524,7 @@ export class DiscoverPage extends ViewPU {
                                                                 Column.create();
                                                                 Column.width('100%');
                                                                 Column.padding(12);
-                                                                Column.backgroundColor(Color.White);
+                                                                Column.backgroundColor(UiTheme.BG_CARD);
                                                                 Column.borderRadius(8);
                                                             }, Column);
                                                             this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -535,7 +539,7 @@ export class DiscoverPage extends ViewPU {
                                                                 Text.create(item.desc || '');
                                                                 Text.fontSize(12);
                                                                 Text.margin({ top: 5 });
-                                                                Text.fontColor('#666666');
+                                                                Text.fontColor(UiTheme.TEXT_SECONDARY);
                                                                 Text.maxLines(2);
                                                                 Text.textOverflow({ overflow: TextOverflow.Ellipsis });
                                                             }, Text);
@@ -577,6 +581,8 @@ export class DiscoverPage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Button.createWithLabel(label);
             Button.type(this.currentTab === tab ? ButtonType.Capsule : ButtonType.Normal);
+            Button.backgroundColor(this.currentTab === tab ? UiTheme.BRAND_PRIMARY : UiTheme.BG_CARD);
+            Button.fontColor(this.currentTab === tab ? '#FFFFFF' : UiTheme.TEXT_SECONDARY);
             Button.onClick(() => {
                 this.currentTab = tab;
             });

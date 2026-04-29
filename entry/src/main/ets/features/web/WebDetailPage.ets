@@ -1,4 +1,5 @@
 import { PageHeader } from '../../common/ui/components/PageHeader'
+import { UiTheme } from '../../common/ui/UiTheme'
 import { UrlSecurityGuard } from '../../common/web/UrlSecurityGuard'
 import { webview } from '@kit.ArkWeb'
 
@@ -34,10 +35,10 @@ export struct WebDetailPage {
       if (this.tip.length > 0) {
         Text(this.tip)
           .fontSize(12)
-          .fontColor(this.block ? '#C0392B' : '#C97A00')
+          .fontColor(this.block ? UiTheme.TEXT_DANGER : UiTheme.TEXT_WARNING)
           .width('100%')
           .padding({ left: 12, right: 12, top: 8, bottom: 8 })
-          .backgroundColor('#FFF6E5')
+          .backgroundColor(UiTheme.BG_WARNING)
       }
 
       if (this.block) {
@@ -48,7 +49,7 @@ export struct WebDetailPage {
           Text(this.url)
             .fontSize(12)
             .margin({ top: 8 })
-            .fontColor('#666666')
+            .fontColor(UiTheme.TEXT_SECONDARY)
             .maxLines(2)
             .textOverflow({ overflow: TextOverflow.Ellipsis })
         }
@@ -67,6 +68,6 @@ export struct WebDetailPage {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F5F6F8')
+    .backgroundColor(UiTheme.BG_PAGE)
   }
 }

@@ -1,5 +1,6 @@
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
+import { UiTheme } from '../../common/ui/UiTheme'
 import { StateView } from '../../common/ui/components/StateView'
 import { DiscoverViewModel } from './DiscoverViewModel'
 import { NaviGroup, ProjectCategory, ProjectItem, TreeNode } from './DiscoverRepository'
@@ -57,11 +58,11 @@ export struct DiscoverPage {
                   Text(`子分类: ${(item.children || []).length}`)
                     .fontSize(12)
                     .margin({ top: 4 })
-                    .fontColor('#666666')
+                    .fontColor(UiTheme.TEXT_SECONDARY)
                 }
                 .width('100%')
                 .padding(12)
-                .backgroundColor(Color.White)
+                .backgroundColor(UiTheme.BG_CARD)
                 .borderRadius(8)
               }
             }, (item: TreeNode) => item.id.toString())
@@ -84,11 +85,11 @@ export struct DiscoverPage {
                   Text(`链接: ${item.articles.length}`)
                     .fontSize(12)
                     .margin({ top: 4 })
-                    .fontColor('#666666')
+                    .fontColor(UiTheme.TEXT_SECONDARY)
                 }
                 .width('100%')
                 .padding(12)
-                .backgroundColor(Color.White)
+                .backgroundColor(UiTheme.BG_CARD)
                 .borderRadius(8)
               }
             }, (item: NaviGroup) => item.cid.toString())
@@ -102,6 +103,9 @@ export struct DiscoverPage {
               ForEach(this.vm.projectCategories, (item: ProjectCategory) => {
                 Button(item.name)
                   .type(item.id === this.vm.selectedProjectCid ? ButtonType.Capsule : ButtonType.Normal)
+                  .fontSize(13)
+                  .backgroundColor(item.id === this.vm.selectedProjectCid ? UiTheme.BRAND_PRIMARY : UiTheme.BG_CARD)
+                  .fontColor(item.id === this.vm.selectedProjectCid ? '#FFFFFF' : UiTheme.TEXT_SECONDARY)
                   .onClick(async () => {
                     await this.vm.switchProjectCategory(item.id)
                     this.vm = this.vm
@@ -133,13 +137,13 @@ export struct DiscoverPage {
                   Text(item.desc || '')
                     .fontSize(12)
                     .margin({ top: 5 })
-                    .fontColor('#666666')
+                    .fontColor(UiTheme.TEXT_SECONDARY)
                     .maxLines(2)
                     .textOverflow({ overflow: TextOverflow.Ellipsis })
                 }
                 .width('100%')
                 .padding(12)
-                .backgroundColor(Color.White)
+                .backgroundColor(UiTheme.BG_CARD)
                 .borderRadius(8)
               }
             }, (item: ProjectItem) => item.id.toString())
@@ -149,13 +153,15 @@ export struct DiscoverPage {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F5F6F8')
+    .backgroundColor(UiTheme.BG_PAGE)
   }
 
   @Builder
   private tabButton(label: string, tab: DiscoverTab) {
     Button(label)
       .type(this.currentTab === tab ? ButtonType.Capsule : ButtonType.Normal)
+      .backgroundColor(this.currentTab === tab ? UiTheme.BRAND_PRIMARY : UiTheme.BG_CARD)
+      .fontColor(this.currentTab === tab ? '#FFFFFF' : UiTheme.TEXT_SECONDARY)
       .onClick(() => {
         this.currentTab = tab
       })

@@ -2,6 +2,7 @@ import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
+import { UiTheme } from '../../common/ui/UiTheme'
 import { SessionStore } from '../../common/storage/SessionStore'
 import { PlazaViewModel } from './PlazaViewModel'
 import { PlazaArticle } from './PlazaRepository'
@@ -59,7 +60,7 @@ export struct PlazaPage {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F5F6F8')
+    .backgroundColor(UiTheme.BG_PAGE)
   }
 
   @Builder
@@ -137,7 +138,7 @@ export struct PlazaPage {
       Column() {
         Text('请先登录后使用分享能力')
           .fontSize(14)
-          .fontColor('#666666')
+          .fontColor(UiTheme.TEXT_SECONDARY)
       }
       .layoutWeight(1)
       .justifyContent(FlexAlign.Center)
@@ -163,12 +164,12 @@ export struct PlazaPage {
           if (this.vm.shareMessage.length > 0) {
             Text(this.vm.shareMessage)
               .fontSize(12)
-              .fontColor('#666666')
+              .fontColor(UiTheme.TEXT_SECONDARY)
           }
         }
         .padding(12)
         .margin({ left: 12, right: 12, bottom: 8 })
-        .backgroundColor(Color.White)
+        .backgroundColor(UiTheme.BG_CARD)
         .borderRadius(10)
 
         PagedListView({

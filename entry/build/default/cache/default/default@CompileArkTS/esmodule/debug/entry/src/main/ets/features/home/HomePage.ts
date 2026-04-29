@@ -12,6 +12,7 @@ import { ArticleCard } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/
 import { FavoriteService } from "@bundle:com.wanandroid.harmony/entry/ets/common/favorite/FavoriteService";
 import { PagedListView } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PagedListView";
 import { PageHeader } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PageHeader";
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 import { HomeViewModel } from "@bundle:com.wanandroid.harmony/entry/ets/features/home/HomeViewModel";
 import type { HomeArticleItem } from './HomeRepository';
 export class HomePage extends ViewPU {
@@ -100,7 +101,7 @@ export class HomePage extends ViewPU {
             Column.create();
             Column.width('100%');
             Column.height('100%');
-            Column.backgroundColor('#F5F6F8');
+            Column.backgroundColor(UiTheme.BG_PAGE);
         }, Column);
         {
             this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -113,7 +114,7 @@ export class HomePage extends ViewPU {
                                 this.onOpenSearch();
                             }
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/home/HomePage.ets", line: 44, col: 7 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/home/HomePage.ets", line: 45, col: 7 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -147,45 +148,73 @@ export class HomePage extends ViewPU {
                         isLoadingMore: this.vm.isLoadingMore,
                         loadMoreAction: () => this.onLoadMore(),
                         content: () => {
-                            this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                If.create();
-                                if (this.vm.banners.length > 0) {
-                                    this.ifElseBranchUpdateFunction(0, () => {
-                                        {
-                                            const itemCreation = (elmtId, isInitialRender) => {
-                                                ViewStackProcessor.StartGetAccessRecordingFor(elmtId);
-                                                ListItem.create(deepRenderFunction, true);
-                                                if (!isInitialRender) {
-                                                    ListItem.pop();
-                                                }
-                                                ViewStackProcessor.StopGetAccessRecording();
-                                            };
-                                            const itemCreation2 = (elmtId, isInitialRender) => {
-                                                ListItem.create(deepRenderFunction, true);
-                                            };
-                                            const deepRenderFunction = (elmtId, isInitialRender) => {
-                                                itemCreation(elmtId, isInitialRender);
-                                                this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                                    Text.create(`Banner：${this.vm.banners.length} 条`);
-                                                    Text.fontSize(14);
-                                                    Text.padding(12);
-                                                    Text.backgroundColor('#EAF2FF');
-                                                    Text.borderRadius(8);
-                                                }, Text);
-                                                Text.pop();
-                                                ListItem.pop();
-                                            };
-                                            this.observeComponentCreation2(itemCreation2, ListItem);
-                                            ListItem.pop();
-                                        }
-                                    });
-                                }
-                                else {
-                                    this.ifElseBranchUpdateFunction(1, () => {
-                                    });
-                                }
-                            }, If);
-                            If.pop();
+                            {
+                                const itemCreation = (elmtId, isInitialRender) => {
+                                    ViewStackProcessor.StartGetAccessRecordingFor(elmtId);
+                                    ListItem.create(deepRenderFunction, true);
+                                    if (!isInitialRender) {
+                                        ListItem.pop();
+                                    }
+                                    ViewStackProcessor.StopGetAccessRecording();
+                                };
+                                const itemCreation2 = (elmtId, isInitialRender) => {
+                                    ListItem.create(deepRenderFunction, true);
+                                };
+                                const deepRenderFunction = (elmtId, isInitialRender) => {
+                                    itemCreation(elmtId, isInitialRender);
+                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                        Column.create({ space: 10 });
+                                    }, Column);
+                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                        Column.create();
+                                        Column.width('100%');
+                                        Column.padding(16);
+                                        Column.height(180);
+                                        Column.justifyContent(FlexAlign.Center);
+                                        Column.backgroundColor('#6E63D6');
+                                        Column.borderRadius(UiTheme.RADIUS_MD);
+                                    }, Column);
+                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                        Text.create('Flutter');
+                                        Text.fontSize(16);
+                                        Text.fontColor('#FFFFFFCC');
+                                    }, Text);
+                                    Text.pop();
+                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                        Text.create(this.vm.banners.length > 0 ? this.vm.banners[0].title : 'Flutter完整实例开源');
+                                        Text.fontSize(26);
+                                        Text.fontWeight(FontWeight.Bold);
+                                        Text.fontColor('#FFFFFF');
+                                        Text.maxLines(2);
+                                        Text.textOverflow({ overflow: TextOverflow.Ellipsis });
+                                    }, Text);
+                                    Text.pop();
+                                    Column.pop();
+                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                        Row.create();
+                                        Row.width('100%');
+                                        Row.height(42);
+                                        Row.backgroundColor(UiTheme.BG_CARD);
+                                        Row.borderRadius(22);
+                                        Row.onClick(() => {
+                                            if (this.onOpenSearch) {
+                                                this.onOpenSearch();
+                                            }
+                                        });
+                                    }, Row);
+                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                        Text.create('  搜索关键字...');
+                                        Text.fontColor(UiTheme.TEXT_TERTIARY);
+                                        Text.fontSize(14);
+                                    }, Text);
+                                    Text.pop();
+                                    Row.pop();
+                                    Column.pop();
+                                    ListItem.pop();
+                                };
+                                this.observeComponentCreation2(itemCreation2, ListItem);
+                                ListItem.pop();
+                            }
                             this.observeComponentCreation2((elmtId, isInitialRender) => {
                                 If.create();
                                 if (this.vm.topArticles.length > 0) {
@@ -205,13 +234,35 @@ export class HomePage extends ViewPU {
                                             const deepRenderFunction = (elmtId, isInitialRender) => {
                                                 itemCreation(elmtId, isInitialRender);
                                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                                    Text.create(`置顶：${this.vm.topArticles.length} 条`);
-                                                    Text.fontSize(14);
-                                                    Text.padding(12);
-                                                    Text.backgroundColor('#F3F7E8');
-                                                    Text.borderRadius(8);
+                                                    Column.create({ space: 10 });
+                                                    Column.padding(14);
+                                                    Column.backgroundColor(UiTheme.BG_CARD);
+                                                    Column.borderRadius(UiTheme.RADIUS_MD);
+                                                }, Column);
+                                                this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                                    Text.create('置顶文章');
+                                                    Text.fontSize(18);
+                                                    Text.fontWeight(FontWeight.Bold);
+                                                    Text.fontColor(UiTheme.TEXT_PRIMARY);
                                                 }, Text);
                                                 Text.pop();
+                                                this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                                    ForEach.create();
+                                                    const forEachItemGenFunction = _item => {
+                                                        const top = _item;
+                                                        this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                                            Text.create(top.title);
+                                                            Text.fontSize(15);
+                                                            Text.fontColor(UiTheme.TEXT_SECONDARY);
+                                                            Text.maxLines(1);
+                                                            Text.textOverflow({ overflow: TextOverflow.Ellipsis });
+                                                        }, Text);
+                                                        Text.pop();
+                                                    };
+                                                    this.forEachUpdateFunction(elmtId, this.vm.topArticles.slice(0, 3), forEachItemGenFunction, (top: HomeArticleItem) => top.id.toString(), false, false);
+                                                }, ForEach);
+                                                ForEach.pop();
+                                                Column.pop();
                                                 ListItem.pop();
                                             };
                                             this.observeComponentCreation2(itemCreation2, ListItem);
@@ -247,7 +298,7 @@ export class HomePage extends ViewPU {
                                                     Text.create('鸿蒙专栏：links / open_sources / tools');
                                                     Text.fontSize(14);
                                                     Text.padding(12);
-                                                    Text.backgroundColor('#FFF6E5');
+                                                    Text.backgroundColor(UiTheme.BG_WARNING);
                                                     Text.borderRadius(8);
                                                 }, Text);
                                                 Text.pop();
@@ -304,7 +355,7 @@ export class HomePage extends ViewPU {
                                                                 await FavoriteService.shared().toggle(item.id);
                                                                 this.favoriteVersion++;
                                                             }
-                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/home/HomePage.ets", line: 94, col: 13 });
+                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/home/HomePage.ets", line: 133, col: 13 });
                                                         ViewPU.create(componentCall);
                                                         let paramsLambda = () => {
                                                             return {
@@ -355,7 +406,7 @@ export class HomePage extends ViewPU {
                             }, ForEach);
                             ForEach.pop();
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/home/HomePage.ets", line: 54, col: 7 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/home/HomePage.ets", line: 55, col: 7 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -366,45 +417,73 @@ export class HomePage extends ViewPU {
                             isLoadingMore: this.vm.isLoadingMore,
                             loadMoreAction: () => this.onLoadMore(),
                             content: () => {
-                                this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                    If.create();
-                                    if (this.vm.banners.length > 0) {
-                                        this.ifElseBranchUpdateFunction(0, () => {
-                                            {
-                                                const itemCreation = (elmtId, isInitialRender) => {
-                                                    ViewStackProcessor.StartGetAccessRecordingFor(elmtId);
-                                                    ListItem.create(deepRenderFunction, true);
-                                                    if (!isInitialRender) {
-                                                        ListItem.pop();
-                                                    }
-                                                    ViewStackProcessor.StopGetAccessRecording();
-                                                };
-                                                const itemCreation2 = (elmtId, isInitialRender) => {
-                                                    ListItem.create(deepRenderFunction, true);
-                                                };
-                                                const deepRenderFunction = (elmtId, isInitialRender) => {
-                                                    itemCreation(elmtId, isInitialRender);
-                                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                                        Text.create(`Banner：${this.vm.banners.length} 条`);
-                                                        Text.fontSize(14);
-                                                        Text.padding(12);
-                                                        Text.backgroundColor('#EAF2FF');
-                                                        Text.borderRadius(8);
-                                                    }, Text);
-                                                    Text.pop();
-                                                    ListItem.pop();
-                                                };
-                                                this.observeComponentCreation2(itemCreation2, ListItem);
-                                                ListItem.pop();
-                                            }
-                                        });
-                                    }
-                                    else {
-                                        this.ifElseBranchUpdateFunction(1, () => {
-                                        });
-                                    }
-                                }, If);
-                                If.pop();
+                                {
+                                    const itemCreation = (elmtId, isInitialRender) => {
+                                        ViewStackProcessor.StartGetAccessRecordingFor(elmtId);
+                                        ListItem.create(deepRenderFunction, true);
+                                        if (!isInitialRender) {
+                                            ListItem.pop();
+                                        }
+                                        ViewStackProcessor.StopGetAccessRecording();
+                                    };
+                                    const itemCreation2 = (elmtId, isInitialRender) => {
+                                        ListItem.create(deepRenderFunction, true);
+                                    };
+                                    const deepRenderFunction = (elmtId, isInitialRender) => {
+                                        itemCreation(elmtId, isInitialRender);
+                                        this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                            Column.create({ space: 10 });
+                                        }, Column);
+                                        this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                            Column.create();
+                                            Column.width('100%');
+                                            Column.padding(16);
+                                            Column.height(180);
+                                            Column.justifyContent(FlexAlign.Center);
+                                            Column.backgroundColor('#6E63D6');
+                                            Column.borderRadius(UiTheme.RADIUS_MD);
+                                        }, Column);
+                                        this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                            Text.create('Flutter');
+                                            Text.fontSize(16);
+                                            Text.fontColor('#FFFFFFCC');
+                                        }, Text);
+                                        Text.pop();
+                                        this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                            Text.create(this.vm.banners.length > 0 ? this.vm.banners[0].title : 'Flutter完整实例开源');
+                                            Text.fontSize(26);
+                                            Text.fontWeight(FontWeight.Bold);
+                                            Text.fontColor('#FFFFFF');
+                                            Text.maxLines(2);
+                                            Text.textOverflow({ overflow: TextOverflow.Ellipsis });
+                                        }, Text);
+                                        Text.pop();
+                                        Column.pop();
+                                        this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                            Row.create();
+                                            Row.width('100%');
+                                            Row.height(42);
+                                            Row.backgroundColor(UiTheme.BG_CARD);
+                                            Row.borderRadius(22);
+                                            Row.onClick(() => {
+                                                if (this.onOpenSearch) {
+                                                    this.onOpenSearch();
+                                                }
+                                            });
+                                        }, Row);
+                                        this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                            Text.create('  搜索关键字...');
+                                            Text.fontColor(UiTheme.TEXT_TERTIARY);
+                                            Text.fontSize(14);
+                                        }, Text);
+                                        Text.pop();
+                                        Row.pop();
+                                        Column.pop();
+                                        ListItem.pop();
+                                    };
+                                    this.observeComponentCreation2(itemCreation2, ListItem);
+                                    ListItem.pop();
+                                }
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     If.create();
                                     if (this.vm.topArticles.length > 0) {
@@ -424,13 +503,35 @@ export class HomePage extends ViewPU {
                                                 const deepRenderFunction = (elmtId, isInitialRender) => {
                                                     itemCreation(elmtId, isInitialRender);
                                                     this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                                        Text.create(`置顶：${this.vm.topArticles.length} 条`);
-                                                        Text.fontSize(14);
-                                                        Text.padding(12);
-                                                        Text.backgroundColor('#F3F7E8');
-                                                        Text.borderRadius(8);
+                                                        Column.create({ space: 10 });
+                                                        Column.padding(14);
+                                                        Column.backgroundColor(UiTheme.BG_CARD);
+                                                        Column.borderRadius(UiTheme.RADIUS_MD);
+                                                    }, Column);
+                                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                                        Text.create('置顶文章');
+                                                        Text.fontSize(18);
+                                                        Text.fontWeight(FontWeight.Bold);
+                                                        Text.fontColor(UiTheme.TEXT_PRIMARY);
                                                     }, Text);
                                                     Text.pop();
+                                                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                                        ForEach.create();
+                                                        const forEachItemGenFunction = _item => {
+                                                            const top = _item;
+                                                            this.observeComponentCreation2((elmtId, isInitialRender) => {
+                                                                Text.create(top.title);
+                                                                Text.fontSize(15);
+                                                                Text.fontColor(UiTheme.TEXT_SECONDARY);
+                                                                Text.maxLines(1);
+                                                                Text.textOverflow({ overflow: TextOverflow.Ellipsis });
+                                                            }, Text);
+                                                            Text.pop();
+                                                        };
+                                                        this.forEachUpdateFunction(elmtId, this.vm.topArticles.slice(0, 3), forEachItemGenFunction, (top: HomeArticleItem) => top.id.toString(), false, false);
+                                                    }, ForEach);
+                                                    ForEach.pop();
+                                                    Column.pop();
                                                     ListItem.pop();
                                                 };
                                                 this.observeComponentCreation2(itemCreation2, ListItem);
@@ -466,7 +567,7 @@ export class HomePage extends ViewPU {
                                                         Text.create('鸿蒙专栏：links / open_sources / tools');
                                                         Text.fontSize(14);
                                                         Text.padding(12);
-                                                        Text.backgroundColor('#FFF6E5');
+                                                        Text.backgroundColor(UiTheme.BG_WARNING);
                                                         Text.borderRadius(8);
                                                     }, Text);
                                                     Text.pop();
@@ -523,7 +624,7 @@ export class HomePage extends ViewPU {
                                                                     await FavoriteService.shared().toggle(item.id);
                                                                     this.favoriteVersion++;
                                                                 }
-                                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/home/HomePage.ets", line: 94, col: 13 });
+                                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/home/HomePage.ets", line: 133, col: 13 });
                                                             ViewPU.create(componentCall);
                                                             let paramsLambda = () => {
                                                                 return {

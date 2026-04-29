@@ -1,40 +1,24 @@
 import { LoadStatus } from '../LoadState'
 import { AppText } from '../AppText'
+import { UiTheme } from '../UiTheme'
 
 @Builder
 function DefaultLoading() {
   Column() {
     Column({ space: 10 }) {
-      Row()
-        .width('100%')
-        .height(18)
-        .backgroundColor('#ECEFF3')
-        .borderRadius(6)
-      Row()
-        .width('86%')
-        .height(18)
-        .backgroundColor('#ECEFF3')
-        .borderRadius(6)
-      Row()
-        .width('72%')
-        .height(18)
-        .backgroundColor('#ECEFF3')
-        .borderRadius(6)
-      Row()
-        .width('64%')
-        .height(18)
-        .backgroundColor('#ECEFF3')
-        .borderRadius(6)
+      Row().width('100%').height(16).backgroundColor(UiTheme.BG_SUBTLE).borderRadius(6)
+      Row().width('84%').height(16).backgroundColor(UiTheme.BG_SUBTLE).borderRadius(6)
+      Row().width('70%').height(16).backgroundColor(UiTheme.BG_SUBTLE).borderRadius(6)
     }
     .width('100%')
 
     Text(AppText.LOADING)
       .fontSize(13)
-      .fontColor('#666666')
+      .fontColor(UiTheme.TEXT_SECONDARY)
       .margin({ top: 10 })
   }
   .width('100%')
-  .padding({ left: 16, right: 16, top: 20, bottom: 20 })
+  .padding({ left: 16, right: 16, top: 24, bottom: 24 })
   .justifyContent(FlexAlign.Center)
 }
 
@@ -43,11 +27,12 @@ function DefaultEmpty(message: string) {
   Column() {
     Text(AppText.EMPTY_TITLE)
       .fontSize(16)
-      .fontWeight(FontWeight.Medium)
+      .fontWeight(FontWeight.Bold)
+      .fontColor(UiTheme.TEXT_PRIMARY)
     Text(message || AppText.EMPTY_DESC)
       .fontSize(13)
       .margin({ top: 6 })
-      .fontColor('#666666')
+      .fontColor(UiTheme.TEXT_SECONDARY)
   }
   .width('100%')
   .padding(20)
@@ -59,12 +44,16 @@ function DefaultError(message: string, onRetry?: () => void) {
   Column() {
     Text(AppText.ERROR_TITLE)
       .fontSize(16)
-      .fontWeight(FontWeight.Medium)
+      .fontWeight(FontWeight.Bold)
+      .fontColor(UiTheme.TEXT_PRIMARY)
     Text(message || AppText.ERROR_DESC)
       .fontSize(13)
       .margin({ top: 6 })
-      .fontColor('#666666')
+      .fontColor(UiTheme.TEXT_SECONDARY)
     Button(AppText.RETRY)
+      .type(ButtonType.Capsule)
+      .backgroundColor(UiTheme.BRAND_PRIMARY)
+      .fontColor('#FFFFFF')
       .margin({ top: 12 })
       .onClick(() => {
         if (onRetry) {

@@ -1,6 +1,7 @@
 import { LoadStatus } from '../LoadState'
 import { AppText } from '../AppText'
 import { StateView } from './StateView'
+import { UiTheme } from '../UiTheme'
 
 @Component
 export struct PagedListView {
@@ -20,13 +21,16 @@ export struct PagedListView {
         message: this.message,
         retryAction: this.retryAction
       }) {
-        List({ space: 8 }) {
+        List({ space: 10 }) {
           this.content()
           if (this.status === LoadStatus.Success && this.showLoadMore) {
             ListItem() {
               Button(this.isLoadingMore ? AppText.LOADING : this.loadMoreText)
                 .width('100%')
                 .enabled(!this.isLoadingMore)
+                .type(ButtonType.Capsule)
+                .backgroundColor(UiTheme.BRAND_PRIMARY)
+                .fontColor('#FFFFFF')
                 .onClick(() => {
                   if (this.loadMoreAction) {
                     this.loadMoreAction()

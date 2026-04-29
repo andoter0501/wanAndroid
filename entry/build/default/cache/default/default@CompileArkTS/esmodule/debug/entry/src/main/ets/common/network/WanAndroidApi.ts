@@ -1,5 +1,8 @@
 export class WanAndroidApi {
     static readonly BASE_URL: string = 'https://wanandroid.com';
+    static readonly BACKUP_BASE_URL: string = 'https://www.wanandroid.com';
+    static readonly IP_BASE_URL: string = 'https://39.101.178.149';
+    static readonly CANONICAL_HOST: string = 'www.wanandroid.com';
     // 首页
     static homeArticles(page: number): string {
         return `/article/list/${page}/json`;

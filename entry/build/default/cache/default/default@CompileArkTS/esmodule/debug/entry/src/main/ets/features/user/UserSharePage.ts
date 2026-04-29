@@ -13,6 +13,7 @@ interface UserSharePage_Params {
 import { ArticleCard } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/ArticleCard";
 import { FavoriteService } from "@bundle:com.wanandroid.harmony/entry/ets/common/favorite/FavoriteService";
 import { PageHeader } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PageHeader";
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 import { PagedListView } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PagedListView";
 import { UserShareViewModel } from "@bundle:com.wanandroid.harmony/entry/ets/features/user/UserShareViewModel";
 import type { UserShareArticle } from './UserShareRepository';
@@ -122,7 +123,7 @@ export class UserSharePage extends ViewPU {
             Column.create();
             Column.width('100%');
             Column.height('100%');
-            Column.backgroundColor('#F5F6F8');
+            Column.backgroundColor(UiTheme.BG_PAGE);
         }, Column);
         {
             this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -135,7 +136,7 @@ export class UserSharePage extends ViewPU {
                                 this.onBack();
                             }
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/user/UserSharePage.ets", line: 37, col: 7 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/user/UserSharePage.ets", line: 38, col: 7 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -228,7 +229,7 @@ export class UserSharePage extends ViewPU {
                                                                 await FavoriteService.shared().toggle(item.id);
                                                                 this.favoriteVersion++;
                                                             }
-                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/user/UserSharePage.ets", line: 67, col: 13 });
+                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/user/UserSharePage.ets", line: 68, col: 13 });
                                                         ViewPU.create(componentCall);
                                                         let paramsLambda = () => {
                                                             return {
@@ -279,7 +280,7 @@ export class UserSharePage extends ViewPU {
                             }, ForEach);
                             ForEach.pop();
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/user/UserSharePage.ets", line: 51, col: 7 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/user/UserSharePage.ets", line: 52, col: 7 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -336,7 +337,7 @@ export class UserSharePage extends ViewPU {
                                                                     await FavoriteService.shared().toggle(item.id);
                                                                     this.favoriteVersion++;
                                                                 }
-                                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/user/UserSharePage.ets", line: 67, col: 13 });
+                                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/user/UserSharePage.ets", line: 68, col: 13 });
                                                             ViewPU.create(componentCall);
                                                             let paramsLambda = () => {
                                                                 return {
@@ -413,7 +414,7 @@ export class UserSharePage extends ViewPU {
                         Column.width('100%');
                         Column.padding(12);
                         Column.margin({ left: 12, right: 12, bottom: 8 });
-                        Column.backgroundColor(Color.White);
+                        Column.backgroundColor(UiTheme.BG_CARD);
                         Column.borderRadius(10);
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -425,7 +426,7 @@ export class UserSharePage extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create(`用户ID：${this.vm.coinInfo.userId}`);
                         Text.fontSize(12);
-                        Text.fontColor('#666666');
+                        Text.fontColor(UiTheme.TEXT_SECONDARY);
                     }, Text);
                     Text.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {

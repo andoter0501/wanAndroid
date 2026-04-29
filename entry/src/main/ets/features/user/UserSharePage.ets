@@ -1,6 +1,7 @@
 import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { PageHeader } from '../../common/ui/components/PageHeader'
+import { UiTheme } from '../../common/ui/UiTheme'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { UserShareViewModel } from './UserShareViewModel'
 import { UserShareArticle } from './UserShareRepository'
@@ -90,7 +91,7 @@ export struct UserSharePage {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F5F6F8')
+    .backgroundColor(UiTheme.BG_PAGE)
   }
 
   @Builder
@@ -102,7 +103,7 @@ export struct UserSharePage {
           .fontWeight(FontWeight.Medium)
         Text(`用户ID：${this.vm.coinInfo.userId}`)
           .fontSize(12)
-          .fontColor('#666666')
+          .fontColor(UiTheme.TEXT_SECONDARY)
         Text(`积分：${this.vm.coinInfo.coinCount}  排名：${this.vm.coinInfo.rank}`)
           .fontSize(12)
           .fontColor('#333333')
@@ -110,7 +111,7 @@ export struct UserSharePage {
       .width('100%')
       .padding(12)
       .margin({ left: 12, right: 12, bottom: 8 })
-      .backgroundColor(Color.White)
+      .backgroundColor(UiTheme.BG_CARD)
       .borderRadius(10)
     }
   }

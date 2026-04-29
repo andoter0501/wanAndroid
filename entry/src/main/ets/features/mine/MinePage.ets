@@ -2,6 +2,7 @@ import { LoadStatus, UiState } from '../../common/ui/LoadState'
 import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
+import { UiTheme } from '../../common/ui/UiTheme'
 import { AuthViewModel } from '../auth/AuthViewModel'
 import { CollectViewModel } from '../collect/CollectViewModel'
 import { CollectItem } from '../collect/CollectRepository'
@@ -84,7 +85,7 @@ export struct MinePage {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F5F6F8')
+    .backgroundColor(UiTheme.BG_PAGE)
   }
 
   @Builder
@@ -106,7 +107,7 @@ export struct MinePage {
       Row({ space: 8 }) {
         Text(this.authVm.registerMode ? '注册模式' : '登录模式')
           .fontSize(13)
-          .fontColor('#666666')
+          .fontColor(UiTheme.TEXT_SECONDARY)
         Button('切换')
           .type(ButtonType.Capsule)
           .onClick(() => {
@@ -123,44 +124,67 @@ export struct MinePage {
       if (this.authVm.authState.status === LoadStatus.Error) {
         Text(this.authVm.authState.message)
           .fontSize(12)
-          .fontColor('#C0392B')
+          .fontColor(UiTheme.TEXT_DANGER)
       }
     }
     .padding(16)
     .margin({ left: 12, right: 12, top: 8 })
-    .backgroundColor(Color.White)
+    .backgroundColor(UiTheme.BG_CARD)
     .borderRadius(10)
   }
 
   @Builder
   private userPanel() {
     if (this.authVm.authState.data) {
-      Column({ space: 8 }) {
-        Text(this.authVm.authState.data.nickname)
-          .fontSize(20)
-          .fontWeight(FontWeight.Bold)
-        Text(`用户名：${this.authVm.authState.data.username}`)
-          .fontSize(13)
-          .fontColor('#666666')
-        if (this.authVm.userInfoState.status === LoadStatus.Success && this.authVm.userInfoState.data) {
-          Text(`积分：${this.authVm.userInfoState.data.coinInfo.coinCount}  等级：${this.authVm.userInfoState.data.coinInfo.level}  排名：${this.authVm.userInfoState.data.coinInfo.rank}`)
+      Column({ space: 10 }) {
+        Column({ space: 6 }) {
+          Text(this.authVm.authState.data.nickname)
+            .fontSize(28)
+            .fontWeight(FontWeight.Bold)
+            .fontColor('#FFFFFF')
+          Text(`Lv.${this.authVm.userInfoState.data ? this.authVm.userInfoState.data.coinInfo.level : 1} · 排名 #${this.authVm.userInfoState.data ? this.authVm.userInfoState.data.coinInfo.rank : '-'}`)
             .fontSize(13)
-            .fontColor('#333333')
+            .fontColor('#FFFFFFCC')
         }
-        Text(`未读消息：${this.messageVm.unreadCount}`)
-          .fontSize(13)
-          .fontColor('#333333')
+        .width('100%')
+        .padding(18)
+        .backgroundColor(UiTheme.BRAND_PRIMARY)
+        .borderRadius(UiTheme.RADIUS_MD)
+
+        Row() {
+          this.statCell(this.authVm.userInfoState.data ? this.authVm.userInfoState.data.coinInfo.coinCount.toString() : '-', '积分')
+          this.statCell(this.authVm.userInfoState.data ? this.authVm.userInfoState.data.coinInfo.rank : '-', '排名')
+          this.statCell(this.messageVm.unreadCount.toString(), '消息')
+        }
+        .width('100%')
+        .padding(12)
+        .backgroundColor(UiTheme.BG_CARD)
+        .borderRadius(UiTheme.RADIUS_MD)
 
         Button('退出登录')
           .type(ButtonType.Capsule)
+          .backgroundColor('#FFFFFF')
+          .fontColor(UiTheme.TEXT_DANGER)
           .onClick(() => this.logout())
       }
       .width('100%')
-      .padding(16)
+      .padding(12)
       .margin({ left: 12, right: 12, top: 8, bottom: 8 })
-      .backgroundColor(Color.White)
-      .borderRadius(10)
     }
+  }
+
+  @Builder
+  private statCell(value: string | number, label: string) {
+    Column({ space: 2 }) {
+      Text(`${value}`)
+        .fontSize(22)
+        .fontWeight(FontWeight.Bold)
+        .fontColor(UiTheme.TEXT_PRIMARY)
+      Text(label)
+        .fontSize(12)
+        .fontColor(UiTheme.TEXT_SECONDARY)
+    }
+    .layoutWeight(1)
   }
 
   @Builder
@@ -264,11 +288,11 @@ export struct MinePage {
               .fontWeight(FontWeight.Medium)
             Text(item.message)
               .fontSize(13)
-              .fontColor('#666666')
+              .fontColor(UiTheme.TEXT_SECONDARY)
               .margin({ top: 6 })
             Text(item.niceDate)
               .fontSize(12)
-              .fontColor('#999999')
+              .fontColor(UiTheme.TEXT_TERTIARY)
               .margin({ top: 8 })
             if (item.fullLink && this.onOpenLink) {
               Button('查看链接')
@@ -283,7 +307,7 @@ export struct MinePage {
           }
           .width('100%')
           .padding(12)
-          .backgroundColor(Color.White)
+          .backgroundColor(UiTheme.BG_CARD)
           .borderRadius(8)
         }
         }, (item: MessageItem) => item.id.toString())
@@ -294,6 +318,8 @@ export struct MinePage {
   private tabButton(label: string, tab: MineTab) {
     Button(label)
       .type(this.tab === tab ? ButtonType.Capsule : ButtonType.Normal)
+      .backgroundColor(this.tab === tab ? UiTheme.BRAND_PRIMARY : UiTheme.BG_CARD)
+      .fontColor(this.tab === tab ? '#FFFFFF' : UiTheme.TEXT_SECONDARY)
       .onClick(() => {
         this.tab = tab
       })

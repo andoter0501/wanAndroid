@@ -22,6 +22,7 @@ import { WendaPage } from "@bundle:com.wanandroid.harmony/entry/ets/features/wen
 import { WebDetailPage } from "@bundle:com.wanandroid.harmony/entry/ets/features/web/WebDetailPage";
 import { UrlSecurityGuard } from "@bundle:com.wanandroid.harmony/entry/ets/common/web/UrlSecurityGuard";
 import { SessionEventBus, SessionEventType } from "@bundle:com.wanandroid.harmony/entry/ets/common/session/SessionEventBus";
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 enum MainTab {
     HOME = 0,
     DISCOVER = 1,
@@ -193,7 +194,7 @@ export class AppShellPage extends ViewPU {
                                     onOpenLink: (url: string) => {
                                         this.openLink(url);
                                     }
-                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 51, col: 9 });
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 52, col: 9 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
@@ -232,7 +233,7 @@ export class AppShellPage extends ViewPU {
                                     onOpenLink: (url: string) => {
                                         this.openLink(url);
                                     }
-                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 62, col: 9 });
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 63, col: 9 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
@@ -272,7 +273,7 @@ export class AppShellPage extends ViewPU {
                                             this.showWeb = false;
                                         });
                                     }
-                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 75, col: 9 });
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 76, col: 9 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
@@ -313,7 +314,7 @@ export class AppShellPage extends ViewPU {
                                                 onOpenLink: (url: string) => {
                                                     this.openLink(url);
                                                 }
-                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 85, col: 11 });
+                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 86, col: 11 });
                                             ViewPU.create(componentCall);
                                             let paramsLambda = () => {
                                                 return {
@@ -341,7 +342,7 @@ export class AppShellPage extends ViewPU {
                                 {
                                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                                         if (isInitialRender) {
-                                            let componentCall = new DiscoverPage(this, {}, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 96, col: 11 });
+                                            let componentCall = new DiscoverPage(this, {}, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 97, col: 11 });
                                             ViewPU.create(componentCall);
                                             let paramsLambda = () => {
                                                 return {};
@@ -367,7 +368,7 @@ export class AppShellPage extends ViewPU {
                                                 onOpenUserShare: (userId: number, username: string) => {
                                                     this.openUserShare(userId, username);
                                                 }
-                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 98, col: 11 });
+                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 99, col: 11 });
                                             ViewPU.create(componentCall);
                                             let paramsLambda = () => {
                                                 return {
@@ -400,7 +401,7 @@ export class AppShellPage extends ViewPU {
                                                 onOpenUserShare: (userId: number, username: string) => {
                                                     this.openUserShare(userId, username);
                                                 }
-                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 107, col: 11 });
+                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 108, col: 11 });
                                             ViewPU.create(componentCall);
                                             let paramsLambda = () => {
                                                 return {
@@ -430,7 +431,7 @@ export class AppShellPage extends ViewPU {
                                                 onOpenLink: (url: string) => {
                                                     this.openLink(url);
                                                 }
-                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 116, col: 11 });
+                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/app/AppShellPage.ets", line: 117, col: 11 });
                                             ViewPU.create(componentCall);
                                             let paramsLambda = () => {
                                                 return {
@@ -462,9 +463,9 @@ export class AppShellPage extends ViewPU {
                         Text.create(this.warning);
                         Text.width('100%');
                         Text.fontSize(12);
-                        Text.fontColor('#C97A00');
+                        Text.fontColor(UiTheme.TEXT_WARNING);
                         Text.padding({ left: 12, right: 12, top: 6, bottom: 6 });
-                        Text.backgroundColor('#FFF6E5');
+                        Text.backgroundColor(UiTheme.BG_WARNING);
                     }, Text);
                     Text.pop();
                 });
@@ -484,7 +485,7 @@ export class AppShellPage extends ViewPU {
                         Row.width('100%');
                         Row.height(56);
                         Row.justifyContent(FlexAlign.SpaceAround);
-                        Row.backgroundColor(Color.White);
+                        Row.backgroundColor(UiTheme.BG_CARD);
                     }, Row);
                     this.tabItem.bind(this)('首页', MainTab.HOME);
                     this.tabItem.bind(this)('发现', MainTab.DISCOVER);
@@ -532,14 +533,42 @@ export class AppShellPage extends ViewPU {
     }
     private tabItem(label: string, tab: MainTab, parent = null) {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Text.create(label);
-            Text.fontSize(13);
-            Text.fontColor(this.currentTab === tab ? '#0A59F7' : '#666666');
-            Text.onClick(() => {
+            Column.create({ space: 2 });
+            Column.padding({ top: 4, bottom: 4, left: 6, right: 6 });
+            Column.borderRadius(10);
+            Column.backgroundColor(this.currentTab === tab ? UiTheme.BRAND_SOFT : UiTheme.BG_CARD);
+            Column.onClick(() => {
                 this.switchTab(tab);
             });
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create(this.tabIcon(tab));
+            Text.fontSize(18);
+            Text.fontColor(this.currentTab === tab ? UiTheme.BRAND_PRIMARY : UiTheme.TEXT_SECONDARY);
         }, Text);
         Text.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create(label);
+            Text.fontSize(11);
+            Text.fontColor(this.currentTab === tab ? UiTheme.BRAND_PRIMARY : UiTheme.TEXT_SECONDARY);
+        }, Text);
+        Text.pop();
+        Column.pop();
+    }
+    private tabIcon(tab: MainTab): string {
+        if (tab === MainTab.HOME) {
+            return '⌂';
+        }
+        if (tab === MainTab.DISCOVER) {
+            return '▦';
+        }
+        if (tab === MainTab.PLAZA) {
+            return '▤';
+        }
+        if (tab === MainTab.WENDA) {
+            return '◍';
+        }
+        return '◉';
     }
     rerender() {
         this.updateDirtyElements();

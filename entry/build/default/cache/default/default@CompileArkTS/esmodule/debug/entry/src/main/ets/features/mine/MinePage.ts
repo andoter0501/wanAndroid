@@ -12,6 +12,7 @@ import { LoadStatus, UiState } from "@bundle:com.wanandroid.harmony/entry/ets/co
 import { ArticleCard } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/ArticleCard";
 import { PagedListView } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PagedListView";
 import { PageHeader } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PageHeader";
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 import { AuthViewModel } from "@bundle:com.wanandroid.harmony/entry/ets/features/auth/AuthViewModel";
 import { CollectViewModel } from "@bundle:com.wanandroid.harmony/entry/ets/features/collect/CollectViewModel";
 import type { CollectItem } from '../collect/CollectRepository';
@@ -146,12 +147,12 @@ export class MinePage extends ViewPU {
             Column.create();
             Column.width('100%');
             Column.height('100%');
-            Column.backgroundColor('#F5F6F8');
+            Column.backgroundColor(UiTheme.BG_PAGE);
         }, Column);
         {
             this.observeComponentCreation2((elmtId, isInitialRender) => {
                 if (isInitialRender) {
-                    let componentCall = new PageHeader(this, { title: '我的' }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/mine/MinePage.ets", line: 76, col: 7 });
+                    let componentCall = new PageHeader(this, { title: '我的' }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/mine/MinePage.ets", line: 77, col: 7 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -189,7 +190,7 @@ export class MinePage extends ViewPU {
             Column.create({ space: 10 });
             Column.padding(16);
             Column.margin({ left: 12, right: 12, top: 8 });
-            Column.backgroundColor(Color.White);
+            Column.backgroundColor(UiTheme.BG_CARD);
             Column.borderRadius(10);
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -214,7 +215,7 @@ export class MinePage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(this.authVm.registerMode ? '注册模式' : '登录模式');
             Text.fontSize(13);
-            Text.fontColor('#666666');
+            Text.fontColor(UiTheme.TEXT_SECONDARY);
         }, Text);
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -240,7 +241,7 @@ export class MinePage extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create(this.authVm.authState.message);
                         Text.fontSize(12);
-                        Text.fontColor('#C0392B');
+                        Text.fontColor(UiTheme.TEXT_DANGER);
                     }, Text);
                     Text.pop();
                 });
@@ -259,52 +260,48 @@ export class MinePage extends ViewPU {
             if (this.authVm.authState.data) {
                 this.ifElseBranchUpdateFunction(0, () => {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        Column.create({ space: 8 });
+                        Column.create({ space: 10 });
                         Column.width('100%');
-                        Column.padding(16);
+                        Column.padding(12);
                         Column.margin({ left: 12, right: 12, top: 8, bottom: 8 });
-                        Column.backgroundColor(Color.White);
-                        Column.borderRadius(10);
+                    }, Column);
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        Column.create({ space: 6 });
+                        Column.width('100%');
+                        Column.padding(18);
+                        Column.backgroundColor(UiTheme.BRAND_PRIMARY);
+                        Column.borderRadius(UiTheme.RADIUS_MD);
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create(this.authVm.authState.data.nickname);
-                        Text.fontSize(20);
+                        Text.fontSize(28);
                         Text.fontWeight(FontWeight.Bold);
+                        Text.fontColor('#FFFFFF');
                     }, Text);
                     Text.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        Text.create(`用户名：${this.authVm.authState.data.username}`);
+                        Text.create(`Lv.${this.authVm.userInfoState.data ? this.authVm.userInfoState.data.coinInfo.level : 1} · 排名 #${this.authVm.userInfoState.data ? this.authVm.userInfoState.data.coinInfo.rank : '-'}`);
                         Text.fontSize(13);
-                        Text.fontColor('#666666');
+                        Text.fontColor('#FFFFFFCC');
                     }, Text);
                     Text.pop();
+                    Column.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        If.create();
-                        if (this.authVm.userInfoState.status === LoadStatus.Success && this.authVm.userInfoState.data) {
-                            this.ifElseBranchUpdateFunction(0, () => {
-                                this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                    Text.create(`积分：${this.authVm.userInfoState.data.coinInfo.coinCount}  等级：${this.authVm.userInfoState.data.coinInfo.level}  排名：${this.authVm.userInfoState.data.coinInfo.rank}`);
-                                    Text.fontSize(13);
-                                    Text.fontColor('#333333');
-                                }, Text);
-                                Text.pop();
-                            });
-                        }
-                        else {
-                            this.ifElseBranchUpdateFunction(1, () => {
-                            });
-                        }
-                    }, If);
-                    If.pop();
-                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        Text.create(`未读消息：${this.messageVm.unreadCount}`);
-                        Text.fontSize(13);
-                        Text.fontColor('#333333');
-                    }, Text);
-                    Text.pop();
+                        Row.create();
+                        Row.width('100%');
+                        Row.padding(12);
+                        Row.backgroundColor(UiTheme.BG_CARD);
+                        Row.borderRadius(UiTheme.RADIUS_MD);
+                    }, Row);
+                    this.statCell.bind(this)(this.authVm.userInfoState.data ? this.authVm.userInfoState.data.coinInfo.coinCount.toString() : '-', '积分');
+                    this.statCell.bind(this)(this.authVm.userInfoState.data ? this.authVm.userInfoState.data.coinInfo.rank : '-', '排名');
+                    this.statCell.bind(this)(this.messageVm.unreadCount.toString(), '消息');
+                    Row.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Button.createWithLabel('退出登录');
                         Button.type(ButtonType.Capsule);
+                        Button.backgroundColor('#FFFFFF');
+                        Button.fontColor(UiTheme.TEXT_DANGER);
                         Button.onClick(() => this.logout());
                     }, Button);
                     Button.pop();
@@ -317,6 +314,26 @@ export class MinePage extends ViewPU {
             }
         }, If);
         If.pop();
+    }
+    private statCell(value: string | number, label: string, parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create({ space: 2 });
+            Column.layoutWeight(1);
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create(`${value}`);
+            Text.fontSize(22);
+            Text.fontWeight(FontWeight.Bold);
+            Text.fontColor(UiTheme.TEXT_PRIMARY);
+        }, Text);
+        Text.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create(label);
+            Text.fontSize(12);
+            Text.fontColor(UiTheme.TEXT_SECONDARY);
+        }, Text);
+        Text.pop();
+        Column.pop();
     }
     private contentPanel(parent = null) {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -407,7 +424,7 @@ export class MinePage extends ViewPU {
                                                                     this.onOpenLink(item.link);
                                                                 }
                                                             }
-                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/mine/MinePage.ets", line: 207, col: 13 });
+                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/mine/MinePage.ets", line: 231, col: 13 });
                                                         ViewPU.create(componentCall);
                                                         let paramsLambda = () => {
                                                             return {
@@ -459,7 +476,7 @@ export class MinePage extends ViewPU {
                             }, ForEach);
                             ForEach.pop();
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/mine/MinePage.ets", line: 193, col: 5 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/mine/MinePage.ets", line: 217, col: 5 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -509,7 +526,7 @@ export class MinePage extends ViewPU {
                                                                         this.onOpenLink(item.link);
                                                                     }
                                                                 }
-                                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/mine/MinePage.ets", line: 207, col: 13 });
+                                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/mine/MinePage.ets", line: 231, col: 13 });
                                                             ViewPU.create(componentCall);
                                                             let paramsLambda = () => {
                                                                 return {
@@ -629,7 +646,7 @@ export class MinePage extends ViewPU {
                                                 Column.create();
                                                 Column.width('100%');
                                                 Column.padding(12);
-                                                Column.backgroundColor(Color.White);
+                                                Column.backgroundColor(UiTheme.BG_CARD);
                                                 Column.borderRadius(8);
                                             }, Column);
                                             this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -641,14 +658,14 @@ export class MinePage extends ViewPU {
                                             this.observeComponentCreation2((elmtId, isInitialRender) => {
                                                 Text.create(item.message);
                                                 Text.fontSize(13);
-                                                Text.fontColor('#666666');
+                                                Text.fontColor(UiTheme.TEXT_SECONDARY);
                                                 Text.margin({ top: 6 });
                                             }, Text);
                                             Text.pop();
                                             this.observeComponentCreation2((elmtId, isInitialRender) => {
                                                 Text.create(item.niceDate);
                                                 Text.fontSize(12);
-                                                Text.fontColor('#999999');
+                                                Text.fontColor(UiTheme.TEXT_TERTIARY);
                                                 Text.margin({ top: 8 });
                                             }, Text);
                                             Text.pop();
@@ -686,7 +703,7 @@ export class MinePage extends ViewPU {
                             }, ForEach);
                             ForEach.pop();
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/mine/MinePage.ets", line: 241, col: 5 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/mine/MinePage.ets", line: 265, col: 5 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -730,7 +747,7 @@ export class MinePage extends ViewPU {
                                                     Column.create();
                                                     Column.width('100%');
                                                     Column.padding(12);
-                                                    Column.backgroundColor(Color.White);
+                                                    Column.backgroundColor(UiTheme.BG_CARD);
                                                     Column.borderRadius(8);
                                                 }, Column);
                                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -742,14 +759,14 @@ export class MinePage extends ViewPU {
                                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                                     Text.create(item.message);
                                                     Text.fontSize(13);
-                                                    Text.fontColor('#666666');
+                                                    Text.fontColor(UiTheme.TEXT_SECONDARY);
                                                     Text.margin({ top: 6 });
                                                 }, Text);
                                                 Text.pop();
                                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                                     Text.create(item.niceDate);
                                                     Text.fontSize(12);
-                                                    Text.fontColor('#999999');
+                                                    Text.fontColor(UiTheme.TEXT_TERTIARY);
                                                     Text.margin({ top: 8 });
                                                 }, Text);
                                                 Text.pop();
@@ -806,6 +823,8 @@ export class MinePage extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Button.createWithLabel(label);
             Button.type(this.tab === tab ? ButtonType.Capsule : ButtonType.Normal);
+            Button.backgroundColor(this.tab === tab ? UiTheme.BRAND_PRIMARY : UiTheme.BG_CARD);
+            Button.fontColor(this.tab === tab ? '#FFFFFF' : UiTheme.TEXT_SECONDARY);
             Button.onClick(() => {
                 this.tab = tab;
             });

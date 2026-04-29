@@ -8,6 +8,7 @@ interface PageHeader_Params {
     onBack?: () => void;
     onRightClick?: () => void;
 }
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 export class PageHeader extends ViewPU {
     constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
         super(parent, __localStorage, elmtId, extraInfo);
@@ -81,10 +82,14 @@ export class PageHeader extends ViewPU {
     private onRightClick?: () => void;
     initialRender() {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Row.create({ space: 8 });
+            Column.create();
+            Column.width('100%');
+            Column.backgroundColor(UiTheme.BRAND_PRIMARY);
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Row.create({ space: 10 });
             Row.width('100%');
-            Row.padding({ left: 16, right: 16, top: 14, bottom: 8 });
-            Row.backgroundColor(Color.White);
+            Row.padding({ left: 16, right: 16, top: 12, bottom: 14 });
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             If.create();
@@ -93,6 +98,9 @@ export class PageHeader extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Button.createWithLabel('返回');
                         Button.type(ButtonType.Capsule);
+                        Button.fontSize(12);
+                        Button.backgroundColor('#FFFFFF22');
+                        Button.fontColor('#FFFFFF');
                         Button.onClick(() => {
                             if (this.onBack) {
                                 this.onBack();
@@ -110,8 +118,9 @@ export class PageHeader extends ViewPU {
         If.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(this.title);
-            Text.fontSize(22);
+            Text.fontSize(23);
             Text.fontWeight(FontWeight.Bold);
+            Text.fontColor('#FFFFFF');
             Text.maxLines(1);
             Text.textOverflow({ overflow: TextOverflow.Ellipsis });
         }, Text);
@@ -127,6 +136,9 @@ export class PageHeader extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Button.createWithLabel(this.rightText);
                         Button.type(ButtonType.Capsule);
+                        Button.fontSize(12);
+                        Button.backgroundColor('#FFFFFF22');
+                        Button.fontColor('#FFFFFF');
                         Button.onClick(() => {
                             if (this.onRightClick) {
                                 this.onRightClick();
@@ -143,6 +155,7 @@ export class PageHeader extends ViewPU {
         }, If);
         If.pop();
         Row.pop();
+        Column.pop();
     }
     rerender() {
         this.updateDirtyElements();

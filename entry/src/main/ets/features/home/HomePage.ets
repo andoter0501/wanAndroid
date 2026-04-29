@@ -2,6 +2,7 @@ import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
+import { UiTheme } from '../../common/ui/UiTheme'
 import { HomeViewModel } from './HomeViewModel'
 import { HomeArticleItem } from './HomeRepository'
 
@@ -59,23 +60,61 @@ export struct HomePage {
         isLoadingMore: this.vm.isLoadingMore,
         loadMoreAction: () => this.onLoadMore()
       }) {
-        if (this.vm.banners.length > 0) {
-          ListItem() {
-            Text(`Banner：${this.vm.banners.length} 条`)
-              .fontSize(14)
-              .padding(12)
-              .backgroundColor('#EAF2FF')
-              .borderRadius(8)
+        ListItem() {
+          Column({ space: 10 }) {
+            Column() {
+              Text('Flutter')
+                .fontSize(16)
+                .fontColor('#FFFFFFCC')
+              Text(this.vm.banners.length > 0 ? this.vm.banners[0].title : 'Flutter完整实例开源')
+                .fontSize(26)
+                .fontWeight(FontWeight.Bold)
+                .fontColor('#FFFFFF')
+                .maxLines(2)
+                .textOverflow({ overflow: TextOverflow.Ellipsis })
+            }
+            .width('100%')
+            .padding(16)
+            .height(180)
+            .justifyContent(FlexAlign.Center)
+            .backgroundColor('#6E63D6')
+            .borderRadius(UiTheme.RADIUS_MD)
+
+            Row() {
+              Text('  搜索关键字...')
+                .fontColor(UiTheme.TEXT_TERTIARY)
+                .fontSize(14)
+            }
+            .width('100%')
+            .height(42)
+            .backgroundColor(UiTheme.BG_CARD)
+            .borderRadius(22)
+            .onClick(() => {
+              if (this.onOpenSearch) {
+                this.onOpenSearch()
+              }
+            })
           }
         }
 
         if (this.vm.topArticles.length > 0) {
           ListItem() {
-            Text(`置顶：${this.vm.topArticles.length} 条`)
-              .fontSize(14)
-              .padding(12)
-              .backgroundColor('#F3F7E8')
-              .borderRadius(8)
+            Column({ space: 10 }) {
+              Text('置顶文章')
+                .fontSize(18)
+                .fontWeight(FontWeight.Bold)
+                .fontColor(UiTheme.TEXT_PRIMARY)
+              ForEach(this.vm.topArticles.slice(0, 3), (top: HomeArticleItem) => {
+                Text(top.title)
+                  .fontSize(15)
+                  .fontColor(UiTheme.TEXT_SECONDARY)
+                  .maxLines(1)
+                  .textOverflow({ overflow: TextOverflow.Ellipsis })
+              }, (top: HomeArticleItem) => top.id.toString())
+            }
+            .padding(14)
+            .backgroundColor(UiTheme.BG_CARD)
+            .borderRadius(UiTheme.RADIUS_MD)
           }
         }
 
@@ -84,7 +123,7 @@ export struct HomePage {
             Text('鸿蒙专栏：links / open_sources / tools')
               .fontSize(14)
               .padding(12)
-              .backgroundColor('#FFF6E5')
+              .backgroundColor(UiTheme.BG_WARNING)
               .borderRadius(8)
           }
         }
@@ -117,6 +156,6 @@ export struct HomePage {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F5F6F8')
+    .backgroundColor(UiTheme.BG_PAGE)
   }
 }

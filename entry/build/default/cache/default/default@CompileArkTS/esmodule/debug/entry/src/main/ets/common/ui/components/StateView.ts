@@ -9,11 +9,12 @@ interface StateView_Params {
 }
 import { LoadStatus } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/LoadState";
 import { AppText } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/AppText";
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 function DefaultLoading(parent = null) {
     (parent ? parent : this).observeComponentCreation2((elmtId, isInitialRender) => {
         Column.create();
         Column.width('100%');
-        Column.padding({ left: 16, right: 16, top: 20, bottom: 20 });
+        Column.padding({ left: 16, right: 16, top: 24, bottom: 24 });
         Column.justifyContent(FlexAlign.Center);
     }, Column);
     (parent ? parent : this).observeComponentCreation2((elmtId, isInitialRender) => {
@@ -23,32 +24,24 @@ function DefaultLoading(parent = null) {
     (parent ? parent : this).observeComponentCreation2((elmtId, isInitialRender) => {
         Row.create();
         Row.width('100%');
-        Row.height(18);
-        Row.backgroundColor('#ECEFF3');
+        Row.height(16);
+        Row.backgroundColor(UiTheme.BG_SUBTLE);
         Row.borderRadius(6);
     }, Row);
     Row.pop();
     (parent ? parent : this).observeComponentCreation2((elmtId, isInitialRender) => {
         Row.create();
-        Row.width('86%');
-        Row.height(18);
-        Row.backgroundColor('#ECEFF3');
+        Row.width('84%');
+        Row.height(16);
+        Row.backgroundColor(UiTheme.BG_SUBTLE);
         Row.borderRadius(6);
     }, Row);
     Row.pop();
     (parent ? parent : this).observeComponentCreation2((elmtId, isInitialRender) => {
         Row.create();
-        Row.width('72%');
-        Row.height(18);
-        Row.backgroundColor('#ECEFF3');
-        Row.borderRadius(6);
-    }, Row);
-    Row.pop();
-    (parent ? parent : this).observeComponentCreation2((elmtId, isInitialRender) => {
-        Row.create();
-        Row.width('64%');
-        Row.height(18);
-        Row.backgroundColor('#ECEFF3');
+        Row.width('70%');
+        Row.height(16);
+        Row.backgroundColor(UiTheme.BG_SUBTLE);
         Row.borderRadius(6);
     }, Row);
     Row.pop();
@@ -56,7 +49,7 @@ function DefaultLoading(parent = null) {
     (parent ? parent : this).observeComponentCreation2((elmtId, isInitialRender) => {
         Text.create(AppText.LOADING);
         Text.fontSize(13);
-        Text.fontColor('#666666');
+        Text.fontColor(UiTheme.TEXT_SECONDARY);
         Text.margin({ top: 10 });
     }, Text);
     Text.pop();
@@ -73,14 +66,15 @@ function DefaultEmpty(message: string, parent = null) {
     (parent ? parent : this).observeComponentCreation2((elmtId, isInitialRender, message = __message__) => {
         Text.create(AppText.EMPTY_TITLE);
         Text.fontSize(16);
-        Text.fontWeight(FontWeight.Medium);
+        Text.fontWeight(FontWeight.Bold);
+        Text.fontColor(UiTheme.TEXT_PRIMARY);
     }, Text);
     Text.pop();
     (parent ? parent : this).observeComponentCreation2((elmtId, isInitialRender, message = __message__) => {
         Text.create(message || AppText.EMPTY_DESC);
         Text.fontSize(13);
         Text.margin({ top: 6 });
-        Text.fontColor('#666666');
+        Text.fontColor(UiTheme.TEXT_SECONDARY);
     }, Text);
     Text.pop();
     Column.pop();
@@ -95,18 +89,22 @@ function DefaultError(message: string, onRetry?: () => void, parent = null) {
     (parent ? parent : this).observeComponentCreation2((elmtId, isInitialRender) => {
         Text.create(AppText.ERROR_TITLE);
         Text.fontSize(16);
-        Text.fontWeight(FontWeight.Medium);
+        Text.fontWeight(FontWeight.Bold);
+        Text.fontColor(UiTheme.TEXT_PRIMARY);
     }, Text);
     Text.pop();
     (parent ? parent : this).observeComponentCreation2((elmtId, isInitialRender) => {
         Text.create(message || AppText.ERROR_DESC);
         Text.fontSize(13);
         Text.margin({ top: 6 });
-        Text.fontColor('#666666');
+        Text.fontColor(UiTheme.TEXT_SECONDARY);
     }, Text);
     Text.pop();
     (parent ? parent : this).observeComponentCreation2((elmtId, isInitialRender) => {
         Button.createWithLabel(AppText.RETRY);
+        Button.type(ButtonType.Capsule);
+        Button.backgroundColor(UiTheme.BRAND_PRIMARY);
+        Button.fontColor('#FFFFFF');
         Button.margin({ top: 12 });
         Button.onClick(() => {
             if (onRetry) {

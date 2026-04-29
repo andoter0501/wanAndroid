@@ -14,6 +14,7 @@ interface PagedListView_Params {
 import { LoadStatus } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/LoadState";
 import { AppText } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/AppText";
 import { StateView } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/StateView";
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 export class PagedListView extends ViewPU {
     constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
         super(parent, __localStorage, elmtId, extraInfo);
@@ -132,7 +133,7 @@ export class PagedListView extends ViewPU {
                         retryAction: this.retryAction,
                         content: () => {
                             this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                List.create({ space: 8 });
+                                List.create({ space: 10 });
                                 List.padding({ left: 12, right: 12, bottom: 12 });
                             }, List);
                             this.content.bind(this)();
@@ -158,6 +159,9 @@ export class PagedListView extends ViewPU {
                                                     Button.createWithLabel(this.isLoadingMore ? AppText.LOADING : this.loadMoreText);
                                                     Button.width('100%');
                                                     Button.enabled(!this.isLoadingMore);
+                                                    Button.type(ButtonType.Capsule);
+                                                    Button.backgroundColor(UiTheme.BRAND_PRIMARY);
+                                                    Button.fontColor('#FFFFFF');
                                                     Button.onClick(() => {
                                                         if (this.loadMoreAction) {
                                                             this.loadMoreAction();
@@ -180,7 +184,7 @@ export class PagedListView extends ViewPU {
                             If.pop();
                             List.pop();
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/common/ui/components/PagedListView.ets", line: 18, col: 7 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/common/ui/components/PagedListView.ets", line: 19, col: 7 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -189,7 +193,7 @@ export class PagedListView extends ViewPU {
                             retryAction: this.retryAction,
                             content: () => {
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                    List.create({ space: 8 });
+                                    List.create({ space: 10 });
                                     List.padding({ left: 12, right: 12, bottom: 12 });
                                 }, List);
                                 this.content.bind(this)();
@@ -215,6 +219,9 @@ export class PagedListView extends ViewPU {
                                                         Button.createWithLabel(this.isLoadingMore ? AppText.LOADING : this.loadMoreText);
                                                         Button.width('100%');
                                                         Button.enabled(!this.isLoadingMore);
+                                                        Button.type(ButtonType.Capsule);
+                                                        Button.backgroundColor(UiTheme.BRAND_PRIMARY);
+                                                        Button.fontColor('#FFFFFF');
                                                         Button.onClick(() => {
                                                             if (this.loadMoreAction) {
                                                                 this.loadMoreAction();

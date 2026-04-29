@@ -30,24 +30,25 @@ export class HomeViewModel {
   async init(): Promise<void> {
     this.state = UiState.loading<HomeArticleItem[]>()
     try {
-      const results = await Promise.all([
+      const pageData = await this.repository.loadArticlePage(0)
+
+      // 辅助数据失败不阻塞首页主列表渲染
+      const sideResults = await Promise.allSettled([
         this.repository.loadBanners(),
         this.repository.loadTopArticles(),
         this.repository.loadPopularWenda(),
         this.repository.loadPopularColumn(),
         this.repository.loadPopularRoute(),
-        this.repository.loadHarmonyIndex(),
-        this.repository.loadArticlePage(0)
+        this.repository.loadHarmonyIndex()
       ])
 
-      this.banners = results[0]
-      this.topArticles = results[1]
-      this.popularWenda = results[2]
-      this.popularColumn = results[3]
-      this.popularRoute = results[4]
-      this.harmony = results[5]
+      this.banners = sideResults[0].status === 'fulfilled' ? sideResults[0].value : []
+      this.topArticles = sideResults[1].status === 'fulfilled' ? sideResults[1].value : []
+      this.popularWenda = sideResults[2].status === 'fulfilled' ? sideResults[2].value : []
+      this.popularColumn = sideResults[3].status === 'fulfilled' ? sideResults[3].value : []
+      this.popularRoute = sideResults[4].status === 'fulfilled' ? sideResults[4].value : []
+      this.harmony = sideResults[5].status === 'fulfilled' ? sideResults[5].value : null
 
-      const pageData = results[6]
       const articles = pageData.datas || []
       this.page = 0
       this.hasMore = pageData.curPage < pageData.pageCount

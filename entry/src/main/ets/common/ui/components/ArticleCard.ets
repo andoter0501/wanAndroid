@@ -1,3 +1,5 @@
+import { UiTheme } from '../UiTheme'
+
 export interface ArticleCardData {
   id: number
   title: string
@@ -17,42 +19,46 @@ export struct ArticleCard {
   build() {
     Column() {
       Text(this.article.title)
-        .fontSize(16)
-        .fontWeight(FontWeight.Medium)
+        .fontSize(17)
+        .fontWeight(FontWeight.Bold)
+        .fontColor(UiTheme.TEXT_PRIMARY)
         .maxLines(2)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
 
       Row() {
         Text(this.article.author || this.article.shareUser || '匿名')
           .fontSize(12)
-          .fontColor('#666666')
+          .fontColor(UiTheme.TEXT_SECONDARY)
         Blank()
         Text(this.article.niceDate || '')
           .fontSize(12)
-          .fontColor('#999999')
+          .fontColor(UiTheme.TEXT_TERTIARY)
       }
       .width('100%')
-      .margin({ top: 10 })
+      .margin({ top: UiTheme.SPACE_SM })
 
       if (this.showCollectAction) {
         Row() {
           Blank()
           Button(this.collected ? '取消收藏' : '收藏')
             .type(ButtonType.Capsule)
-              .onClick(() => {
+            .fontSize(12)
+            .backgroundColor(this.collected ? '#EAF7F4' : UiTheme.BRAND_SOFT)
+            .fontColor(this.collected ? UiTheme.BRAND_ACCENT : UiTheme.BRAND_PRIMARY)
+            .onClick(() => {
               if (this.toggleCollectAction) {
                 this.toggleCollectAction()
               }
             })
         }
         .width('100%')
-        .margin({ top: 10 })
+        .margin({ top: UiTheme.SPACE_SM })
       }
     }
     .width('100%')
-    .padding(14)
-    .backgroundColor(Color.White)
-    .borderRadius(10)
+    .padding(UiTheme.SPACE_MD)
+    .backgroundColor(UiTheme.BG_CARD)
+    .borderRadius(UiTheme.RADIUS_MD)
     .onClick(() => {
       if (this.clickAction) {
         this.clickAction()

@@ -8,6 +8,7 @@ interface ArticleCard_Params {
     clickAction?: () => void;
     toggleCollectAction?: () => void;
 }
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 export interface ArticleCardData {
     id: number;
     title: string;
@@ -87,9 +88,9 @@ export class ArticleCard extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Column.create();
             Column.width('100%');
-            Column.padding(14);
-            Column.backgroundColor(Color.White);
-            Column.borderRadius(10);
+            Column.padding(UiTheme.SPACE_MD);
+            Column.backgroundColor(UiTheme.BG_CARD);
+            Column.borderRadius(UiTheme.RADIUS_MD);
             Column.onClick(() => {
                 if (this.clickAction) {
                     this.clickAction();
@@ -98,8 +99,9 @@ export class ArticleCard extends ViewPU {
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(this.article.title);
-            Text.fontSize(16);
-            Text.fontWeight(FontWeight.Medium);
+            Text.fontSize(17);
+            Text.fontWeight(FontWeight.Bold);
+            Text.fontColor(UiTheme.TEXT_PRIMARY);
             Text.maxLines(2);
             Text.textOverflow({ overflow: TextOverflow.Ellipsis });
         }, Text);
@@ -107,12 +109,12 @@ export class ArticleCard extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Row.create();
             Row.width('100%');
-            Row.margin({ top: 10 });
+            Row.margin({ top: UiTheme.SPACE_SM });
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(this.article.author || this.article.shareUser || '匿名');
             Text.fontSize(12);
-            Text.fontColor('#666666');
+            Text.fontColor(UiTheme.TEXT_SECONDARY);
         }, Text);
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -122,7 +124,7 @@ export class ArticleCard extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(this.article.niceDate || '');
             Text.fontSize(12);
-            Text.fontColor('#999999');
+            Text.fontColor(UiTheme.TEXT_TERTIARY);
         }, Text);
         Text.pop();
         Row.pop();
@@ -133,7 +135,7 @@ export class ArticleCard extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Row.create();
                         Row.width('100%');
-                        Row.margin({ top: 10 });
+                        Row.margin({ top: UiTheme.SPACE_SM });
                     }, Row);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Blank.create();
@@ -142,6 +144,9 @@ export class ArticleCard extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Button.createWithLabel(this.collected ? '取消收藏' : '收藏');
                         Button.type(ButtonType.Capsule);
+                        Button.fontSize(12);
+                        Button.backgroundColor(this.collected ? '#EAF7F4' : UiTheme.BRAND_SOFT);
+                        Button.fontColor(this.collected ? UiTheme.BRAND_ACCENT : UiTheme.BRAND_PRIMARY);
                         Button.onClick(() => {
                             if (this.toggleCollectAction) {
                                 this.toggleCollectAction();

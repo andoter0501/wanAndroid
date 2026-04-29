@@ -16,6 +16,7 @@ import { ArticleCard } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/
 import { FavoriteService } from "@bundle:com.wanandroid.harmony/entry/ets/common/favorite/FavoriteService";
 import { PagedListView } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PagedListView";
 import { PageHeader } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PageHeader";
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 import { StateView } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/StateView";
 import { WendaViewModel } from "@bundle:com.wanandroid.harmony/entry/ets/features/wenda/WendaViewModel";
 import type { WendaComment, WendaItem } from './WendaRepository';
@@ -149,12 +150,12 @@ export class WendaPage extends ViewPU {
             Column.create();
             Column.width('100%');
             Column.height('100%');
-            Column.backgroundColor('#F5F6F8');
+            Column.backgroundColor(UiTheme.BG_PAGE);
         }, Column);
         {
             this.observeComponentCreation2((elmtId, isInitialRender) => {
                 if (isInitialRender) {
-                    let componentCall = new PageHeader(this, { title: this.showComments ? '问答评论' : '问答' }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/wenda/WendaPage.ets", line: 39, col: 7 });
+                    let componentCall = new PageHeader(this, { title: this.showComments ? '问答评论' : '问答' }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/wenda/WendaPage.ets", line: 40, col: 7 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -247,7 +248,7 @@ export class WendaPage extends ViewPU {
                                                                 await FavoriteService.shared().toggle(item.id);
                                                                 this.favoriteVersion++;
                                                             }
-                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/wenda/WendaPage.ets", line: 71, col: 13 });
+                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/wenda/WendaPage.ets", line: 72, col: 13 });
                                                         ViewPU.create(componentCall);
                                                         let paramsLambda = () => {
                                                             return {
@@ -335,7 +336,7 @@ export class WendaPage extends ViewPU {
                             }, ForEach);
                             ForEach.pop();
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/wenda/WendaPage.ets", line: 54, col: 5 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/wenda/WendaPage.ets", line: 55, col: 5 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -395,7 +396,7 @@ export class WendaPage extends ViewPU {
                                                                     await FavoriteService.shared().toggle(item.id);
                                                                     this.favoriteVersion++;
                                                                 }
-                                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/wenda/WendaPage.ets", line: 71, col: 13 });
+                                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/wenda/WendaPage.ets", line: 72, col: 13 });
                                                             ViewPU.create(componentCall);
                                                             let paramsLambda = () => {
                                                                 return {
@@ -511,9 +512,9 @@ export class WendaPage extends ViewPU {
                         Text.create(this.commentActionTip);
                         Text.width('100%');
                         Text.fontSize(12);
-                        Text.fontColor('#C97A00');
+                        Text.fontColor(UiTheme.TEXT_WARNING);
                         Text.padding({ left: 12, right: 12, top: 6, bottom: 6 });
-                        Text.backgroundColor('#FFF6E5');
+                        Text.backgroundColor(UiTheme.BG_WARNING);
                     }, Text);
                     Text.pop();
                 });
@@ -609,7 +610,7 @@ export class WendaPage extends ViewPU {
                                                 Column.create();
                                                 Column.width('100%');
                                                 Column.padding(12);
-                                                Column.backgroundColor(Color.White);
+                                                Column.backgroundColor(UiTheme.BG_CARD);
                                                 Column.borderRadius(8);
                                             }, Column);
                                             this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -629,7 +630,7 @@ export class WendaPage extends ViewPU {
                                             this.observeComponentCreation2((elmtId, isInitialRender) => {
                                                 Text.create(`赞 ${item.zan}`);
                                                 Text.fontSize(12);
-                                                Text.fontColor('#666666');
+                                                Text.fontColor(UiTheme.TEXT_SECONDARY);
                                             }, Text);
                                             Text.pop();
                                             Row.pop();
@@ -642,7 +643,7 @@ export class WendaPage extends ViewPU {
                                             this.observeComponentCreation2((elmtId, isInitialRender) => {
                                                 Text.create(item.niceDate);
                                                 Text.fontSize(12);
-                                                Text.fontColor('#999999');
+                                                Text.fontColor(UiTheme.TEXT_TERTIARY);
                                                 Text.margin({ top: 8 });
                                             }, Text);
                                             Text.pop();
@@ -679,7 +680,7 @@ export class WendaPage extends ViewPU {
                             ForEach.pop();
                             List.pop();
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/wenda/WendaPage.ets", line: 164, col: 9 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/wenda/WendaPage.ets", line: 165, col: 9 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -712,7 +713,7 @@ export class WendaPage extends ViewPU {
                                                     Column.create();
                                                     Column.width('100%');
                                                     Column.padding(12);
-                                                    Column.backgroundColor(Color.White);
+                                                    Column.backgroundColor(UiTheme.BG_CARD);
                                                     Column.borderRadius(8);
                                                 }, Column);
                                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -732,7 +733,7 @@ export class WendaPage extends ViewPU {
                                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                                     Text.create(`赞 ${item.zan}`);
                                                     Text.fontSize(12);
-                                                    Text.fontColor('#666666');
+                                                    Text.fontColor(UiTheme.TEXT_SECONDARY);
                                                 }, Text);
                                                 Text.pop();
                                                 Row.pop();
@@ -745,7 +746,7 @@ export class WendaPage extends ViewPU {
                                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                                     Text.create(item.niceDate);
                                                     Text.fontSize(12);
-                                                    Text.fontColor('#999999');
+                                                    Text.fontColor(UiTheme.TEXT_TERTIARY);
                                                     Text.margin({ top: 8 });
                                                 }, Text);
                                                 Text.pop();

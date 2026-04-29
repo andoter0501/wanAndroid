@@ -12,6 +12,7 @@ import { ArticleCard } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/
 import { FavoriteService } from "@bundle:com.wanandroid.harmony/entry/ets/common/favorite/FavoriteService";
 import { PagedListView } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PagedListView";
 import { PageHeader } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PageHeader";
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 import { StateView } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/StateView";
 import { SearchViewModel } from "@bundle:com.wanandroid.harmony/entry/ets/features/search/SearchViewModel";
 import type { HomeArticleItem } from '../home/HomeRepository';
@@ -102,7 +103,7 @@ export class SearchPage extends ViewPU {
             Column.create();
             Column.width('100%');
             Column.height('100%');
-            Column.backgroundColor('#F5F6F8');
+            Column.backgroundColor(UiTheme.BG_PAGE);
         }, Column);
         {
             this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -115,7 +116,7 @@ export class SearchPage extends ViewPU {
                                 this.onBack();
                             }
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/search/SearchPage.ets", line: 46, col: 7 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/search/SearchPage.ets", line: 47, col: 7 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -209,7 +210,7 @@ export class SearchPage extends ViewPU {
                                                                 await FavoriteService.shared().toggle(item.id);
                                                                 this.favoriteVersion++;
                                                             }
-                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/search/SearchPage.ets", line: 81, col: 13 });
+                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/search/SearchPage.ets", line: 82, col: 13 });
                                                         ViewPU.create(componentCall);
                                                         let paramsLambda = () => {
                                                             return {
@@ -260,7 +261,7 @@ export class SearchPage extends ViewPU {
                             }, ForEach);
                             ForEach.pop();
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/search/SearchPage.ets", line: 71, col: 7 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/search/SearchPage.ets", line: 72, col: 7 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -311,7 +312,7 @@ export class SearchPage extends ViewPU {
                                                                     await FavoriteService.shared().toggle(item.id);
                                                                     this.favoriteVersion++;
                                                                 }
-                                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/search/SearchPage.ets", line: 81, col: 13 });
+                                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/search/SearchPage.ets", line: 82, col: 13 });
                                                             ViewPU.create(componentCall);
                                                             let paramsLambda = () => {
                                                                 return {
@@ -427,7 +428,7 @@ export class SearchPage extends ViewPU {
                             Scroll.pop();
                             Column.pop();
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/search/SearchPage.ets", line: 112, col: 5 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/search/SearchPage.ets", line: 113, col: 5 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {

@@ -13,6 +13,7 @@ import { ArticleCard } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/
 import { FavoriteService } from "@bundle:com.wanandroid.harmony/entry/ets/common/favorite/FavoriteService";
 import { PagedListView } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PagedListView";
 import { PageHeader } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PageHeader";
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 import { SessionStore } from "@bundle:com.wanandroid.harmony/entry/ets/common/storage/SessionStore";
 import { PlazaViewModel } from "@bundle:com.wanandroid.harmony/entry/ets/features/plaza/PlazaViewModel";
 import type { PlazaArticle } from './PlazaRepository';
@@ -114,12 +115,12 @@ export class PlazaPage extends ViewPU {
             Column.create();
             Column.width('100%');
             Column.height('100%');
-            Column.backgroundColor('#F5F6F8');
+            Column.backgroundColor(UiTheme.BG_PAGE);
         }, Column);
         {
             this.observeComponentCreation2((elmtId, isInitialRender) => {
                 if (isInitialRender) {
-                    let componentCall = new PageHeader(this, { title: '广场' }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 45, col: 7 });
+                    let componentCall = new PageHeader(this, { title: '广场' }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 46, col: 7 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -234,7 +235,7 @@ export class PlazaPage extends ViewPU {
                                                                 await FavoriteService.shared().toggle(item.id);
                                                                 this.favoriteVersion++;
                                                             }
-                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 97, col: 11 });
+                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 98, col: 11 });
                                                         ViewPU.create(componentCall);
                                                         let paramsLambda = () => {
                                                             return {
@@ -309,7 +310,7 @@ export class PlazaPage extends ViewPU {
                             }, ForEach);
                             ForEach.pop();
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 80, col: 5 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 81, col: 5 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -369,7 +370,7 @@ export class PlazaPage extends ViewPU {
                                                                     await FavoriteService.shared().toggle(item.id);
                                                                     this.favoriteVersion++;
                                                                 }
-                                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 97, col: 11 });
+                                                            }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 98, col: 11 });
                                                             ViewPU.create(componentCall);
                                                             let paramsLambda = () => {
                                                                 return {
@@ -472,7 +473,7 @@ export class PlazaPage extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('请先登录后使用分享能力');
                         Text.fontSize(14);
-                        Text.fontColor('#666666');
+                        Text.fontColor(UiTheme.TEXT_SECONDARY);
                     }, Text);
                     Text.pop();
                     Column.pop();
@@ -488,7 +489,7 @@ export class PlazaPage extends ViewPU {
                         Column.create({ space: 8 });
                         Column.padding(12);
                         Column.margin({ left: 12, right: 12, bottom: 8 });
-                        Column.backgroundColor(Color.White);
+                        Column.backgroundColor(UiTheme.BG_CARD);
                         Column.borderRadius(10);
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -521,7 +522,7 @@ export class PlazaPage extends ViewPU {
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     Text.create(this.vm.shareMessage);
                                     Text.fontSize(12);
-                                    Text.fontColor('#666666');
+                                    Text.fontColor(UiTheme.TEXT_SECONDARY);
                                 }, Text);
                                 Text.pop();
                             });
@@ -593,7 +594,7 @@ export class PlazaPage extends ViewPU {
                                                                             await FavoriteService.shared().toggle(item.id);
                                                                             this.favoriteVersion++;
                                                                         }
-                                                                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 191, col: 17 });
+                                                                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 192, col: 17 });
                                                                     ViewPU.create(componentCall);
                                                                     let paramsLambda = () => {
                                                                         return {
@@ -655,7 +656,7 @@ export class PlazaPage extends ViewPU {
                                         }, ForEach);
                                         ForEach.pop();
                                     }
-                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 174, col: 9 });
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 175, col: 9 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
@@ -715,7 +716,7 @@ export class PlazaPage extends ViewPU {
                                                                                 await FavoriteService.shared().toggle(item.id);
                                                                                 this.favoriteVersion++;
                                                                             }
-                                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 191, col: 17 });
+                                                                        }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/plaza/PlazaPage.ets", line: 192, col: 17 });
                                                                         ViewPU.create(componentCall);
                                                                         let paramsLambda = () => {
                                                                             return {

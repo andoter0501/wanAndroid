@@ -10,6 +10,7 @@ interface WebDetailPage_Params {
     controller?: webview.WebviewController;
 }
 import { PageHeader } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/components/PageHeader";
+import { UiTheme } from "@bundle:com.wanandroid.harmony/entry/ets/common/ui/UiTheme";
 import { UrlSecurityGuard } from "@bundle:com.wanandroid.harmony/entry/ets/common/web/UrlSecurityGuard";
 import webview from "@ohos:web.webview";
 export class WebDetailPage extends ViewPU {
@@ -102,7 +103,7 @@ export class WebDetailPage extends ViewPU {
             Column.create();
             Column.width('100%');
             Column.height('100%');
-            Column.backgroundColor('#F5F6F8');
+            Column.backgroundColor(UiTheme.BG_PAGE);
         }, Column);
         {
             this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -115,7 +116,7 @@ export class WebDetailPage extends ViewPU {
                                 this.onBack();
                             }
                         }
-                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/web/WebDetailPage.ets", line: 24, col: 7 });
+                    }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/features/web/WebDetailPage.ets", line: 25, col: 7 });
                     ViewPU.create(componentCall);
                     let paramsLambda = () => {
                         return {
@@ -145,10 +146,10 @@ export class WebDetailPage extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create(this.tip);
                         Text.fontSize(12);
-                        Text.fontColor(this.block ? '#C0392B' : '#C97A00');
+                        Text.fontColor(this.block ? UiTheme.TEXT_DANGER : UiTheme.TEXT_WARNING);
                         Text.width('100%');
                         Text.padding({ left: 12, right: 12, top: 8, bottom: 8 });
-                        Text.backgroundColor('#FFF6E5');
+                        Text.backgroundColor(UiTheme.BG_WARNING);
                     }, Text);
                     Text.pop();
                 });
@@ -180,7 +181,7 @@ export class WebDetailPage extends ViewPU {
                         Text.create(this.url);
                         Text.fontSize(12);
                         Text.margin({ top: 8 });
-                        Text.fontColor('#666666');
+                        Text.fontColor(UiTheme.TEXT_SECONDARY);
                         Text.maxLines(2);
                         Text.textOverflow({ overflow: TextOverflow.Ellipsis });
                     }, Text);
