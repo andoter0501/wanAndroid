@@ -17,6 +17,7 @@ export struct HomePage {
   @State favoriteVersion: number = 0
   @State bannerIndex: number = 0
   @State actionMessage: string = ''
+  private actionTimerId: number = -1
   private bannerTimerId: number = -1
   private readonly favoriteListener = (): void => {
     this.favoriteVersion++
@@ -31,6 +32,7 @@ export struct HomePage {
   aboutToDisappear(): void {
     FavoriteService.shared().unsubscribe(this.favoriteListener)
     this.stopBannerAutoPlay()
+    this.clearActionTimer()
   }
 
   private async initPage(): Promise<void> {
@@ -66,34 +68,26 @@ export struct HomePage {
   }
 
   build() {
-    Column() {
-      PageHeader({
-        title: '玩安卓',
-        rightText: '搜索',
-        onRightClick: () => {
-          if (this.onOpenSearch) {
-            this.onOpenSearch()
+    Stack({ alignContent: Alignment.Center }) {
+      Column() {
+        PageHeader({
+          title: '玩安卓',
+          rightText: '搜索',
+          onRightClick: () => {
+            if (this.onOpenSearch) {
+              this.onOpenSearch()
+            }
           }
-        }
-      })
+        })
 
-      if (this.actionMessage.length > 0) {
-        Text(this.actionMessage)
-          .width('100%')
-          .fontSize(12)
-          .fontColor(UiTheme.TEXT_WARNING)
-          .padding({ left: 12, right: 12, top: 6, bottom: 6 })
-          .backgroundColor(UiTheme.BG_WARNING)
-      }
-
-      PagedListView({
-        status: this.vm.state.status,
-        message: this.vm.state.message,
-        retryAction: () => this.onRetry(),
-        showLoadMore: this.vm.canLoadMore(),
-        isLoadingMore: this.vm.isLoadingMore,
-        loadMoreAction: () => this.onLoadMore()
-      }) {
+        PagedListView({
+          status: this.vm.state.status,
+          message: this.vm.state.message,
+          retryAction: () => this.onRetry(),
+          showLoadMore: this.vm.canLoadMore(),
+          isLoadingMore: this.vm.isLoadingMore,
+          loadMoreAction: () => this.onLoadMore()
+        }) {
           ListItem() {
             Column({ space: 10 }) {
               this.heroBanner()
@@ -155,7 +149,7 @@ export struct HomePage {
                   shareUser: item.shareUser,
                   niceDate: item.niceDate
                 },
-                collected: FavoriteService.shared().isCollected(item.id),
+                collected: this.isArticleCollected(item.id),
                 showCollectAction: true,
                 clickAction: () => {
                   if (this.onOpenLink) {
@@ -164,11 +158,12 @@ export struct HomePage {
                 },
                 toggleCollectAction: async () => {
                   try {
-                    await FavoriteService.shared().toggle(item.id)
+                    const nextCollected = await FavoriteService.shared().toggle(item.id)
                     this.favoriteVersion++
+                    this.showActionToast(nextCollected ? '收藏成功' : '已取消收藏')
                   } catch (error) {
                     const message = parseErrorMessage(error)
-                    this.actionMessage = message
+                    this.showActionToast(message)
                     if (message.includes('登录') && this.onRequireLogin) {
                       this.onRequireLogin()
                     }
@@ -177,6 +172,18 @@ export struct HomePage {
               })
             }
           }, (item: HomeArticleItem) => item.id.toString())
+        }
+      }
+      .width('100%')
+      .height('100%')
+
+      if (this.actionMessage.length > 0) {
+        Text(this.actionMessage)
+          .fontSize(14)
+          .fontColor('#FFFFFF')
+          .padding({ left: 18, right: 18, top: 10, bottom: 10 })
+          .backgroundColor('#000000CC')
+          .borderRadius(22)
       }
     }
     .width('100%')
@@ -313,7 +320,31 @@ export struct HomePage {
     if (this.onQuickNavigate) {
       this.onQuickNavigate(target)
     } else {
-      this.actionMessage = '该入口暂不可用'
+      this.showActionToast('该入口暂不可用')
     }
+  }
+
+  private showActionToast(message: string): void {
+    if (message.length === 0) {
+      return
+    }
+    this.actionMessage = message
+    this.clearActionTimer()
+    this.actionTimerId = setTimeout(() => {
+      this.actionMessage = ''
+      this.actionTimerId = -1
+    }, 2000)
+  }
+
+  private clearActionTimer(): void {
+    if (this.actionTimerId >= 0) {
+      clearTimeout(this.actionTimerId)
+      this.actionTimerId = -1
+    }
+  }
+
+  private isArticleCollected(articleId: number): boolean {
+    this.favoriteVersion.toString()
+    return FavoriteService.shared().isCollected(articleId)
   }
 }

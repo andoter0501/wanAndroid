@@ -10,7 +10,6 @@ import { UserSharePage } from '../features/user/UserSharePage'
 import { WebDetailPage } from '../features/web/WebDetailPage'
 import { UrlSecurityGuard } from '../common/web/UrlSecurityGuard'
 import { SessionEventBus, SessionEventType } from '../common/session/SessionEventBus'
-import { SessionStore } from '../common/storage/SessionStore'
 import { UiTheme } from '../common/ui/UiTheme'
 
 enum MainTab {
@@ -32,7 +31,8 @@ export struct AppShellPage {
   @State currentUrl: string = ''
   @State currentUserId: number = 0
   @State currentUsername: string = ''
-  @State warning: string = ''
+  @State toastMessage: string = ''
+  private toastTimerId: number = -1
   private readonly sessionListener = (event: SessionEventType, message: string): void => {
     if (event === SessionEventType.EXPIRED) {
       this.showSearch = false
@@ -41,7 +41,7 @@ export struct AppShellPage {
       this.showLogin = false
       this.showCollect = false
       this.currentTab = MainTab.MINE
-      this.warning = message || '登录已失效，请重新登录'
+      this.showToast(message || '登录已失效，请重新登录')
     }
   }
 
@@ -51,161 +51,181 @@ export struct AppShellPage {
 
   aboutToDisappear(): void {
     SessionEventBus.unsubscribe(this.sessionListener)
+    this.clearToastTimer()
   }
 
   build() {
-    Column() {
+    Stack({ alignContent: Alignment.Center }) {
       Column() {
-        if (this.showSearch) {
-          SearchPage({
-            onBack: () => {
-              animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                this.showSearch = false
-              })
-            },
-            onOpenLink: (url: string) => {
-              this.openLink(url)
-            }
-          })
-        } else if (this.showUserShare) {
-          UserSharePage({
-            userId: this.currentUserId,
-            username: this.currentUsername,
-            onBack: () => {
-              animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                this.showUserShare = false
-              })
-            },
-            onOpenLink: (url: string) => {
-              this.openLink(url)
-            }
-          })
-        } else if (this.showWeb) {
-          WebDetailPage({
-            url: this.currentUrl,
-            onBack: () => {
-              animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                this.showWeb = false
-              })
-            }
-          })
-        } else if (this.showLogin) {
-          LoginPage({
-            onBack: () => {
-              animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                this.showLogin = false
-              })
-            },
-            onSuccess: () => {
-              this.warning = ''
-              this.currentTab = MainTab.MINE
-              animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                this.showLogin = false
-                this.warning = ''
+        Column() {
+          if (this.showSearch) {
+            SearchPage({
+              onBack: () => {
+                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                  this.showSearch = false
+                })
+              },
+              onOpenLink: (url: string) => {
+                this.openLink(url)
+              },
+              onToast: (message: string) => {
+                this.showToast(message)
+              }
+            })
+          } else if (this.showUserShare) {
+            UserSharePage({
+              userId: this.currentUserId,
+              username: this.currentUsername,
+              onBack: () => {
+                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                  this.showUserShare = false
+                })
+              },
+              onOpenLink: (url: string) => {
+                this.openLink(url)
+              },
+              onToast: (message: string) => {
+                this.showToast(message)
+              }
+            })
+          } else if (this.showWeb) {
+            WebDetailPage({
+              url: this.currentUrl,
+              onBack: () => {
+                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                  this.showWeb = false
+                })
+              }
+            })
+          } else if (this.showLogin) {
+            LoginPage({
+              onBack: () => {
+                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                  this.showLogin = false
+                })
+              },
+              onSuccess: () => {
                 this.currentTab = MainTab.MINE
-              })
-            }
-          })
-        } else if (this.showCollect) {
-          CollectPage({
-            onBack: () => {
-              animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                this.showCollect = false
-              })
-            },
-            onOpenLink: (url: string) => {
-              this.openLink(url)
-            }
-          })
-        } else {
-          if (this.currentTab === MainTab.HOME) {
-            HomePage({
-              onOpenSearch: () => {
                 animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                  this.showSearch = true
+                  this.showLogin = false
+                  this.currentTab = MainTab.MINE
+                })
+              }
+            })
+          } else if (this.showCollect) {
+            CollectPage({
+              onBack: () => {
+                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                  this.showCollect = false
                 })
               },
               onOpenLink: (url: string) => {
                 this.openLink(url)
               },
-              onQuickNavigate: (target: string) => {
-                if (target === 'plaza') {
-                  this.switchTab(MainTab.PLAZA)
-                } else if (target === 'know') {
-                  this.switchTab(MainTab.KNOW)
-                } else if (target === 'project') {
-                  this.switchTab(MainTab.PROJECT)
-                }
-              },
-              onRequireLogin: () => {
-                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                  this.warning = ''
-                  this.showLogin = true
-                })
-              }
-            })
-          } else if (this.currentTab === MainTab.KNOW) {
-            KnowPage()
-          } else if (this.currentTab === MainTab.PROJECT) {
-            ProjectPage({
-              onOpenLink: (url: string) => {
-                this.openLink(url)
-              }
-            })
-          } else if (this.currentTab === MainTab.PLAZA) {
-            PlazaPage({
-              onOpenLink: (url: string) => {
-                this.openLink(url)
-              },
-              onOpenUserShare: (userId: number, username: string) => {
-                this.openUserShare(userId, username)
+              onToast: (message: string) => {
+                this.showToast(message)
               }
             })
           } else {
-            MinePage({
-              onOpenLink: (url: string) => {
-                this.openLink(url)
-              },
-              onOpenCollect: () => {
-                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                  this.showCollect = true
-                })
-              },
-              onRequireLogin: () => {
-                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                  this.warning = ''
-                  this.showLogin = true
-                })
-              }
-            })
+            if (this.currentTab === MainTab.HOME) {
+              HomePage({
+                onOpenSearch: () => {
+                  animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                    this.showSearch = true
+                  })
+                },
+                onOpenLink: (url: string) => {
+                  this.openLink(url)
+                },
+                onQuickNavigate: (target: string) => {
+                  if (target === 'plaza') {
+                    this.switchTab(MainTab.PLAZA)
+                  } else if (target === 'know') {
+                    this.switchTab(MainTab.KNOW)
+                  } else if (target === 'project') {
+                    this.switchTab(MainTab.PROJECT)
+                  }
+                },
+                onRequireLogin: () => {
+                  animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                    this.showLogin = true
+                  })
+                }
+              })
+            } else if (this.currentTab === MainTab.KNOW) {
+              KnowPage()
+            } else if (this.currentTab === MainTab.PROJECT) {
+              ProjectPage({
+                onOpenLink: (url: string) => {
+                  this.openLink(url)
+                }
+              })
+            } else if (this.currentTab === MainTab.PLAZA) {
+              PlazaPage({
+                onOpenLink: (url: string) => {
+                  this.openLink(url)
+                },
+                onOpenUserShare: (userId: number, username: string) => {
+                  this.openUserShare(userId, username)
+                },
+                onToast: (message: string) => {
+                  this.showToast(message)
+                }
+              })
+            } else {
+              MinePage({
+                onOpenLink: (url: string) => {
+                  this.openLink(url)
+                },
+                onOpenCollect: () => {
+                  animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                    this.showCollect = true
+                  })
+                },
+                onRequireLogin: () => {
+                  animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                    this.showLogin = true
+                  })
+                }
+              })
+            }
           }
         }
-      }
-      .layoutWeight(1)
-      .width('100%')
+        .layoutWeight(1)
+        .width('100%')
 
-      if (this.shouldShowWarning() && !this.showSearch && !this.showWeb && !this.showUserShare && !this.showLogin && !this.showCollect) {
-        Text(this.warning)
+        if (!this.showSearch && !this.showWeb && !this.showUserShare && !this.showLogin && !this.showCollect) {
+          Row() {
+            this.tabItem('首页', MainTab.HOME)
+            this.tabItem('体系', MainTab.KNOW)
+            this.tabItem('项目', MainTab.PROJECT)
+            this.tabItem('广场', MainTab.PLAZA)
+            this.tabItem('我的', MainTab.MINE)
+          }
           .width('100%')
-          .fontSize(12)
-          .fontColor(UiTheme.TEXT_WARNING)
-          .padding({ left: 12, right: 12, top: 6, bottom: 6 })
-          .backgroundColor(UiTheme.BG_WARNING)
+          .height(58)
+          .justifyContent(FlexAlign.SpaceAround)
+          .border({ width: { top: 1 }, color: '#E5E6EB' })
+          .backgroundColor(UiTheme.BG_CARD)
+        }
       }
+      .width('100%')
+      .height('100%')
 
-      if (!this.showSearch && !this.showWeb && !this.showUserShare && !this.showLogin && !this.showCollect) {
+      if (this.toastMessage.length > 0) {
         Row() {
-          this.tabItem('首页', MainTab.HOME)
-          this.tabItem('体系', MainTab.KNOW)
-          this.tabItem('项目', MainTab.PROJECT)
-          this.tabItem('广场', MainTab.PLAZA)
-          this.tabItem('我的', MainTab.MINE)
+          Text(this.toastMessage)
+            .fontSize(14)
+            .fontColor('#FFFFFF')
+            .maxLines(2)
+            .textAlign(TextAlign.Center)
+            .padding({ left: 18, right: 18, top: 10, bottom: 10 })
+            .backgroundColor('#000000CC')
+            .borderRadius(22)
         }
         .width('100%')
-        .height(58)
-        .justifyContent(FlexAlign.SpaceAround)
-        .border({ width: { top: 1 }, color: '#E5E6EB' })
-        .backgroundColor(UiTheme.BG_CARD)
+        .justifyContent(FlexAlign.Center)
+        .padding({ left: 24, right: 24 })
       }
     }
     .width('100%')
@@ -215,10 +235,9 @@ export struct AppShellPage {
   private openLink(url: string): void {
     const result = UrlSecurityGuard.check(url)
     if (!result.allow) {
-      this.warning = result.reason
+      this.showToast(result.reason)
       return
     }
-    this.warning = ''
     this.currentUrl = url
     animateTo({ duration: 180, curve: Curve.EaseInOut }, () => {
       this.showWeb = true
@@ -227,7 +246,7 @@ export struct AppShellPage {
 
   private openUserShare(userId: number, username: string): void {
     if (userId <= 0) {
-      this.warning = '该分享人信息无效'
+      this.showToast('该分享人信息无效')
       return
     }
     this.currentUserId = userId
@@ -240,32 +259,47 @@ export struct AppShellPage {
   private switchTab(tab: MainTab): void {
     animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
       this.currentTab = tab
-      this.warning = ''
     })
   }
 
-  private shouldShowWarning(): boolean {
-    if (this.warning.length === 0) {
-      return false
+  private showToast(message: string): void {
+    if (message.length === 0) {
+      return
     }
-    const session = SessionStore.shared().getSession()
-    if (session && this.warning.includes('登录')) {
-      return false
+    this.toastMessage = message
+    this.clearToastTimer()
+    this.toastTimerId = setTimeout(() => {
+      this.toastMessage = ''
+      this.toastTimerId = -1
+    }, 2000)
+  }
+
+  private clearToastTimer(): void {
+    if (this.toastTimerId >= 0) {
+      clearTimeout(this.toastTimerId)
+      this.toastTimerId = -1
     }
-    return true
   }
 
   @Builder
   private tabItem(label: string, tab: MainTab) {
     Column({ space: 3 }) {
       Text(this.tabIcon(tab))
+        .width(24)
+        .height(20)
+        .textAlign(TextAlign.Center)
         .fontSize(16)
         .fontColor(this.currentTab === tab ? UiTheme.BRAND_PRIMARY : UiTheme.TEXT_SECONDARY)
       Text(label)
+        .height(14)
+        .textAlign(TextAlign.Center)
         .fontSize(11)
         .fontColor(this.currentTab === tab ? UiTheme.BRAND_PRIMARY : UiTheme.TEXT_SECONDARY)
     }
-    .padding({ top: 4, bottom: 4, left: 6, right: 6 })
+    .width(56)
+    .height(50)
+    .justifyContent(FlexAlign.Center)
+    .alignItems(HorizontalAlign.Center)
     .onClick(() => {
       this.switchTab(tab)
     })
@@ -273,7 +307,7 @@ export struct AppShellPage {
 
   private tabIcon(tab: MainTab): string {
     if (tab === MainTab.HOME) {
-      return '⌂'
+      return '◆'
     }
     if (tab === MainTab.KNOW) {
       return '▦'

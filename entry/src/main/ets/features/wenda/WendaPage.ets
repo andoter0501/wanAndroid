@@ -1,5 +1,6 @@
 import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { FavoriteService } from '../../common/favorite/FavoriteService'
+import { parseErrorMessage } from '../../common/network/ErrorMessage'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { UiTheme } from '../../common/ui/UiTheme'
@@ -11,6 +12,7 @@ import { WendaComment, WendaItem } from './WendaRepository'
 export struct WendaPage {
   onOpenLink?: (url: string) => void
   onOpenUserShare?: (userId: number, username: string) => void
+  onToast?: (message: string) => void
   @State vm: WendaViewModel = new WendaViewModel()
   @State showComments: boolean = false
   @State selectedTitle: string = ''
@@ -77,7 +79,7 @@ export struct WendaPage {
                 shareUser: item.shareUser,
                 niceDate: item.niceDate
               },
-              collected: FavoriteService.shared().isCollected(item.id),
+              collected: this.isArticleCollected(item.id),
               showCollectAction: true,
               clickAction: () => {
                 if (this.onOpenLink) {
@@ -85,8 +87,13 @@ export struct WendaPage {
                 }
               },
               toggleCollectAction: async () => {
-                await FavoriteService.shared().toggle(item.id)
-                this.favoriteVersion++
+                try {
+                  const nextCollected = await FavoriteService.shared().toggle(item.id)
+                  this.favoriteVersion++
+                  this.showActionToast(nextCollected ? '收藏成功' : '已取消收藏')
+                } catch (error) {
+                  this.showActionToast(parseErrorMessage(error))
+                }
               }
             })
             Button('查看评论')
@@ -225,5 +232,16 @@ export struct WendaPage {
     setTimeout(() => {
       this.commentActionTip = ''
     }, 1500)
+  }
+
+  private showActionToast(message: string): void {
+    if (this.onToast) {
+      this.onToast(message)
+    }
+  }
+
+  private isArticleCollected(articleId: number): boolean {
+    this.favoriteVersion.toString()
+    return FavoriteService.shared().isCollected(articleId)
   }
 }

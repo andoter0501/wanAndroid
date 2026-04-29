@@ -1,4 +1,5 @@
 import { ArticleCard } from '../../common/ui/components/ArticleCard'
+import { parseErrorMessage } from '../../common/network/ErrorMessage'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { UiTheme } from '../../common/ui/UiTheme'
@@ -9,6 +10,7 @@ import { CollectViewModel } from './CollectViewModel'
 export struct CollectPage {
   onBack?: () => void
   onOpenLink?: (url: string) => void
+  onToast?: (message: string) => void
 
   @State vm: CollectViewModel = new CollectViewModel()
 
@@ -69,8 +71,13 @@ export struct CollectPage {
                 .fontColor(UiTheme.TEXT_DANGER)
                 .backgroundColor('#FFF1EF')
                 .onClick(async () => {
-                  await this.vm.uncollect(item.id)
-                  this.vm = this.vm
+                  try {
+                    await this.vm.uncollect(item.id)
+                    this.vm = this.vm
+                    this.showActionToast('已取消收藏')
+                  } catch (error) {
+                    this.showActionToast(parseErrorMessage(error))
+                  }
                 })
             }
           }
@@ -80,5 +87,11 @@ export struct CollectPage {
     .width('100%')
     .height('100%')
     .backgroundColor(UiTheme.BG_PAGE)
+  }
+
+  private showActionToast(message: string): void {
+    if (this.onToast) {
+      this.onToast(message)
+    }
   }
 }

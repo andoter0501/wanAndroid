@@ -1,5 +1,6 @@
 import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { FavoriteService } from '../../common/favorite/FavoriteService'
+import { parseErrorMessage } from '../../common/network/ErrorMessage'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { UiTheme } from '../../common/ui/UiTheme'
 import { PagedListView } from '../../common/ui/components/PagedListView'
@@ -12,6 +13,7 @@ export struct UserSharePage {
   @Prop username: string = '分享人'
   onBack?: () => void
   onOpenLink?: (url: string) => void
+  onToast?: (message: string) => void
 
   @State vm: UserShareViewModel = new UserShareViewModel()
   @State favoriteVersion: number = 0
@@ -73,7 +75,7 @@ export struct UserSharePage {
                 shareUser: item.shareUser,
                 niceDate: item.niceDate
               },
-              collected: FavoriteService.shared().isCollected(item.id),
+              collected: this.isArticleCollected(item.id),
               showCollectAction: true,
               clickAction: () => {
                 if (this.onOpenLink) {
@@ -81,8 +83,13 @@ export struct UserSharePage {
                 }
               },
               toggleCollectAction: async () => {
-                await FavoriteService.shared().toggle(item.id)
-                this.favoriteVersion++
+                try {
+                  const nextCollected = await FavoriteService.shared().toggle(item.id)
+                  this.favoriteVersion++
+                  this.showActionToast(nextCollected ? '收藏成功' : '已取消收藏')
+                } catch (error) {
+                  this.showActionToast(parseErrorMessage(error))
+                }
               }
             })
           }
@@ -114,5 +121,16 @@ export struct UserSharePage {
       .backgroundColor(UiTheme.BG_CARD)
       .borderRadius(10)
     }
+  }
+
+  private showActionToast(message: string): void {
+    if (this.onToast) {
+      this.onToast(message)
+    }
+  }
+
+  private isArticleCollected(articleId: number): boolean {
+    this.favoriteVersion.toString()
+    return FavoriteService.shared().isCollected(articleId)
   }
 }
