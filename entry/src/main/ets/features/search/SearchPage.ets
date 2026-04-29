@@ -57,17 +57,31 @@ export struct SearchPage {
       Row({ space: 8 }) {
         TextInput({ placeholder: '输入关键词', text: this.vm.keyword })
           .layoutWeight(1)
+          .height(40)
+          .borderRadius(20)
+          .backgroundColor(UiTheme.BG_CARD)
           .onChange((value: string) => {
             this.vm.keyword = value
             this.vm = this.vm
           })
+        Button('取消')
+          .type(ButtonType.Normal)
+          .backgroundColor(UiTheme.BG_PAGE)
+          .fontColor(UiTheme.BRAND_PRIMARY)
+          .onClick(() => {
+            if (this.onBack) {
+              this.onBack()
+            }
+          })
         Button('搜索')
+          .type(ButtonType.Capsule)
           .onClick(() => this.doSearch())
       }
       .padding(12)
 
       this.hotKeySection()
       this.historySection()
+      this.commonSitesSection()
 
       PagedListView({
         status: this.vm.resultState.status,
@@ -164,5 +178,40 @@ export struct SearchPage {
         .scrollable(ScrollDirection.Horizontal)
       }
     }
+  }
+
+  @Builder
+  private commonSitesSection() {
+    Column({ space: 8 }) {
+      Text('常用网站')
+        .fontSize(16)
+        .fontWeight(FontWeight.Medium)
+        .width('100%')
+        .padding({ left: 12, right: 12, top: 6 })
+      Row({ space: 10 }) {
+        this.siteCard('官方文档', 'Android / Flutter')
+        this.siteCard('社区', '掘金 / SegmentFault')
+      }
+      .width('100%')
+      .padding({ left: 12, right: 12, bottom: 8 })
+    }
+  }
+
+  @Builder
+  private siteCard(title: string, subtitle: string) {
+    Column({ space: 8 }) {
+      Text(title)
+        .fontSize(15)
+        .fontWeight(FontWeight.Medium)
+        .fontColor(UiTheme.TEXT_PRIMARY)
+      Text(subtitle)
+        .fontSize(12)
+        .fontColor(UiTheme.TEXT_SECONDARY)
+    }
+    .layoutWeight(1)
+    .alignItems(HorizontalAlign.Start)
+    .padding(12)
+    .backgroundColor(UiTheme.BG_CARD)
+    .borderRadius(UiTheme.RADIUS_MD)
   }
 }

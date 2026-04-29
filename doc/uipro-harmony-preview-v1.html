@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WanAndroid Harmony UIPro Preview</title>
+  <style>
+    :root {
+      --primary: #2196f3;
+      --primary-deep: #1677c8;
+      --accent: #22c55e;
+      --danger: #f53f3f;
+      --bg: #f2f3f5;
+      --card: #ffffff;
+      --text: #1f2329;
+      --sub: #86909c;
+      --line: #e5e6eb;
+      --shadow: 0 10px 30px rgba(31, 35, 41, 0.08);
+      --r-lg: 22px;
+      --r-md: 16px;
+      --r-pill: 999px;
+      --status-h: 30px;
+      --head-h: 56px;
+      --seg-h: 10px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, #d7ebff 0%, transparent 35%),
+        radial-gradient(circle at 85% 90%, #d9f4e5 0%, transparent 30%),
+        linear-gradient(135deg, #f7fbff 0%, #f3f7fb 45%, #f7f8fa 100%);
+      min-height: 100vh;
+      padding: 28px;
+    }
+
+    .header {
+      max-width: 1300px;
+      margin: 0 auto 18px;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.2px;
+    }
+
+    .sub {
+      color: var(--sub);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    .grid {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 22px;
+    }
+
+    .scene-title {
+      font-size: 15px;
+      margin: 0 0 8px 10px;
+      color: #344054;
+      font-weight: 600;
+    }
+
+    .phone {
+      background: #0b1220;
+      border-radius: 40px;
+      padding: 10px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .screen {
+      height: 620px;
+      border-radius: 32px;
+      overflow: hidden;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .statusbar {
+      height: var(--status-h);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2b2f36;
+      border-bottom: 1px solid #eef1f5;
+      flex-shrink: 0;
+    }
+
+    .topbar {
+      background: linear-gradient(180deg, var(--primary) 0%, var(--primary-deep) 100%);
+      color: #fff;
+      padding: 14px 16px;
+      font-weight: 600;
+      font-size: 20px;
+    }
+
+    .content {
+      padding: 12px;
+      overflow: auto;
+      flex: 1;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--r-md);
+      box-shadow: 0 6px 18px rgba(31, 35, 41, 0.06);
+      padding: 11px;
+      margin-bottom: 10px;
+    }
+
+    .banner {
+      border-radius: var(--r-lg);
+      height: 130px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner-track {
+      height: 100%;
+      display: flex;
+      width: 300%;
+      animation: slide 9s infinite;
+    }
+
+    .banner-item {
+      width: 100%;
+      height: 100%;
+      flex: 0 0 100%;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .b1 { background: linear-gradient(120deg, #5f7cff, #7a58cc); }
+    .b2 { background: linear-gradient(120deg, #2897f0, #18b0b9); }
+    .b3 { background: linear-gradient(120deg, #1d7bf2, #4d66ff); }
+
+    .dots {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.45);
+    }
+
+    .dot.active {
+      width: 16px;
+      background: #fff;
+    }
+
+    @keyframes slide {
+      0%, 28% { transform: translateX(0); }
+      33%, 61% { transform: translateX(-100%); }
+      66%, 94% { transform: translateX(-200%); }
+      100% { transform: translateX(0); }
+    }
+
+    .search {
+      height: 42px;
+      border-radius: var(--r-pill);
+      border: 1px solid var(--line);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      color: #a0a7b2;
+      margin: 10px 0;
+    }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .chip {
+      border-radius: var(--r-pill);
+      padding: 6px 12px;
+      font-size: 12px;
+      background: #e9f4ff;
+      color: var(--primary-deep);
+    }
+
+    .item-title { font-weight: 600; font-size: 15px; line-height: 1.32; }
+    .item-meta { color: var(--sub); font-size: 11px; margin-top: 7px; }
+
+    .tabbar {
+      height: 58px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      text-align: center;
+      font-size: 11px;
+      color: #7f8590;
+      padding-top: 6px;
+    }
+
+    .tabbar span {
+      display: block;
+      font-size: 16px;
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+
+    .active { color: var(--primary); font-weight: 600; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      text-align: center;
+    }
+
+    .stat strong { display: block; font-size: 24px; }
+
+    .menu-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 2px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .menu-row:last-child { border-bottom: 0; }
+
+    .tag {
+      font-size: 11px;
+      color: #fff;
+      background: var(--danger);
+      border-radius: 999px;
+      min-width: 18px;
+      text-align: center;
+      padding: 2px 6px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .collect-head {
+      background: linear-gradient(180deg, var(--primary) 0%, var(--primary-deep) 100%);
+      color: #fff;
+      height: var(--head-h);
+      display: grid;
+      grid-template-columns: 34px 1fr 34px;
+      align-items: center;
+      padding: 0 14px;
+      font-weight: 600;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .collect-seg {
+      height: var(--seg-h);
+      background: #eef1f5;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .collect-seg::after {
+      content: \"\";
+      position: absolute;
+      left: 14%;
+      top: 0;
+      width: 28%;
+      height: 2px;
+      background: #2f98e8;
+    }
+
+    .back-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .label {
+      display: inline-block;
+      border-radius: 6px;
+      padding: 3px 9px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .l-new { background: #ff5b26; }
+    .l-proj { background: #4caf50; }
+    .l-qa { background: #8e24aa; }
+
+    .collect-meta {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #a0a7b2;
+      font-size: 11px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      color: #667085;
+      margin: 8px 2px 6px;
+      font-weight: 600;
+    }
+
+    .login-wrap {
+      padding: 30px 24px 0;
+      min-height: calc(100% - var(--status-h) - var(--head-h) - var(--seg-h));
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      min-width: 80px;
+      min-height: 80px;
+      max-width: 80px;
+      max-height: 80px;
+      aspect-ratio: 1 / 1;
+      align-self: center;
+      flex-shrink: 0;
+      margin: 10px auto 18px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, #33a2ff, #1b78d2);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      font-weight: 400;
+    }
+
+    .login-title {
+      text-align: center;
+      font-size: 22px;
+      line-height: 1.2;
+      margin: 0;
+      font-weight: 650;
+      letter-spacing: 0;
+    }
+
+    .login-sub {
+      text-align: center;
+      color: #7f8793;
+      margin-top: 10px;
+      margin-bottom: 22px;
+      font-size: 12px;
+    }
+
+    .field-label {
+      color: #6f7782;
+      font-weight: 600;
+      font-size: 13px;
+      margin: 12px 0 8px;
+    }
+
+    .field {
+      height: 60px;
+      border: 1px solid #d8dce3;
+      border-radius: 18px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      color: #1f2329;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      margin-top: 0;
+    }
+
+    .login-btn {
+      margin-top: 22px;
+      height: 60px;
+      border-radius: 16px;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .login-actions {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .agreement {
+      margin-top: 20px;
+      text-align: center;
+      color: #b0b6bf;
+      font-size: 12px;
+    }
+
+    .profile-hero {
+      margin-bottom: 56px;
+      background: linear-gradient(135deg, #2ea0f8 0%, #1f83df 100%);
+      border-radius: 0;
+      padding: 16px 14px 68px;
+      position: relative;
+      color: #fff;
+    }
+
+    .profile-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+    }
+
+    .profile-name {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .profile-meta {
+      margin-top: 5px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .profile-stats-card {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: -30px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(31, 35, 41, 0.1);
+      padding: 12px 8px;
+    }
+
+    .profile-stats-card .stats {
+      gap: 0;
+    }
+
+    .profile-stats-card .stat strong {
+      color: #1f2329;
+      font-size: 22px;
+      line-height: 1.1;
+      font-weight: 700;
+    }
+
+    .profile-stats-card .item-meta {
+      color: #5f6875;
+      font-size: 11px;
+      margin-top: 4px;
+      display: inline-block;
+    }
+
+    .profile-stats-card .stat {
+      position: relative;
+    }
+
+    .profile-stats-card .stat + .stat::before {
+      content: \"\";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: #eceff3;
+    }
+
+    .login-bottom-space {
+      flex: 1;
+      min-height: 20%;
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 14px; }
+      .header { margin-bottom: 12px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1>WanAndroid Harmony UI 预览</h1>
+      <div class="sub">基于 2026-04-29 UIPro 文档：蓝色主视觉、卡片化内容、5 Tab 导航</div>
+    </div>
+  </div>
+
+  <section class="grid">
+    <div>
+      <p class="scene-title">首页</p>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>⌕  ▮</span></div>
+        <div class="collect-head"><span></span><span style="text-align:center">玩安卓</span><span></span></div>
+        <div class="collect-seg"></div>
+        <div class="content">
+          <div class="banner">
+            <div class="banner-track">
+              <div class="banner-item b1">Flutter 完整实例开源</div>
+              <div class="banner-item b2">Jetpack Compose 新特性</div>
+              <div class="banner-item b3">HarmonyOS 开发实践</div>
+            </div>
+            <div class="dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+          </div>
+          <div class="search">搜索文章 / 项目...</div>
+          <div class="chips"><span class="chip">问答</span><span class="chip">专栏</span><span class="chip">路线</span><span class="chip">鸿蒙</span></div>
+          <div class="section-title">置顶文章</div>
+          <div class="card"><div class="item-title">置顶文章：Kotlin Jetpack 新特性详解</div><div class="item-meta">作者: 鸿洋 · 今天</div></div>
+          <div class="card"><div class="item-title">Flutter 3.0 正式发布！一起来看看有哪些新特性</div><div class="item-meta">作者: 冯洋 · 2小时前</div></div>
+        </div>
+        <div class="tabbar"><div class="active"><span>⌂</span>首页</div><div><span>▦</span>体系</div><div><span>▤</span>项目</div><div><span>◍</span>广场</div><div><span>◉</span>我的</div></div>
+      </div></div>
+    </div>
+
+    <div>
+      <p class="scene-title">搜索</p>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>⌕  ▮</span></div>
+        <div class="collect-head"><span class="back-icon">‹</span><span style="text-align:center">搜索</span><span></span></div>
+        <div class="collect-seg"></div>
+        <div class="content">
+          <div class="search">搜索文章/项目... <span style="margin-left:auto;color:#2196f3">取消</span></div>
+          <div class="card"><div class="item-title" style="margin-bottom:8px">搜索历史</div><div class="chips"><span class="chip">Flutter</span><span class="chip">Kotlin</span><span class="chip">Jetpack</span><span class="chip">Compose</span></div></div>
+          <div class="card"><div class="item-title" style="margin-bottom:8px">热门搜索</div><div class="chips"><span class="chip">Android Jetpack</span><span class="chip">Flutter 实战</span><span class="chip">架构设计</span><span class="chip">MVVM</span></div></div>
+          <div class="two-col">
+            <div class="card"><div class="item-title">官方文档</div><div class="item-meta">Android / Flutter</div></div>
+            <div class="card"><div class="item-title">社区</div><div class="item-meta">掘金 / SegmentFault</div></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div>
+      <p class="scene-title">体系</p>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>⌕  ▮</span></div>
+        <div class="collect-head"><span class="back-icon">‹</span><span style="text-align:center">体系</span><span></span></div>
+        <div class="collect-seg"></div>
+        <div class="content">
+          <div class="card"><div class="item-title">开发环境</div><div class="chips" style="margin-top:8px"><span class="chip">Android Studio</span><span class="chip">Gradle</span><span class="chip">Kotlin</span></div></div>
+          <div class="card"><div class="item-title">UI 框架</div><div class="chips" style="margin-top:8px"><span class="chip">Jetpack Compose</span><span class="chip">Flutter</span><span class="chip">ArkUI</span></div></div>
+          <div class="card"><div class="item-title">架构设计</div><div class="chips" style="margin-top:8px"><span class="chip">MVVM</span><span class="chip">Clean Architecture</span><span class="chip">MVI</span></div></div>
+        </div>
+        <div class="tabbar"><div><span>⌂</span>首页</div><div class="active"><span>▦</span>体系</div><div><span>▤</span>项目</div><div><span>◍</span>广场</div><div><span>◉</span>我的</div></div>
+      </div></div>
+    </div>
+
+    <div>
+      <p class="scene-title">项目</p>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>⌕  ▮</span></div>
+        <div class="collect-head"><span class="back-icon">‹</span><span style="text-align:center">项目</span><span></span></div>
+        <div class="collect-seg"></div>
+        <div class="content">
+          <div class="chips" style="margin-bottom:10px"><span class="chip" style="background:#2196f3;color:#fff">热门</span><span class="chip">Android</span><span class="chip">Kotlin</span><span class="chip">Flutter</span><span class="chip">鸿蒙</span></div>
+          <div class="card"><div class="item-title">Compose 实战：列表性能优化</div><div class="item-meta">从重组与状态提升切入，整理真实项目中的卡顿优化路径。</div></div>
+          <div class="card"><div class="item-title">Flutter 架构升级清单</div><div class="item-meta">模块拆分、状态管理与路由治理的完整升级路线。</div></div>
+          <div class="card"><div class="item-title">HarmonyOS ArkUI 组件实践</div><div class="item-meta">页面骨架、状态视图与网络层协作方案。</div></div>
+        </div>
+        <div class="tabbar"><div><span>⌂</span>首页</div><div><span>▦</span>体系</div><div class="active"><span>▤</span>项目</div><div><span>◍</span>广场</div><div><span>◉</span>我的</div></div>
+      </div></div>
+    </div>
+
+    <div>
+      <p class="scene-title">广场</p>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>⌕  ▮</span></div>
+        <div class="collect-head"><span class="back-icon">‹</span><span style="text-align:center">广场</span><span></span></div>
+        <div class="collect-seg"></div>
+        <div class="content">
+          <div class="card"><div class="item-title">Jetpack Compose 中状态提升的边界如何划分？</div><div class="item-meta">作者: 程序员A · 评论 12</div></div>
+          <div class="card"><div class="item-title">鸿蒙项目里网络层做统一错误恢复的最佳实践</div><div class="item-meta">作者: 架构师B · 评论 8</div></div>
+          <div class="card"><div class="item-title">你们是如何做搜索历史与热词推荐融合的？</div><div class="item-meta">作者: 前端C · 评论 6</div></div>
+        </div>
+        <div class="tabbar"><div><span>⌂</span>首页</div><div><span>▦</span>体系</div><div><span>▤</span>项目</div><div class="active"><span>◍</span>广场</div><div><span>◉</span>我的</div></div>
+      </div></div>
+    </div>
+
+    <div>
+      <p class="scene-title">我的</p>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>⌕  ▮</span></div>
+        <div class="collect-head"><span class="back-icon">‹</span><span style="text-align:center">我的</span><span></span></div>
+        <div class="collect-seg"></div>
+        <div class="content">
+          <div class="profile-hero">
+            <div class="profile-user">
+              <div class="profile-avatar">👤</div>
+              <div>
+                <div class="profile-name">鸿洋</div>
+                <div class="profile-meta">Lv.367 · 排名 #3</div>
+              </div>
+            </div>
+            <div class="profile-stats-card">
+              <div class="stats">
+                <div class="stat"><strong>36662</strong><span class="item-meta">积分</span></div>
+                <div class="stat"><strong>28</strong><span class="item-meta">排名</span></div>
+                <div class="stat"><strong>156</strong><span class="item-meta">收藏</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="menu-row"><span>我的收藏</span><span>›</span></div>
+            <div class="menu-row"><span>我的文章</span><span>›</span></div>
+            <div class="menu-row"><span>TODO</span><span class="tag">5</span></div>
+            <div class="menu-row"><span>站内消息</span><span>12</span></div>
+            <div class="menu-row"><span>系统设置</span><span>›</span></div>
+          </div>
+          <div style="text-align:center;color:var(--danger);font-weight:600;margin-top:8px">退出登录</div>
+        </div>
+        <div class="tabbar"><div><span>⌂</span>首页</div><div><span>▦</span>体系</div><div><span>▤</span>项目</div><div><span>◍</span>广场</div><div class="active"><span>◉</span>我的</div></div>
+      </div></div>
+    </div>
+
+    <div>
+      <p class="scene-title">收藏</p>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>⌕  ▮</span></div>
+        <div class="collect-head"><span class="back-icon">‹</span><span style="text-align:center">我的收藏</span><span></span></div>
+        <div class="collect-seg"></div>
+        <div class="content" style="padding-top:8px">
+          <div class="card" style="border-radius:15px;padding:14px 12px">
+            <span class="label l-new">新</span>
+            <div class="item-title">Flutter 3.0 正式发布！一起来看看有哪些新特性</div>
+            <div class="collect-meta"><span>○ 鸿洋</span><span>1小时前</span></div>
+          </div>
+          <div class="card" style="border-radius:15px;padding:14px 12px">
+            <span class="label l-proj">项目</span>
+            <div class="item-title">手把手教你写一个完整的 Kotlin RecyclerView 框架</div>
+            <div class="collect-meta"><span>○ 郭霖</span><span>3小时前</span></div>
+          </div>
+          <div class="card" style="border-radius:15px;padding:14px 12px">
+            <span class="label l-qa">问答</span>
+            <div class="item-title">Android 12 有哪些值得注意的隐私变化？</div>
+            <div class="collect-meta"><span>○ 程序员</span><span>5小时前</span></div>
+          </div>
+          <div class="card" style="border-radius:15px;padding:14px 12px">
+            <span class="label l-new">新</span>
+            <div class="item-title">Jetpack Compose 入门完全指南：从入门到实战</div>
+            <div class="collect-meta"><span>○ 张鸿洋</span><span>昨天</span></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div>
+      <p class="scene-title">登录</p>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>⌕  ▮</span></div>
+        <div class="collect-head"><span class="back-icon">‹</span><span style="text-align:center">登录</span><span></span></div>
+        <div class="collect-seg"></div>
+        <div class="login-wrap">
+          <div class="logo">W</div>
+          <h3 class="login-title">欢迎回来</h3>
+          <div class="login-sub">登录玩Android账号</div>
+
+          <div class="field-label">用户名</div>
+          <div class="field">xiaoyang</div>
+
+          <div class="field-label">密码</div>
+          <div class="field">••••••</div>
+
+          <div class="login-btn">登录</div>
+          <div class="login-actions"><span>忘记密码</span><span>注册账号</span></div>
+          <div class="agreement">登录即表示同意 <span style="color:#2196f3">用户协议</span> 和 <span style="color:#2196f3">隐私政策</span></div>
+          <div class="login-bottom-space"></div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+</body>
+</html>

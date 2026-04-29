@@ -1,10 +1,10 @@
-import { DiscoverPage } from '../features/discover/DiscoverPage'
 import { HomePage } from '../features/home/HomePage'
 import { MinePage } from '../features/mine/MinePage'
 import { PlazaPage } from '../features/plaza/PlazaPage'
+import { KnowPage } from '../features/know/KnowPage'
+import { ProjectPage } from '../features/project/ProjectPage'
 import { SearchPage } from '../features/search/SearchPage'
 import { UserSharePage } from '../features/user/UserSharePage'
-import { WendaPage } from '../features/wenda/WendaPage'
 import { WebDetailPage } from '../features/web/WebDetailPage'
 import { UrlSecurityGuard } from '../common/web/UrlSecurityGuard'
 import { SessionEventBus, SessionEventType } from '../common/session/SessionEventBus'
@@ -12,9 +12,9 @@ import { UiTheme } from '../common/ui/UiTheme'
 
 enum MainTab {
   HOME = 0,
-  DISCOVER = 1,
-  PLAZA = 2,
-  WENDA = 3,
+  KNOW = 1,
+  PROJECT = 2,
+  PLAZA = 3,
   MINE = 4
 }
 
@@ -48,79 +48,80 @@ export struct AppShellPage {
 
   build() {
     Column() {
-      if (this.showSearch) {
-        SearchPage({
-          onBack: () => {
-            animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-              this.showSearch = false
-            })
-          },
-          onOpenLink: (url: string) => {
-            this.openLink(url)
-          }
-        })
-      } else if (this.showUserShare) {
-        UserSharePage({
-          userId: this.currentUserId,
-          username: this.currentUsername,
-          onBack: () => {
-            animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-              this.showUserShare = false
-            })
-          },
-          onOpenLink: (url: string) => {
-            this.openLink(url)
-          }
-        })
-      } else if (this.showWeb) {
-        WebDetailPage({
-          url: this.currentUrl,
-          onBack: () => {
-            animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-              this.showWeb = false
-            })
-          }
-        })
-      } else {
-        if (this.currentTab === MainTab.HOME) {
-          HomePage({
-            onOpenSearch: () => {
+      Column() {
+        if (this.showSearch) {
+          SearchPage({
+            onBack: () => {
               animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                this.showSearch = true
+                this.showSearch = false
               })
             },
             onOpenLink: (url: string) => {
               this.openLink(url)
             }
           })
-        } else if (this.currentTab === MainTab.DISCOVER) {
-          DiscoverPage()
-        } else if (this.currentTab === MainTab.PLAZA) {
-          PlazaPage({
+        } else if (this.showUserShare) {
+          UserSharePage({
+            userId: this.currentUserId,
+            username: this.currentUsername,
+            onBack: () => {
+              animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                this.showUserShare = false
+              })
+            },
             onOpenLink: (url: string) => {
               this.openLink(url)
-            },
-            onOpenUserShare: (userId: number, username: string) => {
-              this.openUserShare(userId, username)
             }
           })
-        } else if (this.currentTab === MainTab.WENDA) {
-          WendaPage({
-            onOpenLink: (url: string) => {
-              this.openLink(url)
-            },
-            onOpenUserShare: (userId: number, username: string) => {
-              this.openUserShare(userId, username)
+        } else if (this.showWeb) {
+          WebDetailPage({
+            url: this.currentUrl,
+            onBack: () => {
+              animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                this.showWeb = false
+              })
             }
           })
         } else {
-          MinePage({
-            onOpenLink: (url: string) => {
-              this.openLink(url)
-            }
-          })
+          if (this.currentTab === MainTab.HOME) {
+            HomePage({
+              onOpenSearch: () => {
+                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                  this.showSearch = true
+                })
+              },
+              onOpenLink: (url: string) => {
+                this.openLink(url)
+              }
+            })
+          } else if (this.currentTab === MainTab.KNOW) {
+            KnowPage()
+          } else if (this.currentTab === MainTab.PROJECT) {
+            ProjectPage({
+              onOpenLink: (url: string) => {
+                this.openLink(url)
+              }
+            })
+          } else if (this.currentTab === MainTab.PLAZA) {
+            PlazaPage({
+              onOpenLink: (url: string) => {
+                this.openLink(url)
+              },
+              onOpenUserShare: (userId: number, username: string) => {
+                this.openUserShare(userId, username)
+              }
+            })
+          } else {
+            MinePage({
+              onOpenLink: (url: string) => {
+                this.openLink(url)
+              }
+            })
+          }
         }
       }
+      .layoutWeight(1)
+      .width('100%')
 
       if (this.warning.length > 0 && !this.showSearch && !this.showWeb && !this.showUserShare) {
         Text(this.warning)
@@ -134,9 +135,9 @@ export struct AppShellPage {
       if (!this.showSearch && !this.showWeb && !this.showUserShare) {
         Row() {
           this.tabItem('首页', MainTab.HOME)
-          this.tabItem('发现', MainTab.DISCOVER)
+          this.tabItem('体系', MainTab.KNOW)
+          this.tabItem('项目', MainTab.PROJECT)
           this.tabItem('广场', MainTab.PLAZA)
-          this.tabItem('问答', MainTab.WENDA)
           this.tabItem('我的', MainTab.MINE)
         }
         .width('100%')
@@ -202,13 +203,13 @@ export struct AppShellPage {
     if (tab === MainTab.HOME) {
       return '⌂'
     }
-    if (tab === MainTab.DISCOVER) {
+    if (tab === MainTab.KNOW) {
       return '▦'
     }
-    if (tab === MainTab.PLAZA) {
+    if (tab === MainTab.PROJECT) {
       return '▤'
     }
-    if (tab === MainTab.WENDA) {
+    if (tab === MainTab.PLAZA) {
       return '◍'
     }
     return '◉'

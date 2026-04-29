@@ -94,6 +94,14 @@ export struct HomePage {
                 this.onOpenSearch()
               }
             })
+
+            Flex({ direction: FlexDirection.Row, wrap: FlexWrap.Wrap }) {
+              this.quickTag('问答')
+              this.quickTag('专栏')
+              this.quickTag('路线')
+              this.quickTag('鸿蒙')
+            }
+            .width('100%')
           }
         }
 
@@ -157,5 +165,15 @@ export struct HomePage {
     .width('100%')
     .height('100%')
     .backgroundColor(UiTheme.BG_PAGE)
+  }
+
+  @Builder
+  private quickTag(label: string) {
+    Text(label)
+      .fontSize(12)
+      .fontColor(UiTheme.BRAND_PRIMARY)
+      .padding({ left: 10, right: 10, top: 6, bottom: 6 })
+      .borderRadius(999)
+      .backgroundColor(UiTheme.BRAND_SOFT)
   }
 }
