@@ -1,4 +1,3 @@
-import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { parseErrorMessage } from '../../common/network/ErrorMessage'
 import { PagedListView } from '../../common/ui/components/PagedListView'
@@ -70,15 +69,7 @@ export struct HomePage {
   build() {
     Stack({ alignContent: Alignment.Center }) {
       Column() {
-        PageHeader({
-          title: '玩安卓',
-          rightText: '搜索',
-          onRightClick: () => {
-            if (this.onOpenSearch) {
-              this.onOpenSearch()
-            }
-          }
-        })
+        PageHeader({ title: '玩安卓' })
 
         PagedListView({
           status: this.vm.state.status,
@@ -93,7 +84,7 @@ export struct HomePage {
               this.heroBanner()
 
               Row() {
-                Text('搜索关键字...')
+                Text('搜索文章 / 项目...')
                   .fontColor(UiTheme.TEXT_TERTIARY)
                   .fontSize(14)
               }
@@ -101,7 +92,8 @@ export struct HomePage {
               .height(42)
               .backgroundColor(UiTheme.BG_CARD)
               .padding({ left: 16, right: 12 })
-              .borderRadius(22)
+              .borderRadius(999)
+              .border({ width: 1, color: '#E5E6EB' })
               .onClick(() => {
                 if (this.onOpenSearch) {
                   this.onOpenSearch()
@@ -124,52 +116,18 @@ export struct HomePage {
 
           if (this.vm.topArticles.length > 0) {
             ListItem() {
-              this.topArticlesCard()
+              this.sectionTitle('置顶文章')
             }
-          }
-
-          if (this.vm.harmony !== null) {
-            ListItem() {
-              Text('鸿蒙专栏：links / open_sources / tools')
-                .fontSize(14)
-                .fontColor(UiTheme.TEXT_WARNING)
-                .padding(12)
-                .backgroundColor(UiTheme.BG_WARNING)
-                .borderRadius(12)
-            }
+            ForEach(this.vm.topArticles.slice(0, 2), (top: HomeArticleItem) => {
+              ListItem() {
+                this.homeArticleCard(top, true)
+              }
+            }, (top: HomeArticleItem) => top.id.toString())
           }
 
           ForEach(this.vm.state.data || [], (item: HomeArticleItem) => {
             ListItem() {
-              ArticleCard({
-                article: {
-                  id: item.id,
-                  title: item.title,
-                  author: item.author,
-                  shareUser: item.shareUser,
-                  niceDate: item.niceDate
-                },
-                collected: this.isArticleCollected(item.id),
-                showCollectAction: true,
-                clickAction: () => {
-                  if (this.onOpenLink) {
-                    this.onOpenLink(item.link)
-                  }
-                },
-                toggleCollectAction: async () => {
-                  try {
-                    const nextCollected = await FavoriteService.shared().toggle(item.id)
-                    this.favoriteVersion++
-                    this.showActionToast(nextCollected ? '收藏成功' : '已取消收藏')
-                  } catch (error) {
-                    const message = parseErrorMessage(error)
-                    this.showActionToast(message)
-                    if (message.includes('登录') && this.onRequireLogin) {
-                      this.onRequireLogin()
-                    }
-                  }
-                }
-              })
+              this.homeArticleCard(item, false)
             }
           }, (item: HomeArticleItem) => item.id.toString())
         }

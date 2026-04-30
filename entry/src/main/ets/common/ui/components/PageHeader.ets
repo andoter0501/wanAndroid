@@ -55,7 +55,10 @@ export struct PageHeader {
       .width('100%')
       .height(56)
       .padding({ left: 16, right: 16 })
-      .backgroundColor(UiTheme.BRAND_PRIMARY)
+      .linearGradient({
+        angle: 180,
+        colors: [[UiTheme.BRAND_PRIMARY, 0], [UiTheme.BRAND_DEEP, 1]]
+      })
 
       Row() {}
       .width('100%')

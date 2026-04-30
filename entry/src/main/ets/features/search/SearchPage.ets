@@ -16,6 +16,7 @@ export struct SearchPage {
   onToast?: (message: string) => void
   @State vm: SearchViewModel = new SearchViewModel()
   @State favoriteVersion: number = 0
+  @State hasSubmittedSearch: boolean = false
   private readonly favoriteListener = (): void => {
     this.favoriteVersion++
   }
@@ -35,6 +36,7 @@ export struct SearchPage {
   }
 
   private async doSearch(): Promise<void> {
+    this.hasSubmittedSearch = this.vm.keyword.trim().length > 0
     await this.vm.search(this.vm.keyword)
     this.vm = this.vm
   }
@@ -56,74 +58,100 @@ export struct SearchPage {
         }
       })
 
-      Row({ space: 8 }) {
-        TextInput({ placeholder: '输入关键词', text: this.vm.keyword })
-          .layoutWeight(1)
-          .height(52)
-          .borderRadius(26)
-          .padding({ left: 12, right: 12 })
-          .backgroundColor(UiTheme.BG_CARD)
-          .border({ width: 1, color: '#E5E6EB' })
-          .onChange((value: string) => {
-            this.vm.keyword = value
-            this.vm = this.vm
-          })
-        Button('取消')
-          .type(ButtonType.Normal)
-          .backgroundColor(UiTheme.BG_PAGE)
+      Row({ space: 6 }) {
+        Row({ space: 6 }) {
+          Text('⌕')
+            .fontSize(15)
+            .fontColor(UiTheme.TEXT_TERTIARY)
+          TextInput({ placeholder: '搜索文章/项目...', text: this.vm.keyword })
+            .layoutWeight(1)
+            .height(38)
+            .fontSize(14)
+            .fontColor(UiTheme.TEXT_PRIMARY)
+            .placeholderColor(UiTheme.TEXT_TERTIARY)
+            .backgroundColor('#00000000')
+            .padding({ left: 0, right: 0 })
+            .onSubmit(() => {
+              this.doSearch()
+            })
+            .onChange((value: string) => {
+              this.vm.keyword = value
+              if (value.length === 0) {
+                this.hasSubmittedSearch = false
+              }
+              this.vm = this.vm
+            })
+        }
+        .layoutWeight(1)
+
+        Text('取消')
+          .fontSize(14)
           .fontColor(UiTheme.BRAND_PRIMARY)
+          .padding({ left: 8, right: 0, top: 8, bottom: 8 })
           .onClick(() => {
             if (this.onBack) {
               this.onBack()
             }
           })
-        Button('搜索')
-          .type(ButtonType.Capsule)
-          .onClick(() => this.doSearch())
       }
-      .padding({ left: 12, right: 12, top: 10, bottom: 8 })
+      .height(42)
+      .padding({ left: 14, right: 14 })
+      .margin({ left: 12, right: 12, top: 10, bottom: 10 })
+      .borderRadius(999)
+      .backgroundColor(UiTheme.BG_CARD)
+      .border({ width: 1, color: '#E5E6EB' })
 
-      this.hotKeySection()
-      this.historySection()
-      this.commonSitesSection()
-
-      PagedListView({
-        status: this.vm.resultState.status,
-        message: this.vm.resultState.message,
-        retryAction: () => this.doSearch(),
-        showLoadMore: this.vm.canLoadMore(),
-        isLoadingMore: this.vm.isLoadingMore,
-        loadMoreAction: () => this.onLoadMore()
-      }) {
-        ForEach(this.vm.resultState.data || [], (item: HomeArticleItem) => {
-          ListItem() {
-            ArticleCard({
-              article: {
-                id: item.id,
-                title: item.title,
-                author: item.author,
-                shareUser: item.shareUser,
-                niceDate: item.niceDate
-              },
-              collected: this.isArticleCollected(item.id),
-              showCollectAction: true,
-              clickAction: () => {
-                if (this.onOpenLink) {
-                  this.onOpenLink(item.link)
+      if (this.hasSubmittedSearch) {
+        PagedListView({
+          status: this.vm.resultState.status,
+          message: this.vm.resultState.message,
+          retryAction: () => this.doSearch(),
+          showLoadMore: this.vm.canLoadMore(),
+          isLoadingMore: this.vm.isLoadingMore,
+          loadMoreAction: () => this.onLoadMore()
+        }) {
+          ForEach(this.vm.resultState.data || [], (item: HomeArticleItem) => {
+            ListItem() {
+              ArticleCard({
+                article: {
+                  id: item.id,
+                  title: item.title,
+                  author: item.author,
+                  shareUser: item.shareUser,
+                  niceDate: item.niceDate
+                },
+                collected: this.isArticleCollected(item.id),
+                showCollectAction: true,
+                clickAction: () => {
+                  if (this.onOpenLink) {
+                    this.onOpenLink(item.link)
+                  }
+                },
+                toggleCollectAction: async () => {
+                  try {
+                    const nextCollected = await FavoriteService.shared().toggle(item.id)
+                    this.favoriteVersion++
+                    this.showActionToast(nextCollected ? '收藏成功' : '已取消收藏')
+                  } catch (error) {
+                    this.showActionToast(parseErrorMessage(error))
+                  }
                 }
-              },
-              toggleCollectAction: async () => {
-                try {
-                  const nextCollected = await FavoriteService.shared().toggle(item.id)
-                  this.favoriteVersion++
-                  this.showActionToast(nextCollected ? '收藏成功' : '已取消收藏')
-                } catch (error) {
-                  this.showActionToast(parseErrorMessage(error))
-                }
-              }
-            })
+              })
+            }
+          }, (item: HomeArticleItem) => item.id.toString())
+        }
+      } else {
+        Scroll() {
+          Column({ space: 10 }) {
+            this.historyCard()
+            this.hotKeyCard()
+            this.commonSitesSection()
           }
-        }, (item: HomeArticleItem) => item.id.toString())
+          .width('100%')
+          .padding({ left: 12, right: 12, bottom: 18 })
+        }
+        .layoutWeight(1)
+        .scrollBar(BarState.Off)
       }
     }
     .width('100%')
@@ -132,26 +160,27 @@ export struct SearchPage {
   }
 
   @Builder
-  private hotKeySection() {
+  private hotKeyCard() {
     StateView({
       status: this.vm.hotKeysState.status,
       message: this.vm.hotKeysState.message,
       retryAction: () => this.initPage()
     }) {
-      Column() {
+      Column({ space: 8 }) {
         Text('热门搜索')
           .fontSize(15)
           .fontWeight(FontWeight.Medium)
+          .fontColor(UiTheme.TEXT_PRIMARY)
           .width('100%')
-          .padding({ left: 12, right: 12, top: 6, bottom: 8 })
+          .padding({ left: 0, right: 0 })
         Scroll() {
           Row({ space: 8 }) {
             ForEach(this.vm.hotKeysState.data || [], (item: HotKeyItem) => {
               Text(item.name)
                 .fontSize(13)
-                .fontColor(UiTheme.TEXT_PRIMARY)
-                .padding({ left: 14, right: 14, top: 8, bottom: 8 })
-                .backgroundColor(UiTheme.BG_CARD)
+                .fontColor(UiTheme.BRAND_DEEP)
+                .padding({ left: 12, right: 12, top: 6, bottom: 6 })
+                .backgroundColor(UiTheme.BRAND_SOFT)
                 .borderRadius(999)
                 .onClick(async () => {
                   this.vm.keyword = item.name
@@ -159,23 +188,26 @@ export struct SearchPage {
                 })
             }, (item: HotKeyItem) => item.id.toString())
           }
-          .padding({ left: 12, right: 12, bottom: 10 })
         }
         .scrollable(ScrollDirection.Horizontal)
       }
+      .width('100%')
+      .padding(11)
+      .backgroundColor(UiTheme.BG_CARD)
+      .borderRadius(UiTheme.RADIUS_MD)
     }
   }
 
   @Builder
-  private historySection() {
-    if (this.vm.history.length > 0) {
-      Column() {
-        Row() {
-          Text('历史搜索')
-            .fontSize(15)
-            .fontWeight(FontWeight.Medium)
-            .fontColor(UiTheme.TEXT_PRIMARY)
-          Blank()
+  private historyCard() {
+    Column({ space: 8 }) {
+      Row() {
+        Text('搜索历史')
+          .fontSize(15)
+          .fontWeight(FontWeight.Medium)
+          .fontColor(UiTheme.TEXT_PRIMARY)
+        Blank()
+        if (this.vm.history.length > 0) {
           Text('清空')
             .fontSize(13)
             .fontColor(UiTheme.BRAND_PRIMARY)
@@ -184,16 +216,19 @@ export struct SearchPage {
               this.vm = this.vm
             })
         }
-        .width('100%')
-        .padding({ left: 12, right: 12, top: 6, bottom: 8 })
+      }
+      .width('100%')
+      .padding({ left: 0, right: 0 })
+
+      if (this.vm.history.length > 0) {
         Scroll() {
           Row({ space: 8 }) {
             ForEach(this.vm.history, (item: string) => {
               Text(item)
                 .fontSize(13)
-                .fontColor(UiTheme.TEXT_PRIMARY)
-                .padding({ left: 14, right: 14, top: 8, bottom: 8 })
-                .backgroundColor(UiTheme.BG_CARD)
+                .fontColor(UiTheme.BRAND_DEEP)
+                .padding({ left: 12, right: 12, top: 6, bottom: 6 })
+                .backgroundColor(UiTheme.BRAND_SOFT)
                 .borderRadius(999)
                 .onClick(async () => {
                   this.vm.keyword = item
@@ -201,45 +236,62 @@ export struct SearchPage {
                 })
             }, (item: string) => item)
           }
-          .padding({ left: 12, right: 12, bottom: 10 })
         }
         .scrollable(ScrollDirection.Horizontal)
+      } else {
+        Row({ space: 8 }) {
+          this.suggestChip('Flutter')
+          this.suggestChip('Kotlin')
+          this.suggestChip('Jetpack')
+          this.suggestChip('Compose')
+        }
       }
     }
+    .width('100%')
+    .padding(11)
+    .backgroundColor(UiTheme.BG_CARD)
+    .borderRadius(UiTheme.RADIUS_MD)
   }
 
   @Builder
   private commonSitesSection() {
-    Column({ space: 8 }) {
-      Text('常用网站')
-        .fontSize(15)
-        .fontWeight(FontWeight.Medium)
-        .width('100%')
-        .padding({ left: 12, right: 12, top: 8 })
+    Column({ space: 10 }) {
       Row({ space: 10 }) {
         this.siteCard('官方文档', 'Android / Flutter')
         this.siteCard('社区', '掘金 / SegmentFault')
       }
       .width('100%')
-      .padding({ left: 12, right: 12, bottom: 8 })
     }
   }
 
   @Builder
+  private suggestChip(label: string) {
+    Text(label)
+      .fontSize(13)
+      .fontColor(UiTheme.BRAND_DEEP)
+      .padding({ left: 12, right: 12, top: 6, bottom: 6 })
+      .backgroundColor(UiTheme.BRAND_SOFT)
+      .borderRadius(999)
+      .onClick(async () => {
+        this.vm.keyword = label
+        await this.doSearch()
+      })
+  }
+
+  @Builder
   private siteCard(title: string, subtitle: string) {
-    Column({ space: 8 }) {
+    Column({ space: 7 }) {
       Text(title)
-        .fontSize(16)
+        .fontSize(15)
         .fontWeight(FontWeight.Medium)
         .fontColor(UiTheme.TEXT_PRIMARY)
       Text(subtitle)
-        .fontSize(13)
+        .fontSize(11)
         .fontColor(UiTheme.TEXT_SECONDARY)
     }
     .layoutWeight(1)
     .alignItems(HorizontalAlign.Start)
-    .height(96)
-    .padding(12)
+    .padding(11)
     .backgroundColor(UiTheme.BG_CARD)
     .borderRadius(UiTheme.RADIUS_MD)
   }

@@ -38,7 +38,7 @@ export struct MinePage {
 
   build() {
     Column() {
-      PageHeader({ title: '我的' })
+      PageHeader({ title: '我的', showBack: true })
 
       if (this.authVm.authState.status === LoadStatus.Success && this.authVm.authState.data) {
         this.profilePanel()
@@ -55,9 +55,9 @@ export struct MinePage {
 
   @Builder
   private guestPanel() {
-    Column({ space: 12 }) {
+    Column({ space: 10 }) {
       Text('未登录')
-        .fontSize(22)
+        .fontSize(20)
         .fontWeight(FontWeight.Bold)
         .fontColor('#FFFFFF')
       Text('登录后可查看收藏与消息')
@@ -75,8 +75,11 @@ export struct MinePage {
     }
     .alignItems(HorizontalAlign.Start)
     .width('100%')
-    .padding(16)
-    .backgroundColor(UiTheme.BRAND_PRIMARY)
+    .padding({ left: 14, right: 14, top: 16, bottom: 68 })
+    .linearGradient({
+      angle: 135,
+      colors: [['#2EA0F8', 0], ['#1F83DF', 1]]
+    })
   }
 
   @Builder
@@ -84,7 +87,7 @@ export struct MinePage {
     Column() {
       Row({ space: 10 }) {
         Stack({ alignContent: Alignment.Center }) {
-          Text('◉').fontSize(24).fontColor('#FFFFFFAA')
+          Text('◉').fontSize(30).fontColor('#FFFFFFCC')
         }
         .width(64)
         .height(64)
@@ -93,12 +96,12 @@ export struct MinePage {
 
         Column({ space: 4 }) {
           Text(this.authVm.authState.data ? this.authVm.authState.data.nickname : '')
-            .fontSize(22)
+            .fontSize(20)
             .fontWeight(FontWeight.Bold)
             .fontColor('#FFFFFF')
           Text(`Lv.${this.authVm.userInfoState.data ? this.authVm.userInfoState.data.coinInfo.level : 1} · 排名 #${this.authVm.userInfoState.data ? this.authVm.userInfoState.data.coinInfo.rank : '-'}`)
-            .fontSize(12)
-            .fontColor('#FFFFFFCC')
+            .fontSize(13)
+            .fontColor('#FFFFFFE6')
         }
         .alignItems(HorizontalAlign.Start)
 
@@ -120,21 +123,24 @@ export struct MinePage {
         this.statCell('--', '收藏')
       }
       .width('100%')
-      .padding({ top: 12, bottom: 12 })
+      .padding({ left: 8, right: 8, top: 12, bottom: 12 })
       .backgroundColor(UiTheme.BG_CARD)
       .borderRadius(14)
-      .margin({ top: 12, bottom: -30 })
+      .margin({ top: 16, bottom: -98 })
     }
     .width('100%')
-    .padding({ left: 16, right: 16, top: 16, bottom: 30 })
-    .backgroundColor(UiTheme.BRAND_PRIMARY)
+    .padding({ left: 14, right: 14, top: 16, bottom: 68 })
+    .linearGradient({
+      angle: 135,
+      colors: [['#2EA0F8', 0], ['#1F83DF', 1]]
+    })
   }
 
   @Builder
   private statCell(value: string | number, label: string) {
     Column({ space: 2 }) {
       Text(`${value}`)
-        .fontSize(20)
+        .fontSize(22)
         .fontWeight(FontWeight.Bold)
         .fontColor(UiTheme.TEXT_PRIMARY)
       Text(label)
@@ -169,15 +175,17 @@ export struct MinePage {
       .clip(true)
     }
     .width('100%')
-    .padding({ top: loggedIn ? 40 : 14, left: 12, right: 12 })
+    .padding({ top: loggedIn ? 56 : 14, left: 12, right: 12 })
     .backgroundColor(UiTheme.BG_PAGE)
 
     if (loggedIn) {
       Text('退出登录')
-        .fontSize(20)
+        .width('100%')
+        .textAlign(TextAlign.Center)
+        .fontSize(15)
         .fontColor(UiTheme.TEXT_DANGER)
-        .fontWeight(FontWeight.Medium)
-        .margin({ top: 26 })
+        .fontWeight(FontWeight.Bold)
+        .margin({ top: 8 })
         .onClick(async () => {
           await this.doLogout()
         })
@@ -186,31 +194,30 @@ export struct MinePage {
 
   @Builder
   private menuRow(label: string, rightValue: string, clickAction: () => void) {
-    Row({ space: 12 }) {
-      Row() {}
-        .width(32)
-        .height(32)
-        .backgroundColor('#F4F6F8')
-        .borderRadius(10)
-
+    Row() {
       Text(label)
-        .fontSize(16)
+        .fontSize(15)
         .fontColor(UiTheme.TEXT_PRIMARY)
       Blank()
       if (rightValue.length > 0) {
         Text(rightValue)
-          .fontSize(14)
-          .fontColor(UiTheme.TEXT_SECONDARY)
-          .margin({ right: 6 })
+          .fontSize(11)
+          .fontColor(label === 'TODO' ? '#FFFFFF' : UiTheme.TEXT_SECONDARY)
+          .textAlign(TextAlign.Center)
+          .padding({ left: 6, right: 6, top: 2, bottom: 2 })
+          .backgroundColor(label === 'TODO' ? '#F53F3F' : '#00000000')
+          .borderRadius(999)
+          .margin({ right: label === 'TODO' ? 0 : 6 })
+      } else {
+        Text('›')
+          .fontSize(18)
+          .fontColor(UiTheme.TEXT_TERTIARY)
       }
-      Text('›')
-        .fontSize(18)
-        .fontColor(UiTheme.TEXT_TERTIARY)
     }
     .width('100%')
-    .padding({ left: 14, right: 14, top: 14, bottom: 14 })
+    .padding({ left: 2, right: 2, top: 12, bottom: 12 })
     .backgroundColor(UiTheme.BG_CARD)
-    .border({ width: { bottom: 1 }, color: '#EEF1F5' })
+    .border({ width: { bottom: 1 }, color: '#E5E6EB' })
     .onClick(() => {
       clickAction()
     })
