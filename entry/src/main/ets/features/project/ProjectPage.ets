@@ -96,21 +96,26 @@ export struct ProjectPage {
   private projectCard(item: ProjectItem) {
     Column({ space: 7 }) {
       Text(item.title)
+        .width('100%')
         .fontSize(15)
         .fontWeight(FontWeight.Medium)
         .fontColor(UiTheme.TEXT_PRIMARY)
         .lineHeight(20)
+        .textAlign(TextAlign.Start)
         .maxLines(2)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
 
       Text(item.desc || `${item.author || '项目作者'} · ${item.niceDate || ''}`)
+        .width('100%')
         .fontSize(11)
         .fontColor(UiTheme.TEXT_SECONDARY)
         .lineHeight(16)
+        .textAlign(TextAlign.Start)
         .maxLines(2)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
     }
     .width('100%')
+    .alignItems(HorizontalAlign.Start)
     .padding(11)
     .backgroundColor(UiTheme.BG_CARD)
     .borderRadius(UiTheme.RADIUS_MD)

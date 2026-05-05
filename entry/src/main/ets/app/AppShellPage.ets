@@ -153,7 +153,11 @@ export struct AppShellPage {
                 }
               })
             } else if (this.currentTab === MainTab.KNOW) {
-              KnowPage()
+              KnowPage({
+                onOpenLink: (url: string) => {
+                  this.openLink(url)
+                }
+              })
             } else if (this.currentTab === MainTab.PROJECT) {
               ProjectPage({
                 onOpenLink: (url: string) => {

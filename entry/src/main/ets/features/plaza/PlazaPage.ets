@@ -84,10 +84,12 @@ export struct PlazaPage {
   private plazaCard(item: PlazaArticle) {
     Column({ space: 7 }) {
       Text(item.title)
+        .width('100%')
         .fontSize(15)
         .fontWeight(FontWeight.Medium)
         .fontColor(UiTheme.TEXT_PRIMARY)
         .lineHeight(20)
+        .textAlign(TextAlign.Start)
         .maxLines(2)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
         .onClick(() => {
@@ -98,8 +100,10 @@ export struct PlazaPage {
 
       Row() {
         Text(`作者: ${this.authorName(item)} · ${item.niceDate || ''}`)
+          .width('100%')
           .fontSize(11)
           .fontColor(UiTheme.TEXT_SECONDARY)
+          .textAlign(TextAlign.Start)
           .maxLines(1)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
           .layoutWeight(1)
@@ -126,6 +130,7 @@ export struct PlazaPage {
       .width('100%')
     }
     .width('100%')
+    .alignItems(HorizontalAlign.Start)
     .padding(11)
     .backgroundColor(UiTheme.BG_CARD)
     .borderRadius(UiTheme.RADIUS_MD)

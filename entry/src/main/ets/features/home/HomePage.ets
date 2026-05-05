@@ -1,5 +1,6 @@
 import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { parseErrorMessage } from '../../common/network/ErrorMessage'
+import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { UiTheme } from '../../common/ui/UiTheme'
@@ -194,6 +195,65 @@ export struct HomePage {
         this.onOpenLink(banner.url)
       }
     })
+  }
+
+  @Builder
+  private sectionTitle(title: string) {
+    Row({ space: 8 }) {
+      Column() {}
+        .width(4)
+        .height(18)
+        .borderRadius(2)
+        .backgroundColor(UiTheme.BRAND_PRIMARY)
+      Text(title)
+        .fontSize(18)
+        .fontWeight(FontWeight.Bold)
+        .fontColor(UiTheme.TEXT_PRIMARY)
+    }
+    .width('100%')
+    .padding({ left: 4, right: 4, top: 4, bottom: 2 })
+  }
+
+  @Builder
+  private homeArticleCard(item: HomeArticleItem, isTop: boolean) {
+    Column({ space: 8 }) {
+      if (isTop) {
+        Text('置顶')
+          .fontSize(11)
+          .fontWeight(FontWeight.Bold)
+          .fontColor('#FFFFFF')
+          .padding({ left: 8, right: 8, top: 3, bottom: 3 })
+          .backgroundColor('#FF5B26')
+          .borderRadius(6)
+      }
+
+      ArticleCard({
+        article: {
+          id: item.id,
+          title: item.title,
+          author: item.author,
+          shareUser: item.shareUser,
+          niceDate: item.niceDate
+        },
+        collected: this.isArticleCollected(item.id),
+        showCollectAction: true,
+        clickAction: () => {
+          if (this.onOpenLink) {
+            this.onOpenLink(item.link)
+          }
+        },
+        toggleCollectAction: async () => {
+          try {
+            const nextCollected = await FavoriteService.shared().toggle(item.id)
+            this.favoriteVersion++
+            this.showActionToast(nextCollected ? '收藏成功' : '已取消收藏')
+          } catch (error) {
+            this.showActionToast(parseErrorMessage(error))
+          }
+        }
+      })
+    }
+    .width('100%')
   }
 
   @Builder

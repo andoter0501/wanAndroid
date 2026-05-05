@@ -1,5 +1,6 @@
 import { UiState } from '../../common/ui/LoadState'
 import { parseErrorMessage } from '../../common/network/ErrorMessage'
+import { HomeArticleItem } from '../home/HomeRepository'
 import {
   DiscoverRepository,
   NaviGroup,
@@ -14,13 +15,19 @@ export class DiscoverViewModel {
   treeState: UiState<TreeNode[]> = UiState.loading<TreeNode[]>()
   naviState: UiState<NaviGroup[]> = UiState.loading<NaviGroup[]>()
   projectState: UiState<ProjectItem[]> = UiState.loading<ProjectItem[]>()
+  articleState: UiState<HomeArticleItem[]> = UiState.empty<HomeArticleItem[]>()
 
   projectCategories: ProjectCategory[] = []
   selectedProjectCid: number = 0
+  selectedArticleCid: number = 0
+  selectedArticleTitle: string = ''
 
   private projectPage: number = 1
   private hasMoreProject: boolean = true
   isLoadingMoreProject: boolean = false
+  private articlePage: number = 0
+  private hasMoreArticle: boolean = true
+  isLoadingMoreArticle: boolean = false
 
   constructor(repository: DiscoverRepository = new DiscoverRepository()) {
     this.repository = repository
@@ -102,7 +109,8 @@ export class DiscoverViewModel {
       this.projectState = UiState.success(this.projectState.data.concat(pageData.datas || []))
       this.projectPage = nextPage
       this.hasMoreProject = pageData.curPage < pageData.pageCount
-    } catch (_) {
+    } catch (error) {
+      parseErrorMessage(error)
       // 保持当前项目列表
     } finally {
       this.isLoadingMoreProject = false
@@ -111,6 +119,52 @@ export class DiscoverViewModel {
 
   canLoadMoreProject(): boolean {
     return this.hasMoreProject
+  }
+
+  async loadArticlesFirstPage(cid: number, title: string): Promise<void> {
+    this.selectedArticleCid = cid
+    this.selectedArticleTitle = title
+    this.articlePage = 0
+    this.articleState = UiState.loading<HomeArticleItem[]>()
+    try {
+      const pageData = await this.repository.loadArticlesByCid(0, cid)
+      const items = pageData.datas || []
+      this.hasMoreArticle = pageData.curPage < pageData.pageCount
+      this.articleState = items.length > 0 ? UiState.success(items) : UiState.empty('该分类暂无文章')
+    } catch (error) {
+      this.articleState = UiState.error<HomeArticleItem[]>(parseErrorMessage(error))
+    }
+  }
+
+  async loadMoreArticles(): Promise<void> {
+    if (this.isLoadingMoreArticle || !this.hasMoreArticle || !this.articleState.data) {
+      return
+    }
+    this.isLoadingMoreArticle = true
+    try {
+      const nextPage = this.articlePage + 1
+      const pageData = await this.repository.loadArticlesByCid(nextPage, this.selectedArticleCid)
+      this.articleState = UiState.success(this.articleState.data.concat(pageData.datas || []))
+      this.articlePage = nextPage
+      this.hasMoreArticle = pageData.curPage < pageData.pageCount
+    } catch (error) {
+      parseErrorMessage(error)
+      // 保持当前分类文章列表
+    } finally {
+      this.isLoadingMoreArticle = false
+    }
+  }
+
+  canLoadMoreArticle(): boolean {
+    return this.hasMoreArticle
+  }
+
+  clearSelectedArticleCategory(): void {
+    this.selectedArticleCid = 0
+    this.selectedArticleTitle = ''
+    this.articlePage = 0
+    this.hasMoreArticle = true
+    this.articleState = UiState.empty<HomeArticleItem[]>()
   }
 
 }
