@@ -25,7 +25,7 @@ export struct ProjectPage {
 
   build() {
     Column() {
-      PageHeader({ title: '项目', showBack: true })
+      PageHeader({ title: '项目' })
 
       Column() {
         Scroll() {

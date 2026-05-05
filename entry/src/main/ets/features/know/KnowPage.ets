@@ -25,7 +25,7 @@ export struct KnowPage {
     Column() {
       PageHeader({
         title: this.pageTitle(),
-        showBack: true,
+        showBack: this.vm.selectedArticleCid > 0,
         onBack: () => {
           this.handleBack()
         }

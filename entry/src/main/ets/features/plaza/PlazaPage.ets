@@ -39,7 +39,7 @@ export struct PlazaPage {
 
   build() {
     Column() {
-      PageHeader({ title: '广场', showBack: true })
+      PageHeader({ title: '广场' })
 
       Column() {
         StateView({

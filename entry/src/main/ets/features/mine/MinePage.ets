@@ -38,7 +38,7 @@ export struct MinePage {
 
   build() {
     Column() {
-      PageHeader({ title: '我的', showBack: true })
+      PageHeader({ title: '我的' })
 
       if (this.authVm.authState.status === LoadStatus.Success && this.authVm.authState.data) {
         this.profilePanel()
