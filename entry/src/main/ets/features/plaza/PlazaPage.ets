@@ -1,5 +1,6 @@
 import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { parseErrorMessage } from '../../common/network/ErrorMessage'
+import { SessionStore } from '../../common/storage/SessionStore'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { StateView } from '../../common/ui/components/StateView'
 import { UiTheme } from '../../common/ui/UiTheme'
@@ -11,6 +12,7 @@ export struct PlazaPage {
   onOpenLink?: (url: string) => void
   onOpenUserShare?: (userId: number, username: string) => void
   onToast?: (message: string) => void
+  onRequireLogin?: () => void
 
   @State vm: PlazaViewModel = new PlazaViewModel()
   @State favoriteVersion: number = 0
@@ -118,6 +120,9 @@ export struct PlazaPage {
           .fontColor(this.isArticleCollected(item.id) ? UiTheme.BRAND_PRIMARY : UiTheme.TEXT_TERTIARY)
           .padding({ left: 10 })
           .onClick(async () => {
+            if (!this.ensureLogin()) {
+              return
+            }
             try {
               const nextCollected = await FavoriteService.shared().toggle(item.id)
               this.favoriteVersion++
@@ -144,6 +149,18 @@ export struct PlazaPage {
     if (this.onToast) {
       this.onToast(message)
     }
+  }
+
+  private ensureLogin(): boolean {
+    if (SessionStore.shared().isLogin()) {
+      return true
+    }
+    if (this.onRequireLogin) {
+      this.onRequireLogin()
+    } else {
+      this.showActionToast('请先登录')
+    }
+    return false
   }
 
   private isArticleCollected(articleId: number): boolean {

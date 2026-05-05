@@ -46,9 +46,9 @@ export struct CollectPage {
           retryAction: () => this.loadFirst()
         }) {
           List({ space: 10 }) {
-            ForEach(this.vm.state.data || [], (item: CollectItem, index: number) => {
+            ForEach(this.vm.state.data || [], (item: CollectItem) => {
               ListItem() {
-                this.collectCard(item, index)
+                this.collectCard(item)
               }
             }, (item: CollectItem) => item.id.toString())
 
@@ -79,43 +79,21 @@ export struct CollectPage {
   }
 
   @Builder
-  private collectCard(item: CollectItem, index: number) {
-    Column({ space: 10 }) {
-      Text(this.labelText(index))
-        .fontSize(11)
-        .fontWeight(FontWeight.Bold)
-        .fontColor('#FFFFFF')
-        .padding({ left: 9, right: 9, top: 3, bottom: 3 })
-        .backgroundColor(this.labelColor(index))
-        .borderRadius(6)
-
-      Text(item.title)
-        .fontSize(15)
-        .fontWeight(FontWeight.Medium)
-        .fontColor(UiTheme.TEXT_PRIMARY)
-        .lineHeight(20)
-        .maxLines(2)
-        .textOverflow({ overflow: TextOverflow.Ellipsis })
-        .onClick(() => {
-          if (this.onOpenLink) {
-            this.onOpenLink(item.link)
-          }
-        })
-
+  private collectCard(item: CollectItem) {
+    Column({ space: 9 }) {
       Row() {
-        Text(`○ ${item.author || '作者'}`)
+        Text(this.collectTypeText(item))
           .fontSize(11)
-          .fontColor(UiTheme.TEXT_TERTIARY)
-          .maxLines(1)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
-          .layoutWeight(1)
-        Text(item.niceDate || '')
-          .fontSize(11)
-          .fontColor(UiTheme.TEXT_TERTIARY)
-        Text('取消')
-          .fontSize(11)
+          .fontWeight(FontWeight.Medium)
+          .fontColor(UiTheme.BRAND_DEEP)
+          .padding({ left: 8, right: 8, top: 3, bottom: 3 })
+          .backgroundColor(UiTheme.BRAND_SOFT)
+          .borderRadius(6)
+        Blank()
+        Text('取消收藏')
+          .fontSize(12)
           .fontColor(UiTheme.TEXT_DANGER)
-          .padding({ left: 10 })
+          .padding({ left: 8, right: 0, top: 4, bottom: 4 })
           .onClick(async () => {
             try {
               await this.vm.uncollect(item.id)
@@ -127,31 +105,60 @@ export struct CollectPage {
           })
       }
       .width('100%')
+
+      Text(item.title)
+        .width('100%')
+        .fontSize(15)
+        .fontWeight(FontWeight.Medium)
+        .fontColor(UiTheme.TEXT_PRIMARY)
+        .lineHeight(20)
+        .textAlign(TextAlign.Start)
+        .maxLines(2)
+        .textOverflow({ overflow: TextOverflow.Ellipsis })
+        .onClick(() => {
+          if (this.onOpenLink) {
+            this.onOpenLink(item.link)
+          }
+        })
+
+      Row({ space: 8 }) {
+        Text(this.collectMetaText(item))
+          .layoutWeight(1)
+          .fontSize(11)
+          .fontColor(UiTheme.TEXT_TERTIARY)
+          .textAlign(TextAlign.Start)
+          .maxLines(1)
+          .textOverflow({ overflow: TextOverflow.Ellipsis })
+        Text(item.niceDate || '')
+          .fontSize(11)
+          .fontColor(UiTheme.TEXT_TERTIARY)
+      }
+      .width('100%')
     }
     .width('100%')
+    .alignItems(HorizontalAlign.Start)
     .padding({ left: 12, right: 12, top: 14, bottom: 14 })
     .backgroundColor(UiTheme.BG_CARD)
-    .borderRadius(15)
+    .borderRadius(UiTheme.RADIUS_MD)
   }
 
-  private labelText(index: number): string {
-    if (index % 3 === 1) {
-      return '项目'
+  private collectTypeText(item: CollectItem): string {
+    const chapter = item.chapterName || ''
+    const superChapter = item.superChapterName || ''
+    if (chapter.length > 0 && superChapter.length > 0) {
+      return `${superChapter} / ${chapter}`
     }
-    if (index % 3 === 2) {
-      return '问答'
+    if (chapter.length > 0) {
+      return chapter
     }
-    return '新'
+    if (item.originId <= 0) {
+      return '站外'
+    }
+    return '文章'
   }
 
-  private labelColor(index: number): string {
-    if (index % 3 === 1) {
-      return '#4CAF50'
-    }
-    if (index % 3 === 2) {
-      return '#8E24AA'
-    }
-    return '#FF5B26'
+  private collectMetaText(item: CollectItem): string {
+    return item.author || '作者'
   }
 
   private showActionToast(message: string): void {

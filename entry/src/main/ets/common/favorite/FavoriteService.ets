@@ -43,6 +43,11 @@ export class FavoriteService {
     this.emit()
   }
 
+  clear(): void {
+    this.cache.clear()
+    this.emit()
+  }
+
   async toggle(articleId: number): Promise<boolean> {
     const current = this.isCollected(articleId)
     if (current) {

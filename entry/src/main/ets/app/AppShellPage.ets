@@ -9,6 +9,7 @@ import { SearchPage } from '../features/search/SearchPage'
 import { UserSharePage } from '../features/user/UserSharePage'
 import { WebDetailPage } from '../features/web/WebDetailPage'
 import { UrlSecurityGuard } from '../common/web/UrlSecurityGuard'
+import { FavoriteService } from '../common/favorite/FavoriteService'
 import { SessionEventBus, SessionEventType } from '../common/session/SessionEventBus'
 import { UiTheme } from '../common/ui/UiTheme'
 
@@ -28,6 +29,7 @@ export struct AppShellPage {
   @State showUserShare: boolean = false
   @State showLogin: boolean = false
   @State showCollect: boolean = false
+  @State loginReturnToMine: boolean = false
   @State currentUrl: string = ''
   @State currentUserId: number = 0
   @State currentUsername: string = ''
@@ -40,6 +42,8 @@ export struct AppShellPage {
       this.showUserShare = false
       this.showLogin = false
       this.showCollect = false
+      this.loginReturnToMine = false
+      FavoriteService.shared().clear()
       this.currentTab = MainTab.MINE
       this.showToast(message || '登录已失效，请重新登录')
     }
@@ -70,6 +74,9 @@ export struct AppShellPage {
               },
               onToast: (message: string) => {
                 this.showToast(message)
+              },
+              onRequireLogin: () => {
+                this.openLogin(false)
               }
             })
           } else if (this.showUserShare) {
@@ -86,6 +93,9 @@ export struct AppShellPage {
               },
               onToast: (message: string) => {
                 this.showToast(message)
+              },
+              onRequireLogin: () => {
+                this.openLogin(false)
               }
             })
           } else if (this.showWeb) {
@@ -102,13 +112,16 @@ export struct AppShellPage {
               onBack: () => {
                 animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
                   this.showLogin = false
+                  this.loginReturnToMine = false
                 })
               },
               onSuccess: () => {
-                this.currentTab = MainTab.MINE
                 animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
                   this.showLogin = false
-                  this.currentTab = MainTab.MINE
+                  if (this.loginReturnToMine) {
+                    this.currentTab = MainTab.MINE
+                  }
+                  this.loginReturnToMine = false
                 })
               }
             })
@@ -147,9 +160,7 @@ export struct AppShellPage {
                   }
                 },
                 onRequireLogin: () => {
-                  animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                    this.showLogin = true
-                  })
+                  this.openLogin(false)
                 }
               })
             } else if (this.currentTab === MainTab.KNOW) {
@@ -174,6 +185,9 @@ export struct AppShellPage {
                 },
                 onToast: (message: string) => {
                   this.showToast(message)
+                },
+                onRequireLogin: () => {
+                  this.openLogin(false)
                 }
               })
             } else {
@@ -187,9 +201,7 @@ export struct AppShellPage {
                   })
                 },
                 onRequireLogin: () => {
-                  animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                    this.showLogin = true
-                  })
+                  this.openLogin(true)
                 }
               })
             }
@@ -263,6 +275,13 @@ export struct AppShellPage {
   private switchTab(tab: MainTab): void {
     animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
       this.currentTab = tab
+    })
+  }
+
+  private openLogin(returnToMine: boolean): void {
+    this.loginReturnToMine = returnToMine
+    animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+      this.showLogin = true
     })
   }
 

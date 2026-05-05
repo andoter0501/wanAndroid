@@ -1,6 +1,7 @@
 import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { parseErrorMessage } from '../../common/network/ErrorMessage'
+import { SessionStore } from '../../common/storage/SessionStore'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { UiTheme } from '../../common/ui/UiTheme'
 import { PagedListView } from '../../common/ui/components/PagedListView'
@@ -14,6 +15,7 @@ export struct UserSharePage {
   onBack?: () => void
   onOpenLink?: (url: string) => void
   onToast?: (message: string) => void
+  onRequireLogin?: () => void
 
   @State vm: UserShareViewModel = new UserShareViewModel()
   @State favoriteVersion: number = 0
@@ -83,6 +85,9 @@ export struct UserSharePage {
                 }
               },
               toggleCollectAction: async () => {
+                if (!this.ensureLogin()) {
+                  return
+                }
                 try {
                   const nextCollected = await FavoriteService.shared().toggle(item.id)
                   this.favoriteVersion++
@@ -127,6 +132,18 @@ export struct UserSharePage {
     if (this.onToast) {
       this.onToast(message)
     }
+  }
+
+  private ensureLogin(): boolean {
+    if (SessionStore.shared().isLogin()) {
+      return true
+    }
+    if (this.onRequireLogin) {
+      this.onRequireLogin()
+    } else {
+      this.showActionToast('请先登录')
+    }
+    return false
   }
 
   private isArticleCollected(articleId: number): boolean {

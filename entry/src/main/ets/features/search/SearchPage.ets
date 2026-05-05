@@ -1,6 +1,7 @@
 import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { parseErrorMessage } from '../../common/network/ErrorMessage'
+import { SessionStore } from '../../common/storage/SessionStore'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { UiTheme } from '../../common/ui/UiTheme'
@@ -14,6 +15,7 @@ export struct SearchPage {
   onBack?: () => void
   onOpenLink?: (url: string) => void
   onToast?: (message: string) => void
+  onRequireLogin?: () => void
   @State vm: SearchViewModel = new SearchViewModel()
   @State favoriteVersion: number = 0
   @State hasSubmittedSearch: boolean = false
@@ -128,6 +130,9 @@ export struct SearchPage {
                   }
                 },
                 toggleCollectAction: async () => {
+                  if (!this.ensureLogin()) {
+                    return
+                  }
                   try {
                     const nextCollected = await FavoriteService.shared().toggle(item.id)
                     this.favoriteVersion++
@@ -300,6 +305,18 @@ export struct SearchPage {
     if (this.onToast) {
       this.onToast(message)
     }
+  }
+
+  private ensureLogin(): boolean {
+    if (SessionStore.shared().isLogin()) {
+      return true
+    }
+    if (this.onRequireLogin) {
+      this.onRequireLogin()
+    } else {
+      this.showActionToast('请先登录')
+    }
+    return false
   }
 
   private isArticleCollected(articleId: number): boolean {

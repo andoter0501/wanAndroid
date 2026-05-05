@@ -47,7 +47,8 @@ export class CollectViewModel {
       this.state = UiState.success(this.state.data.concat(pageData.datas || []))
       this.page = nextPage
       this.hasMore = pageData.curPage < pageData.pageCount
-    } catch (_) {
+    } catch (error) {
+      parseErrorMessage(error)
       // 保留当前数据
     } finally {
       this.isLoadingMore = false
@@ -65,8 +66,8 @@ export class CollectViewModel {
         const next = this.state.data.filter((item) => item.id !== itemId)
         this.state = next.length > 0 ? UiState.success(next) : UiState.empty('暂无收藏内容')
       }
-    } catch (_) {
-      // 保持当前列表
+    } catch (error) {
+      throw new Error(parseErrorMessage(error))
     }
   }
 

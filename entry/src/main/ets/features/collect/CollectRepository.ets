@@ -9,6 +9,8 @@ export interface CollectItem {
   author?: string
   link: string
   niceDate?: string
+  chapterName?: string
+  superChapterName?: string
 }
 
 export interface CollectPage {

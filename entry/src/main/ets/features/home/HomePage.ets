@@ -1,5 +1,6 @@
 import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { parseErrorMessage } from '../../common/network/ErrorMessage'
+import { SessionStore } from '../../common/storage/SessionStore'
 import { ArticleCard } from '../../common/ui/components/ArticleCard'
 import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
@@ -243,6 +244,9 @@ export struct HomePage {
           }
         },
         toggleCollectAction: async () => {
+          if (!this.ensureLogin()) {
+            return
+          }
           try {
             const nextCollected = await FavoriteService.shared().toggle(item.id)
             this.favoriteVersion++
@@ -359,6 +363,18 @@ export struct HomePage {
       clearTimeout(this.actionTimerId)
       this.actionTimerId = -1
     }
+  }
+
+  private ensureLogin(): boolean {
+    if (SessionStore.shared().isLogin()) {
+      return true
+    }
+    if (this.onRequireLogin) {
+      this.onRequireLogin()
+    } else {
+      this.showActionToast('请先登录')
+    }
+    return false
   }
 
   private isArticleCollected(articleId: number): boolean {

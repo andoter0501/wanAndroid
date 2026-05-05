@@ -1,4 +1,5 @@
 import { UiState } from '../../common/ui/LoadState'
+import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { parseErrorMessage } from '../../common/network/ErrorMessage'
 import { SessionStore, UserSession } from '../../common/storage/SessionStore'
 import { AuthRepository, UserInfoData } from './AuthRepository'
@@ -76,10 +77,12 @@ export class AuthViewModel {
   async logout(): Promise<void> {
     try {
       await this.repository.logout()
-    } catch (_) {
+    } catch (error) {
+      parseErrorMessage(error)
       // 登出失败也清理本地态，避免脏会话
     } finally {
       SessionStore.shared().clear()
+      FavoriteService.shared().clear()
       this.userInfoState = UiState.empty<UserInfoData>('未获取用户信息')
       this.authState = UiState.empty<UserSession>('未登录')
     }
