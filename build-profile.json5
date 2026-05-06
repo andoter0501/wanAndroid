@@ -24,11 +24,11 @@
         "material": {
           "certpath": "/Users/a123/.ohos/config/default_wanAndroid_zTR_x_i6tn1bESHIm9dMqVmEg_zhywSytazW60mygjs=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BD0A645A209401DA38C488E7BBAE60C8A245C4F87BAAA6FDB5686F069424C56BA2B011A1FED66E1",
+          "keyPassword": "0000001B3F781DE8BCBCE9342823BA623784535B382B52C2E7C400277CB6FDE317269F68F7052754301221",
           "profile": "/Users/a123/.ohos/config/default_wanAndroid_zTR_x_i6tn1bESHIm9dMqVmEg_zhywSytazW60mygjs=.p7b",
           "signAlg": "SHA256withECDSA",
           "storeFile": "/Users/a123/.ohos/config/default_wanAndroid_zTR_x_i6tn1bESHIm9dMqVmEg_zhywSytazW60mygjs=.p12",
-          "storePassword": "0000001BEA93C9C0C42BDE4C8CFEA44F3EFAE42FC1EE193A5FB001CC2E79D455AE124D183C235E26F9A1D9"
+          "storePassword": "0000001B93CF33D9CDC86171410709B2F907C6195013D0D032C1510A4D609DCC78A2A755777AC68BF5399C"
         }
       }
     ]

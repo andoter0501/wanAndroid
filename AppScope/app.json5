@@ -1,6 +1,6 @@
 {
   "app": {
-    "bundleName": "com.wanandroid.harmony",
+    "bundleName": "com.wanandroid.explore",
     "vendor": "wanandroid",
     "versionCode": 1000000,
     "versionName": "1.0.0",
