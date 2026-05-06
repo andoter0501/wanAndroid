@@ -14,6 +14,16 @@ export interface ChapterItem {
   name: string
 }
 
+export interface FriendSiteItem {
+  id: number
+  name: string
+  link: string
+  category?: string
+  icon?: string
+  order?: number
+  visible?: number
+}
+
 export interface HarmonyIndexData {
   links: ChapterItem[]
   open_sources: ChapterItem[]
@@ -67,6 +77,13 @@ export class HomeRepository {
     return this.apiClient.request<ChapterItem[]>({
       method: RequestMethod.GET,
       path: WanAndroidApi.popularWenda()
+    })
+  }
+
+  loadFriendSites(): Promise<FriendSiteItem[]> {
+    return this.apiClient.request<FriendSiteItem[]>({
+      method: RequestMethod.GET,
+      path: WanAndroidApi.friendSites()
     })
   }
 

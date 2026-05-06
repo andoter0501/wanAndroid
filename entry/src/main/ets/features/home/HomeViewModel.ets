@@ -3,6 +3,7 @@ import { parseErrorMessage } from '../../common/network/ErrorMessage'
 import {
   BannerItem,
   ChapterItem,
+  FriendSiteItem,
   HarmonyIndexData,
   HomeArticleItem,
   HomeRepository
@@ -14,7 +15,7 @@ export class HomeViewModel {
   state: UiState<HomeArticleItem[]> = UiState.loading<HomeArticleItem[]>()
   banners: BannerItem[] = []
   topArticles: HomeArticleItem[] = []
-  popularWenda: ChapterItem[] = []
+  friendSites: FriendSiteItem[] = []
   popularColumn: ChapterItem[] = []
   popularRoute: ChapterItem[] = []
   harmony: HarmonyIndexData | null = null
@@ -36,7 +37,7 @@ export class HomeViewModel {
       const sideResults = await Promise.allSettled([
         this.repository.loadBanners(),
         this.repository.loadTopArticles(),
-        this.repository.loadPopularWenda(),
+        this.repository.loadFriendSites(),
         this.repository.loadPopularColumn(),
         this.repository.loadPopularRoute(),
         this.repository.loadHarmonyIndex()
@@ -44,7 +45,7 @@ export class HomeViewModel {
 
       this.banners = sideResults[0].status === 'fulfilled' ? sideResults[0].value : []
       this.topArticles = sideResults[1].status === 'fulfilled' ? sideResults[1].value : []
-      this.popularWenda = sideResults[2].status === 'fulfilled' ? sideResults[2].value : []
+      this.friendSites = sideResults[2].status === 'fulfilled' ? sideResults[2].value : []
       this.popularColumn = sideResults[3].status === 'fulfilled' ? sideResults[3].value : []
       this.popularRoute = sideResults[4].status === 'fulfilled' ? sideResults[4].value : []
       this.harmony = sideResults[5].status === 'fulfilled' ? sideResults[5].value : null

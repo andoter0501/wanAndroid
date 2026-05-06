@@ -6,7 +6,7 @@ import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
 import { UiTheme } from '../../common/ui/UiTheme'
 import { HomeViewModel } from './HomeViewModel'
-import { HomeArticleItem } from './HomeRepository'
+import { FriendSiteItem, HomeArticleItem } from './HomeRepository'
 
 @Component
 export struct HomePage {
@@ -104,7 +104,7 @@ export struct HomePage {
               })
 
               Flex({ direction: FlexDirection.Row, wrap: FlexWrap.Wrap }) {
-                this.quickTag('问答', () => this.handleQuickNavigate('plaza'))
+                this.quickTag('常用网站', () => this.openFirstFriendSite())
                 this.quickTag('专栏', () => this.handleQuickNavigate('know'))
                 this.quickTag('路线', () => this.handleQuickNavigate('project'))
                 this.quickTag('鸿蒙', () => {
@@ -114,6 +114,10 @@ export struct HomePage {
                 })
               }
               .width('100%')
+
+              if (this.visibleFriendSites().length > 0) {
+                this.friendSitesCard()
+              }
             }
           }
 
@@ -262,6 +266,48 @@ export struct HomePage {
   }
 
   @Builder
+  private friendSitesCard() {
+    Column({ space: 10 }) {
+      Row({ space: 8 }) {
+        Column() {}
+          .width(4)
+          .height(18)
+          .borderRadius(2)
+          .backgroundColor(UiTheme.BRAND_ACCENT)
+        Text('常用网站')
+          .fontSize(16)
+          .fontWeight(FontWeight.Bold)
+          .fontColor(UiTheme.TEXT_PRIMARY)
+      }
+      .width('100%')
+
+      Flex({ direction: FlexDirection.Row, wrap: FlexWrap.Wrap }) {
+        ForEach(this.visibleFriendSites(), (site: FriendSiteItem) => {
+          Text(site.name)
+            .fontSize(12)
+            .fontColor(UiTheme.BRAND_DEEP)
+            .maxLines(1)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+            .padding({ left: 10, right: 10, top: 6, bottom: 6 })
+            .margin({ right: 8, bottom: 8 })
+            .borderRadius(999)
+            .backgroundColor(UiTheme.BRAND_SOFT)
+            .onClick(() => {
+              if (this.onOpenLink) {
+                this.onOpenLink(site.link)
+              }
+            })
+        }, (site: FriendSiteItem) => site.id.toString())
+      }
+      .width('100%')
+    }
+    .width('100%')
+    .padding(12)
+    .backgroundColor(UiTheme.BG_CARD)
+    .borderRadius(UiTheme.RADIUS_MD)
+  }
+
+  @Builder
   private topArticlesCard() {
     Column({ space: 10 }) {
       Row({ space: 8 }) {
@@ -345,6 +391,31 @@ export struct HomePage {
     } else {
       this.showActionToast('该入口暂不可用')
     }
+  }
+
+  private openFirstFriendSite(): void {
+    const sites = this.visibleFriendSites()
+    if (sites.length > 0 && this.onOpenLink) {
+      this.onOpenLink(sites[0].link)
+    } else {
+      this.showActionToast('常用网站加载中')
+    }
+  }
+
+  private visibleFriendSites(): FriendSiteItem[] {
+    return this.vm.friendSites
+      .filter((site: FriendSiteItem) => {
+        if (site.category === '外文翻译' || site.name === '外文翻译') {
+          return false
+        }
+        return site.category === '博客'
+          || site.link === 'https://developer.android.google.cn/'
+          || site.link === 'https://juejin.im/timeline/android'
+          || site.link === 'https://juejin.cn/ai'
+          || site.name === '掘金'
+          || site.name === '人工智能'
+      })
+      .slice(0, 12)
   }
 
   private showActionToast(message: string): void {

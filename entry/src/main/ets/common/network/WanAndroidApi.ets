@@ -17,6 +17,9 @@ export class WanAndroidApi {
   static popularWenda(): string {
     return '/popular/wenda/json'
   }
+  static friendSites(): string {
+    return '/friend/json'
+  }
   static popularColumn(): string {
     return '/popular/column/json'
   }
