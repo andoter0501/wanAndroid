@@ -60,11 +60,18 @@ export class AuthViewModel {
       this.userInfoState = UiState.success(data)
       const session = SessionStore.shared().getSession()
       if (session) {
+        const coinCount = data.coinInfo?.coinCount ?? data.userInfo.coinCount
+        const level = data.coinInfo?.level ?? data.userInfo.level
+        const rank = data.coinInfo?.rank ?? data.userInfo.rank
+        const collectCount = data.collectArticleInfo?.count ?? data.userInfo.collectIds?.length
         const nextSession: UserSession = {
           username: session.username,
           userId: session.userId,
-          nickname: data.userInfo.nickname || session.nickname,
-          coinCount: data.coinInfo.coinCount
+          nickname: data.userInfo.nickname || data.userInfo.publicName || data.userInfo.username || session.nickname,
+          coinCount,
+          level,
+          rank,
+          collectCount
         }
         SessionStore.shared().save(nextSession)
         this.authState = UiState.success(SessionStore.shared().getSession() as UserSession)

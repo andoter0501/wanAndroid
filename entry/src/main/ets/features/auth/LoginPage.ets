@@ -68,6 +68,9 @@ export struct LoginPage {
           .backgroundColor(UiTheme.BRAND_PRIMARY)
           .onClick(async () => {
             await this.authVm.loginOrRegister()
+            if (this.authVm.authState.status === LoadStatus.Success) {
+              await this.authVm.loadUserInfo()
+            }
             this.authVm = this.authVm
             if (this.authVm.authState.status === LoadStatus.Success && this.onSuccess) {
               this.onSuccess()

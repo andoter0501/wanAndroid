@@ -3,24 +3,34 @@ import { RequestMethod } from '../../common/network/ApiModels'
 import { WanAndroidApi } from '../../common/network/WanAndroidApi'
 
 export interface UserInfoData {
-  coinInfo: UserCoinInfo
+  coinInfo?: UserCoinInfo
   userInfo: UserInfoProfile
+  collectArticleInfo?: UserCollectArticleInfo
 }
 
 export interface UserCoinInfo {
-  coinCount: number
-  level: number
-  rank: string
-  userId: number
-  username: string
-  nickname: string
+  coinCount?: number
+  level?: number
+  rank?: string
+  userId?: number
+  username?: string
+  nickname?: string
+}
+
+export interface UserCollectArticleInfo {
+  count: number
 }
 
 export interface UserInfoProfile {
   id: number
   username: string
   nickname: string
+  publicName?: string
   email?: string
+  coinCount?: number
+  level?: number
+  rank?: string
+  collectIds?: number[]
 }
 
 export interface LoginData {

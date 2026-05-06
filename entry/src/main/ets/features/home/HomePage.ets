@@ -104,9 +104,7 @@ export struct HomePage {
               })
 
               Flex({ direction: FlexDirection.Row, wrap: FlexWrap.Wrap }) {
-                this.quickTag('常用网站', () => this.openFirstFriendSite())
                 this.quickTag('专栏', () => this.handleQuickNavigate('know'))
-                this.quickTag('路线', () => this.handleQuickNavigate('project'))
                 this.quickTag('鸿蒙', () => {
                   if (this.onOpenLink) {
                     this.onOpenLink('https://wanandroid.com/harmony/index')
@@ -390,15 +388,6 @@ export struct HomePage {
       this.onQuickNavigate(target)
     } else {
       this.showActionToast('该入口暂不可用')
-    }
-  }
-
-  private openFirstFriendSite(): void {
-    const sites = this.visibleFriendSites()
-    if (sites.length > 0 && this.onOpenLink) {
-      this.onOpenLink(sites[0].link)
-    } else {
-      this.showActionToast('常用网站加载中')
     }
   }
 

@@ -5,6 +5,9 @@ export interface UserSession {
   nickname: string
   userId: number
   coinCount?: number
+  level?: number
+  rank?: string
+  collectCount?: number
 }
 
 /**
@@ -57,7 +60,7 @@ export class SessionStore {
       } else {
         this.currentSession = null
       }
-    } catch (_) {
+    } catch (error) {
       this.currentSession = null
     }
   }
