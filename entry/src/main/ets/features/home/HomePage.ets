@@ -77,6 +77,7 @@ export struct HomePage {
           status: this.vm.state.status,
           message: this.vm.state.message,
           retryAction: () => this.onRetry(),
+          refreshAction: () => this.onRetry(),
           showLoadMore: this.vm.canLoadMore(),
           isLoadingMore: this.vm.isLoadingMore,
           loadMoreAction: () => this.onLoadMore()

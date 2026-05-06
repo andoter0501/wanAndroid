@@ -102,6 +102,7 @@ export struct KnowPage {
       status: this.vm.articleState.status,
       message: this.vm.articleState.message,
       retryAction: () => this.reloadSelectedArticles(),
+      refreshAction: () => this.reloadSelectedArticles(),
       showLoadMore: this.vm.canLoadMoreArticle(),
       isLoadingMore: this.vm.isLoadingMoreArticle,
       loadMoreAction: () => this.loadMoreArticles()

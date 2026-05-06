@@ -108,6 +108,7 @@ export struct SearchPage {
           status: this.vm.resultState.status,
           message: this.vm.resultState.message,
           retryAction: () => this.doSearch(),
+          refreshAction: () => this.doSearch(),
           showLoadMore: this.vm.canLoadMore(),
           isLoadingMore: this.vm.isLoadingMore,
           loadMoreAction: () => this.onLoadMore()

@@ -1,6 +1,6 @@
 import { parseErrorMessage } from '../../common/network/ErrorMessage'
+import { PagedListView } from '../../common/ui/components/PagedListView'
 import { PageHeader } from '../../common/ui/components/PageHeader'
-import { StateView } from '../../common/ui/components/StateView'
 import { UiTheme } from '../../common/ui/UiTheme'
 import { CollectItem } from './CollectRepository'
 import { CollectViewModel } from './CollectViewModel'
@@ -40,33 +40,20 @@ export struct CollectPage {
       })
 
       Column() {
-        StateView({
+        PagedListView({
           status: this.vm.state.status,
           message: this.vm.state.message,
-          retryAction: () => this.loadFirst()
+          retryAction: () => this.loadFirst(),
+          refreshAction: () => this.loadFirst(),
+          showLoadMore: this.vm.canLoadMore(),
+          isLoadingMore: this.vm.isLoadingMore,
+          loadMoreAction: () => this.loadMore()
         }) {
-          List({ space: 10 }) {
-            ForEach(this.vm.state.data || [], (item: CollectItem) => {
-              ListItem() {
-                this.collectCard(item)
-              }
-            }, (item: CollectItem) => item.id.toString())
-
-            if (this.vm.canLoadMore()) {
-              ListItem() {
-                Text(this.vm.isLoadingMore ? '加载中...' : '加载更多')
-                  .width('100%')
-                  .textAlign(TextAlign.Center)
-                  .fontSize(12)
-                  .fontColor(UiTheme.TEXT_SECONDARY)
-                  .padding({ top: 9, bottom: 9 })
-                  .onClick(() => {
-                    this.loadMore()
-                  })
-              }
+          ForEach(this.vm.state.data || [], (item: CollectItem) => {
+            ListItem() {
+              this.collectCard(item)
             }
-          }
-          .layoutWeight(1)
+          }, (item: CollectItem) => item.id.toString())
         }
       }
       .layoutWeight(1)

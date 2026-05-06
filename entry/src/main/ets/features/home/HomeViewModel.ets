@@ -74,7 +74,8 @@ export class HomeViewModel {
       this.state = UiState.success(merged)
       this.page = nextPage
       this.hasMore = pageData.curPage < pageData.pageCount
-    } catch (_) {
+    } catch (error) {
+      parseErrorMessage(error)
       // 分页失败不覆盖主状态，只终止本次加载
     } finally {
       this.isLoadingMore = false

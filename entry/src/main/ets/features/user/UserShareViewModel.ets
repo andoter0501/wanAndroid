@@ -41,7 +41,8 @@ export class UserShareViewModel {
       this.state = UiState.success(this.state.data.concat(data.datas || []))
       this.page = nextPage
       this.hasMore = data.curPage < data.pageCount
-    } catch (_) {
+    } catch (error) {
+      parseErrorMessage(error)
       // 保持当前列表
     } finally {
       this.isLoadingMore = false

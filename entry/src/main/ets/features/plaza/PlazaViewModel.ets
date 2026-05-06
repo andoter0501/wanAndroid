@@ -52,7 +52,8 @@ export class PlazaViewModel {
       this.plazaState = UiState.success(this.plazaState.data.concat(data.datas || []))
       this.plazaPage = nextPage
       this.plazaHasMore = data.curPage < data.pageCount
-    } catch (_) {
+    } catch (error) {
+      parseErrorMessage(error)
       // 保留当前列表
     } finally {
       this.isLoadingMorePlaza = false
@@ -83,7 +84,8 @@ export class PlazaViewModel {
       this.myShareState = UiState.success(this.myShareState.data.concat(data.datas || []))
       this.mySharePage = nextPage
       this.myShareHasMore = data.curPage < data.pageCount
-    } catch (_) {
+    } catch (error) {
+      parseErrorMessage(error)
       // 保留当前列表
     } finally {
       this.isLoadingMoreMyShare = false

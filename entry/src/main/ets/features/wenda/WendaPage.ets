@@ -63,6 +63,10 @@ export struct WendaPage {
         await this.vm.loadWendaFirstPage()
         this.vm = this.vm
       },
+      refreshAction: async () => {
+        await this.vm.loadWendaFirstPage()
+        this.vm = this.vm
+      },
       showLoadMore: this.vm.canLoadMore(),
       isLoadingMore: this.vm.isLoadingMore,
       loadMoreAction: async () => {

@@ -1,5 +1,5 @@
 import { PageHeader } from '../../common/ui/components/PageHeader'
-import { StateView } from '../../common/ui/components/StateView'
+import { PagedListView } from '../../common/ui/components/PagedListView'
 import { UiTheme } from '../../common/ui/UiTheme'
 import { DiscoverViewModel } from '../discover/DiscoverViewModel'
 import { ProjectCategory, ProjectItem } from '../discover/DiscoverRepository'
@@ -23,6 +23,11 @@ export struct ProjectPage {
     this.vm = this.vm
   }
 
+  private async refreshProject(): Promise<void> {
+    await this.vm.refreshCurrentProjectCategory()
+    this.vm = this.vm
+  }
+
   build() {
     Column() {
       PageHeader({ title: '项目' })
@@ -40,33 +45,20 @@ export struct ProjectPage {
         .scrollBar(BarState.Off)
         .width('100%')
 
-        StateView({
+        PagedListView({
           status: this.vm.projectState.status,
           message: this.vm.projectState.message,
-          retryAction: () => this.initPage()
+          retryAction: () => this.refreshProject(),
+          refreshAction: () => this.refreshProject(),
+          showLoadMore: this.vm.canLoadMoreProject(),
+          isLoadingMore: this.vm.isLoadingMoreProject,
+          loadMoreAction: () => this.loadMoreProject()
         }) {
-          List({ space: 10 }) {
-            ForEach(this.vm.projectState.data || [], (item: ProjectItem) => {
-              ListItem() {
-                this.projectCard(item)
-              }
-            }, (item: ProjectItem) => item.id.toString())
-
-            if (this.vm.canLoadMoreProject()) {
-              ListItem() {
-                Text(this.vm.isLoadingMoreProject ? '加载中...' : '加载更多')
-                  .width('100%')
-                  .textAlign(TextAlign.Center)
-                  .fontSize(12)
-                  .fontColor(UiTheme.TEXT_SECONDARY)
-                  .padding({ top: 9, bottom: 9 })
-                  .onClick(() => {
-                    this.loadMoreProject()
-                  })
-              }
+          ForEach(this.vm.projectState.data || [], (item: ProjectItem) => {
+            ListItem() {
+              this.projectCard(item)
             }
-          }
-          .layoutWeight(1)
+          }, (item: ProjectItem) => item.id.toString())
         }
       }
       .layoutWeight(1)

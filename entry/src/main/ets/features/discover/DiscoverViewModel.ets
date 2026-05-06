@@ -98,6 +98,23 @@ export class DiscoverViewModel {
     }
   }
 
+  async refreshCurrentProjectCategory(): Promise<void> {
+    if (this.selectedProjectCid <= 0) {
+      await this.loadProjectInitial()
+      return
+    }
+    this.projectPage = 1
+    this.projectState = UiState.loading<ProjectItem[]>()
+    try {
+      const pageData = await this.repository.loadProjects(1, this.selectedProjectCid)
+      const items = pageData.datas || []
+      this.hasMoreProject = pageData.curPage < pageData.pageCount
+      this.projectState = items.length > 0 ? UiState.success(items) : UiState.empty('该分类暂无项目')
+    } catch (error) {
+      this.projectState = UiState.error<ProjectItem[]>(parseErrorMessage(error))
+    }
+  }
+
   async loadMoreProjects(): Promise<void> {
     if (this.isLoadingMoreProject || !this.hasMoreProject || !this.projectState.data) {
       return

@@ -2,7 +2,7 @@ import { FavoriteService } from '../../common/favorite/FavoriteService'
 import { parseErrorMessage } from '../../common/network/ErrorMessage'
 import { SessionStore } from '../../common/storage/SessionStore'
 import { PageHeader } from '../../common/ui/components/PageHeader'
-import { StateView } from '../../common/ui/components/StateView'
+import { PagedListView } from '../../common/ui/components/PagedListView'
 import { UiTheme } from '../../common/ui/UiTheme'
 import { PlazaArticle } from './PlazaRepository'
 import { PlazaViewModel } from './PlazaViewModel'
@@ -44,33 +44,20 @@ export struct PlazaPage {
       PageHeader({ title: '广场' })
 
       Column() {
-        StateView({
+        PagedListView({
           status: this.vm.plazaState.status,
           message: this.vm.plazaState.message,
-          retryAction: () => this.initPage()
+          retryAction: () => this.initPage(),
+          refreshAction: () => this.initPage(),
+          showLoadMore: this.vm.canLoadMorePlaza(),
+          isLoadingMore: this.vm.isLoadingMorePlaza,
+          loadMoreAction: () => this.loadMorePlaza()
         }) {
-          List({ space: 10 }) {
-            ForEach(this.vm.plazaState.data || [], (item: PlazaArticle) => {
-              ListItem() {
-                this.plazaCard(item)
-              }
-            }, (item: PlazaArticle) => item.id.toString())
-
-            if (this.vm.canLoadMorePlaza()) {
-              ListItem() {
-                Text(this.vm.isLoadingMorePlaza ? '加载中...' : '加载更多')
-                  .width('100%')
-                  .textAlign(TextAlign.Center)
-                  .fontSize(12)
-                  .fontColor(UiTheme.TEXT_SECONDARY)
-                  .padding({ top: 9, bottom: 9 })
-                  .onClick(() => {
-                    this.loadMorePlaza()
-                  })
-              }
+          ForEach(this.vm.plazaState.data || [], (item: PlazaArticle) => {
+            ListItem() {
+              this.plazaCard(item)
             }
-          }
-          .layoutWeight(1)
+          }, (item: PlazaArticle) => item.id.toString())
         }
       }
       .layoutWeight(1)

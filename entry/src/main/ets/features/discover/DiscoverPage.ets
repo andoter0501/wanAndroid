@@ -30,6 +30,11 @@ export struct DiscoverPage {
     this.vm = this.vm
   }
 
+  private async refreshProject(): Promise<void> {
+    await this.vm.refreshCurrentProjectCategory()
+    this.vm = this.vm
+  }
+
   build() {
     Column() {
       PageHeader({ title: '发现' })
@@ -120,7 +125,8 @@ export struct DiscoverPage {
           PagedListView({
             status: this.vm.projectState.status,
             message: this.vm.projectState.message,
-            retryAction: () => this.vm.switchProjectCategory(this.vm.selectedProjectCid),
+            retryAction: () => this.refreshProject(),
+            refreshAction: () => this.refreshProject(),
             showLoadMore: this.vm.canLoadMoreProject(),
             isLoadingMore: this.vm.isLoadingMoreProject,
             loadMoreText: '加载更多项目',

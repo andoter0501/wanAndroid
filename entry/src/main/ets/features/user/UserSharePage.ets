@@ -60,6 +60,10 @@ export struct UserSharePage {
           await this.vm.loadFirstPage(this.userId)
           this.vm = this.vm
         },
+        refreshAction: async () => {
+          await this.vm.loadFirstPage(this.userId)
+          this.vm = this.vm
+        },
         showLoadMore: this.vm.canLoadMore(),
         isLoadingMore: this.vm.isLoadingMore,
         loadMoreAction: async () => {

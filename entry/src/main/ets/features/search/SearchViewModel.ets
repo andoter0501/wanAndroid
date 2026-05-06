@@ -65,7 +65,8 @@ export class SearchViewModel {
       this.resultState = UiState.success(this.resultState.data.concat(pageData.datas || []))
       this.page = nextPage
       this.hasMore = pageData.curPage < pageData.pageCount
-    } catch (_) {
+    } catch (error) {
+      parseErrorMessage(error)
       // 保持当前结果列表
     } finally {
       this.isLoadingMore = false

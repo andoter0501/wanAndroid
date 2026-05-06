@@ -45,7 +45,8 @@ export class WendaViewModel {
       this.wendaState = UiState.success(this.wendaState.data.concat(data.datas || []))
       this.page = nextPage
       this.hasMore = data.curPage < data.pageCount
-    } catch (_) {
+    } catch (error) {
+      parseErrorMessage(error)
       // 保持当前数据
     } finally {
       this.isLoadingMore = false
