@@ -24,11 +24,24 @@
         "material": {
           "certpath": "/Users/a123/.ohos/config/default_wanAndroid_zTR_x_i6tn1bESHIm9dMqVmEg_zhywSytazW60mygjs=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B3F781DE8BCBCE9342823BA623784535B382B52C2E7C400277CB6FDE317269F68F7052754301221",
+          "keyPassword": "0000001BFCC25EDD6CCA4B250F55C7AC34639588BF3B4DF0BBCE198A79B819E40179128026919DEA561269",
           "profile": "/Users/a123/.ohos/config/default_wanAndroid_zTR_x_i6tn1bESHIm9dMqVmEg_zhywSytazW60mygjs=.p7b",
           "signAlg": "SHA256withECDSA",
           "storeFile": "/Users/a123/.ohos/config/default_wanAndroid_zTR_x_i6tn1bESHIm9dMqVmEg_zhywSytazW60mygjs=.p12",
-          "storePassword": "0000001B93CF33D9CDC86171410709B2F907C6195013D0D032C1510A4D609DCC78A2A755777AC68BF5399C"
+          "storePassword": "0000001BEAC0AA7E3C304B7586EA4FE6D88AAAD36F49C90CF2CF428BB9BECB0F2D7B988DE6EA9FA21D14E2"
+        }
+      },
+      {
+        "name": "publish",
+        "type": "HarmonyOS",
+        "material": {
+          "storeFile": "/Users/a123/shiwei/gitproject/wanAndroid/publishkey/wan.p12",
+          "storePassword": "0000001A604D936458219A97461069BD769F6E753B9438D17909A47968526F2B1C67094C51B35F29336F",
+          "keyAlias": "sensors123",
+          "keyPassword": "0000001AEA47A26A7319F950B68ADFC8390B580FD1BD9743C2867D3CF91BC521D8A946BF6F4E1DF80B68",
+          "signAlg": "SHA256withECDSA",
+          "profile": "/Users/a123/shiwei/gitproject/wanAndroid/publishkey/wanRelease.p7b",
+          "certpath": "/Users/a123/shiwei/gitproject/wanAndroid/publishkey/wanAndroid.cer"
         }
       }
     ]

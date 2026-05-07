@@ -30,6 +30,11 @@ export struct AppShellPage {
   @State showLogin: boolean = false
   @State showCollect: boolean = false
   @State loginReturnToMine: boolean = false
+  @State homeVisited: boolean = true
+  @State knowVisited: boolean = false
+  @State projectVisited: boolean = false
+  @State plazaVisited: boolean = false
+  @State mineVisited: boolean = false
   @State currentUrl: string = ''
   @State currentUserId: number = 0
   @State currentUsername: string = ''
@@ -44,6 +49,7 @@ export struct AppShellPage {
       this.showCollect = false
       this.loginReturnToMine = false
       FavoriteService.shared().clear()
+      this.markTabVisited(MainTab.MINE)
       this.currentTab = MainTab.MINE
       this.showToast(message || '登录已失效，请重新登录')
     }
@@ -119,6 +125,7 @@ export struct AppShellPage {
                 animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
                   this.showLogin = false
                   if (this.loginReturnToMine) {
+                    this.markTabVisited(MainTab.MINE)
                     this.currentTab = MainTab.MINE
                   }
                   this.loginReturnToMine = false
@@ -140,71 +147,7 @@ export struct AppShellPage {
               }
             })
           } else {
-            if (this.currentTab === MainTab.HOME) {
-              HomePage({
-                onOpenSearch: () => {
-                  animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                    this.showSearch = true
-                  })
-                },
-                onOpenLink: (url: string) => {
-                  this.openLink(url)
-                },
-                onQuickNavigate: (target: string) => {
-                  if (target === 'plaza') {
-                    this.switchTab(MainTab.PLAZA)
-                  } else if (target === 'know') {
-                    this.switchTab(MainTab.KNOW)
-                  } else if (target === 'project') {
-                    this.switchTab(MainTab.PROJECT)
-                  }
-                },
-                onRequireLogin: () => {
-                  this.openLogin(false)
-                }
-              })
-            } else if (this.currentTab === MainTab.KNOW) {
-              KnowPage({
-                onOpenLink: (url: string) => {
-                  this.openLink(url)
-                }
-              })
-            } else if (this.currentTab === MainTab.PROJECT) {
-              ProjectPage({
-                onOpenLink: (url: string) => {
-                  this.openLink(url)
-                }
-              })
-            } else if (this.currentTab === MainTab.PLAZA) {
-              PlazaPage({
-                onOpenLink: (url: string) => {
-                  this.openLink(url)
-                },
-                onOpenUserShare: (userId: number, username: string) => {
-                  this.openUserShare(userId, username)
-                },
-                onToast: (message: string) => {
-                  this.showToast(message)
-                },
-                onRequireLogin: () => {
-                  this.openLogin(false)
-                }
-              })
-            } else {
-              MinePage({
-                onOpenLink: (url: string) => {
-                  this.openLink(url)
-                },
-                onOpenCollect: () => {
-                  animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
-                    this.showCollect = true
-                  })
-                },
-                onRequireLogin: () => {
-                  this.openLogin(true)
-                }
-              })
-            }
+            this.mainTabs()
           }
         }
         .layoutWeight(1)
@@ -273,9 +216,110 @@ export struct AppShellPage {
   }
 
   private switchTab(tab: MainTab): void {
+    this.markTabVisited(tab)
     animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
       this.currentTab = tab
     })
+  }
+
+  private markTabVisited(tab: MainTab): void {
+    if (tab === MainTab.HOME) {
+      this.homeVisited = true
+    } else if (tab === MainTab.KNOW) {
+      this.knowVisited = true
+    } else if (tab === MainTab.PROJECT) {
+      this.projectVisited = true
+    } else if (tab === MainTab.PLAZA) {
+      this.plazaVisited = true
+    } else if (tab === MainTab.MINE) {
+      this.mineVisited = true
+    }
+  }
+
+  @Builder
+  private mainTabs() {
+    Stack() {
+      if (this.homeVisited) {
+        HomePage({
+          onOpenSearch: () => {
+            animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+              this.showSearch = true
+            })
+          },
+          onOpenLink: (url: string) => {
+            this.openLink(url)
+          },
+          onQuickNavigate: (target: string) => {
+            if (target === 'plaza') {
+              this.switchTab(MainTab.PLAZA)
+            } else if (target === 'know') {
+              this.switchTab(MainTab.KNOW)
+            } else if (target === 'project') {
+              this.switchTab(MainTab.PROJECT)
+            }
+          },
+          onRequireLogin: () => {
+            this.openLogin(false)
+          }
+        })
+          .visibility(this.currentTab === MainTab.HOME ? Visibility.Visible : Visibility.Hidden)
+      }
+
+      if (this.knowVisited) {
+        KnowPage({
+          onOpenLink: (url: string) => {
+            this.openLink(url)
+          }
+        })
+          .visibility(this.currentTab === MainTab.KNOW ? Visibility.Visible : Visibility.Hidden)
+      }
+
+      if (this.projectVisited) {
+        ProjectPage({
+          onOpenLink: (url: string) => {
+            this.openLink(url)
+          }
+        })
+          .visibility(this.currentTab === MainTab.PROJECT ? Visibility.Visible : Visibility.Hidden)
+      }
+
+      if (this.plazaVisited) {
+        PlazaPage({
+          onOpenLink: (url: string) => {
+            this.openLink(url)
+          },
+          onOpenUserShare: (userId: number, username: string) => {
+            this.openUserShare(userId, username)
+          },
+          onToast: (message: string) => {
+            this.showToast(message)
+          },
+          onRequireLogin: () => {
+            this.openLogin(false)
+          }
+        })
+          .visibility(this.currentTab === MainTab.PLAZA ? Visibility.Visible : Visibility.Hidden)
+      }
+
+      if (this.mineVisited) {
+        MinePage({
+          onOpenLink: (url: string) => {
+            this.openLink(url)
+          },
+          onOpenCollect: () => {
+            animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+              this.showCollect = true
+            })
+          },
+          onRequireLogin: () => {
+            this.openLogin(true)
+          }
+        })
+          .visibility(this.currentTab === MainTab.MINE ? Visibility.Visible : Visibility.Hidden)
+      }
+    }
+    .width('100%')
+    .height('100%')
   }
 
   private openLogin(returnToMine: boolean): void {
