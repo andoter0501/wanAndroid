@@ -23,6 +23,10 @@ export class LocalCacheStore {
     this.stringListMap.set(key, value)
   }
 
+  clearStringLists(): void {
+    this.stringListMap.clear()
+  }
+
   getString(key: string): string {
     const cached = this.stringMap.get(key)
     if (cached !== undefined) {

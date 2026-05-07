@@ -8,6 +8,7 @@ import { MessageViewModel } from '../message/MessageViewModel'
 export struct MinePage {
   onOpenLink?: (url: string) => void
   onOpenCollect?: () => void
+  onOpenSettings?: () => void
   onRequireLogin?: () => void
 
   @State authVm: AuthViewModel = new AuthViewModel()
@@ -248,7 +249,11 @@ export struct MinePage {
         })
         this.menuRow('我的文章', '▤', '', () => {})
         this.menuRow('站内消息', '✉', `${this.messageVm.unreadCount}`, () => {})
-        this.menuRow('系统设置', '⚙', '', () => {})
+        this.menuRow('系统设置', '⚙', '', () => {
+          if (this.onOpenSettings) {
+            this.onOpenSettings()
+          }
+        })
       }
       .width('100%')
       .backgroundColor(UiTheme.BG_CARD)

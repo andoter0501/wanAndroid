@@ -6,6 +6,7 @@ import { PlazaPage } from '../features/plaza/PlazaPage'
 import { KnowPage } from '../features/know/KnowPage'
 import { ProjectPage } from '../features/project/ProjectPage'
 import { SearchPage } from '../features/search/SearchPage'
+import { SettingsPage } from '../features/settings/SettingsPage'
 import { UserSharePage } from '../features/user/UserSharePage'
 import { WebDetailPage } from '../features/web/WebDetailPage'
 import { UrlSecurityGuard } from '../common/web/UrlSecurityGuard'
@@ -29,6 +30,7 @@ export struct AppShellPage {
   @State showUserShare: boolean = false
   @State showLogin: boolean = false
   @State showCollect: boolean = false
+  @State showSettings: boolean = false
   @State loginReturnToMine: boolean = false
   @State homeVisited: boolean = true
   @State knowVisited: boolean = false
@@ -47,6 +49,7 @@ export struct AppShellPage {
       this.showUserShare = false
       this.showLogin = false
       this.showCollect = false
+      this.showSettings = false
       this.loginReturnToMine = false
       FavoriteService.shared().clear()
       this.markTabVisited(MainTab.MINE)
@@ -146,6 +149,20 @@ export struct AppShellPage {
                 this.showToast(message)
               }
             })
+          } else if (this.showSettings) {
+            SettingsPage({
+              onBack: () => {
+                animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+                  this.showSettings = false
+                })
+              },
+              onOpenLink: (url: string) => {
+                this.openLink(url)
+              },
+              onToast: (message: string) => {
+                this.showToast(message)
+              }
+            })
           } else {
             this.mainTabs()
           }
@@ -153,7 +170,7 @@ export struct AppShellPage {
         .layoutWeight(1)
         .width('100%')
 
-        if (!this.showSearch && !this.showWeb && !this.showUserShare && !this.showLogin && !this.showCollect) {
+        if (!this.showSearch && !this.showWeb && !this.showUserShare && !this.showLogin && !this.showCollect && !this.showSettings) {
           Row() {
             this.tabItem('首页', MainTab.HOME)
             this.tabItem('体系', MainTab.KNOW)
@@ -309,6 +326,11 @@ export struct AppShellPage {
           onOpenCollect: () => {
             animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
               this.showCollect = true
+            })
+          },
+          onOpenSettings: () => {
+            animateTo({ duration: 160, curve: Curve.EaseInOut }, () => {
+              this.showSettings = true
             })
           },
           onRequireLogin: () => {
