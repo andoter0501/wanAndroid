@@ -133,6 +133,9 @@ export struct AppShellPage {
                   }
                   this.loginReturnToMine = false
                 })
+              },
+              onOpenPasswordRecovery: (url: string) => {
+                this.openLink(url)
               }
             })
           } else if (this.showCollect) {

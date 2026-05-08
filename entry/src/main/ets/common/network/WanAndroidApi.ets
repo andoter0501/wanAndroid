@@ -68,6 +68,9 @@ export class WanAndroidApi {
   static userInfo(): string {
     return '/user/lg/userinfo/json'
   }
+  static officialIssuesPage(): string {
+    return 'https://github.com/hongyangAndroid/wanandroid/issues'
+  }
 
   // 收藏
   static collectList(page: number): string {
